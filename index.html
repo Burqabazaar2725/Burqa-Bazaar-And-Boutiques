@@ -38,7 +38,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBz6nILSzcvSofF9iyPt-h3ffseEXTwgnA",
@@ -55,6 +55,29 @@
         window.db = db;
         window.fbAddDoc = addDoc;
         window.fbCollection = collection;
+
+        // ⚡ REVIEWS CACHE (সব রিভিউ একবার লোড হবে)
+        window.reviewsCache = {};
+
+        window.loadReviewsFromFirebase = async function() {
+            try {
+                const q = query(collection(db, "reviews"), orderBy("date", "desc"));
+                const snap = await getDocs(q);
+                window.reviewsCache = {};
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const pid = data.productId;
+                    if (pid === undefined || pid === null) return;
+                    if (!window.reviewsCache[pid]) window.reviewsCache[pid] = [];
+                    window.reviewsCache[pid].push({ id: doc.id, ...data });
+                });
+                console.log('✅ Reviews loaded:', Object.keys(window.reviewsCache).length, 'products with reviews');
+                return window.reviewsCache;
+            } catch (err) {
+                console.error('❌ Reviews load error:', err);
+                return {};
+            }
+        };
 
         window.loadProductsFromFirebase = async function() {
             try {
@@ -85,7 +108,6 @@
                         safePrice = 'Coming Soon';
                     }
 
-                    // ⚡ STOCK SAFE
                     let safeStock = 1;
                     if (data.stock !== undefined && data.stock !== null) {
                         safeStock = parseInt(data.stock);
@@ -121,8 +143,12 @@
             }
         };
 
+        // ⚡ INIT: প্রথমে Reviews, তারপর Products লোড হবে
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
+            setTimeout(async function() {
+                if (typeof window.loadReviewsFromFirebase === 'function') {
+                    await window.loadReviewsFromFirebase();
+                }
                 if (typeof window.loadProductsFromFirebase === 'function') {
                     window.loadProductsFromFirebase();
                 }
@@ -270,7 +296,6 @@
         .product-badge.hot { background: linear-gradient(135deg, #ff6b00, #d94f00); }
         .product-badge.soldout { background: linear-gradient(135deg, #666, #333); }
 
-        /* ⚡ OUT OF STOCK OVERLAY */
         .out-of-stock-badge {
             position: absolute; top: 12px; left: 12px;
             padding: 4px 12px; border-radius: 20px;
@@ -305,7 +330,6 @@
             cursor: not-allowed !important;
         }
 
-        /* ⚡ LOW STOCK HINT */
         .low-stock-hint {
             font-size: 10px;
             color: var(--warn-color);
@@ -370,7 +394,7 @@
             font-family: var(--font-heading);
         }
         .star-picker { display: flex; gap: 5px; margin-bottom: 12px; font-size: 28px; cursor: pointer; }
-        .star-picker .star { color: var(--border-color); }
+        .star-picker .star { color: var(--border-color); transition: color 0.2s; }
         .star-picker .star:hover, .star-picker .star.active { color: #ffb800; }
         .review-input, .review-textarea {
             width: 100%; padding: 10px 12px;
@@ -390,8 +414,10 @@
             border-radius: 8px; font-weight: 700;
             font-size: 13px; cursor: pointer;
             font-family: inherit;
+            display: inline-flex; align-items: center; gap: 6px;
         }
         .submit-review-btn:hover { opacity: 0.9; }
+        .submit-review-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .review-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
         .review-card {
@@ -401,10 +427,32 @@
             padding: 12px 15px;
         }
         .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .review-name { font-weight: 700; font-size: 13px; color: var(--text-color); }
+        .review-name { font-weight: 700; font-size: 13px; color: var(--text-color); display: flex; align-items: center; gap: 6px; }
+        .review-name .verified-badge {
+            font-size: 9px; font-weight: 700;
+            color: var(--ok-color);
+            background: rgba(34,197,94,.15);
+            border: 1px solid var(--ok-color);
+            padding: 1px 6px; border-radius: 10px;
+            text-transform: uppercase;
+        }
         .review-stars { color: #ffb800; font-size: 12px; }
         .review-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         .review-date { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin-top: 4px; }
+
+        .reviews-loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .reviews-loading i {
+            color: var(--gold-color);
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .related-section { margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border-color); }
         .related-title {
@@ -1974,6 +2022,7 @@
   </div>
 </div>
     <script>
+        // URL EXTRACTOR
         function extractUrl(str) {
             if (!str || typeof str !== 'string') return '';
             const trimmed = str.trim();
@@ -1985,6 +2034,7 @@
             return '';
         }
 
+        // GLOBAL VARIABLES
         let productsData = [];
         let cart = JSON.parse(localStorage.getItem('burqa_cart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('burqa_wishlist')) || [];
@@ -1994,7 +2044,9 @@
         let currentRating = 0;
         let currentShareProduct = null;
         let toastTimeout;
+        let isSubmittingReview = false;
 
+        // UPDATE PRODUCTS DATA
         window.updateProductsData = function(firebaseProducts) {
             if (!Array.isArray(firebaseProducts)) return;
 
@@ -2027,7 +2079,6 @@
                     safePrice = 'Coming Soon';
                 }
 
-                // ⚡ STOCK SAFE
                 let safeStock = 1;
                 if (p.stock !== undefined && p.stock !== null) {
                     safeStock = parseInt(p.stock);
@@ -2056,6 +2107,7 @@
             updateFilterCounts();
         };
 
+        // ⚡ CATEGORY FILTER
         function filterCategory(categoryName) {
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.classList.remove('active');
@@ -2086,6 +2138,7 @@
             updateFilterCounts();
         }
 
+        // UPDATE FILTER COUNTS
         function updateFilterCounts() {
             if (!Array.isArray(productsData)) return;
             
@@ -2101,6 +2154,7 @@
             if (el('count-abaya')) el('count-abaya').textContent = abaya;
         }
 
+        // MINI CART
         function openMiniCart() {
             renderMiniCart();
             document.getElementById('mini-cart-overlay').classList.add('active');
@@ -2167,6 +2221,7 @@
             subtotalEl.textContent = '৳ ' + subtotal;
         }
 
+        // NEWSLETTER
         function subscribeNewsletter(event) {
             event.preventDefault();
             const emailInput = document.getElementById('newsletter-email');
@@ -2187,6 +2242,7 @@
             emailInput.value = '';
         }
 
+        // SOCIAL PLACEHOLDER
         function socialPlaceholder(event, platform) {
             event.preventDefault();
             showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!');
@@ -2194,6 +2250,7 @@
 
         document.body.classList.add('content-ready');
 
+        // SCROLL HANDLER
         let scrollTick = false;
         window.addEventListener('scroll', () => {
             if (scrollTick) return;
@@ -2226,6 +2283,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // WISHLIST
         function toggleWishlist(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const idx = wishlist.indexOf(productId);
@@ -2244,6 +2302,7 @@
             });
         }
 
+        // SHARE
         function openShareModal(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const product = productsData.find(p => p.id === productId);
@@ -2276,16 +2335,36 @@
             }).catch(() => showToast('❌ কপি করা যায়নি'));
         }
 
+        // ⚡ RATING & REVIEW — FIRESTORE EDITION
         function getProductReviews(productId) {
-            const allReviews = JSON.parse(localStorage.getItem('burqa_reviews')) || {};
-            return allReviews[productId] || [];
+            if (!window.reviewsCache) return [];
+            return window.reviewsCache[productId] || [];
         }
 
-        function saveProductReview(productId, review) {
-            const allReviews = JSON.parse(localStorage.getItem('burqa_reviews')) || {};
-            if (!allReviews[productId]) allReviews[productId] = [];
-            allReviews[productId].unshift(review);
-            localStorage.setItem('burqa_reviews', JSON.stringify(allReviews));
+        async function saveProductReviewToFirestore(productId, review) {
+            if (!window.db || !window.fbAddDoc || !window.fbCollection) {
+                throw new Error('Firebase not ready');
+            }
+            const docRef = await window.fbAddDoc(window.fbCollection(window.db, "reviews"), {
+                productId: productId,
+                name: review.name,
+                rating: review.rating,
+                text: review.text,
+                date: new Date().toISOString(),
+                createdAt: new Date().toISOString()
+            });
+            // Cache-এ যোগ করুন সাথে সাথে দেখানোর জন্য
+            if (!window.reviewsCache) window.reviewsCache = {};
+            if (!window.reviewsCache[productId]) window.reviewsCache[productId] = [];
+            window.reviewsCache[productId].unshift({
+                id: docRef.id,
+                productId: productId,
+                name: review.name,
+                rating: review.rating,
+                text: review.text,
+                date: new Date().toISOString()
+            });
+            return docRef;
         }
 
         function calculateRatingStats(productId) {
@@ -2294,8 +2373,9 @@
             const distribution = {5:0,4:0,3:0,2:0,1:0};
             let sum = 0;
             reviews.forEach(r => {
-                sum += r.rating;
-                if (distribution[r.rating] !== undefined) distribution[r.rating]++;
+                const rt = parseInt(r.rating) || 0;
+                sum += rt;
+                if (distribution[rt] !== undefined) distribution[rt]++;
             });
             return {
                 average: (sum / reviews.length).toFixed(1),
@@ -2325,25 +2405,45 @@
             });
         }
 
-        function submitReview() {
+        // ⚡ SUBMIT REVIEW TO FIRESTORE
+        async function submitReview() {
             if (!currentProductId) return;
+            if (isSubmittingReview) return;
+
             const nameInput = document.getElementById('reviewer-name');
             const textInput = document.getElementById('reviewer-text');
+            const submitBtn = document.getElementById('submit-review-btn');
             const name = nameInput ? nameInput.value.trim() : '';
             const text = textInput ? textInput.value.trim() : '';
 
             if (currentRating === 0) { showToast('⚠️ অনুগ্রহ করে ⭐ rating দিন'); return; }
             if (!name) { showToast('⚠️ আপনার নাম লিখুন'); return; }
 
-            saveProductReview(currentProductId, {
-                name: name,
-                rating: currentRating,
-                text: text || '(no comment)',
-                date: new Date().toISOString()
-            });
-            showToast('✅ ধন্যবাদ! আপনার review যোগ হয়েছে');
-            currentRating = 0;
-            openProductDetails(currentProductId);
+            isSubmittingReview = true;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            }
+
+            try {
+                await saveProductReviewToFirestore(currentProductId, {
+                    name: name,
+                    rating: currentRating,
+                    text: text || '(no comment)'
+                });
+                showToast('✅ ধন্যবাদ! আপনার review যোগ হয়েছে');
+                currentRating = 0;
+                isSubmittingReview = false;
+                openProductDetails(currentProductId);
+            } catch (err) {
+                console.error('Review save error:', err);
+                showToast('❌ Review পাঠানো যায়নি। আবার চেষ্টা করুন।');
+                isSubmittingReview = false;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
+                }
+            }
         }
 
         function formatReviewDate(isoDate) {
@@ -2371,11 +2471,11 @@
             if (reviews.length === 0) {
                 reviewsHtml = '<p style="text-align:center; color:var(--text-muted); font-size:13px; padding:15px;">এখনো কোনো review নেই। প্রথম review আপনি দিন! 🌟</p>';
             } else {
-                reviews.slice(0, 5).forEach(r => {
+                reviews.slice(0, 10).forEach(r => {
                     reviewsHtml += `<div class="review-card">
                         <div class="review-header">
-                            <span class="review-name">${r.name}</span>
-                            <span class="review-stars">${renderStars(r.rating)}</span>
+                            <span class="review-name">${r.name} <span class="verified-badge">✓ Verified</span></span>
+                            <span class="review-stars">${renderStars(parseInt(r.rating) || 0)}</span>
                         </div>
                         <p class="review-text">${r.text}</p>
                         <p class="review-date">${formatReviewDate(r.date)}</p>
@@ -2403,14 +2503,15 @@
                         <i class="fas fa-star star" onclick="setRating(5)"></i>
                     </div>
                     <input type="text" class="review-input" id="reviewer-name" placeholder="Your name *" maxlength="40">
-                    <textarea class="review-textarea" id="reviewer-text" placeholder="Your review (optional)" rows="2" maxlength="200"></textarea>
-                    <button class="submit-review-btn" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Submit Review</button>
+                    <textarea class="review-textarea" id="reviewer-text" placeholder="Your review (optional)" rows="2" maxlength="300"></textarea>
+                    <button class="submit-review-btn" id="submit-review-btn" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Submit Review</button>
                 </div>
 
                 <div class="review-list">${reviewsHtml}</div>
             `;
         }
 
+        // RELATED PRODUCTS
         function renderRelatedProducts(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return '';
@@ -2451,6 +2552,7 @@
             return html;
         }
 
+        // URL ROUTING
         function updateURL(tabName, productId) {
             let url = window.location.pathname;
             if (tabName === 'home') {
@@ -2479,6 +2581,7 @@
             }
         }
 
+        // SIDEBAR & THEME
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const openSidebar = document.getElementById('openSidebar');
@@ -2537,7 +2640,7 @@
             if (progress) progress.style.width = '0%';
         }
 
-        // ⚡ RENDER PRODUCTS — with Out of Stock
+        // RENDER PRODUCTS
         function renderProducts(itemsToRender) {
             const gridContainer = document.getElementById('product-grid-container');
             if (!gridContainer) return;
@@ -2614,7 +2717,7 @@
             showToast('অনুগ্রহ করে Size ও Color নির্বাচন করুন');
         }
 
-        // ⚡ PRODUCT DETAILS — with Out of Stock
+        // PRODUCT DETAILS
         function openProductDetails(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
@@ -2623,6 +2726,7 @@
             selectedSize = null;
             selectedColor = null;
             currentRating = 0;
+            isSubmittingReview = false;
 
             const isOOS = (product.stock === 0);
             const hasSizes = product.sizes && product.sizes.length > 0;
@@ -2673,7 +2777,6 @@
                 </div>`;
             }
 
-            // ⚡ STOCK STATUS LINE
             let stockLineHtml = '';
             if (isOOS) {
                 stockLineHtml = `<div style="margin-top: 10px; padding: 10px 15px; background: rgba(239,68,68,.15); border: 1px solid #ef4444; border-radius: 8px; color: #fca5a5; font-size: 13px; font-weight: 600;"><i class="fas fa-times-circle"></i> এই প্রোডাক্টটি বর্তমানে Stock Out! খুব শীঘ্রই আবার পাওয়া যাবে।</div>`;
@@ -2847,6 +2950,7 @@
             switchTab('shop');
         }
 
+        // CART UI
         function showToast(message) {
             const toast = document.getElementById('custom-toast');
             const toastMsg = document.getElementById('toast-message');
@@ -3089,6 +3193,7 @@
             }
         }
 
+        // SUBMIT ORDER
         async function submitOrder(event) {
             event.preventDefault();
             
@@ -3237,6 +3342,7 @@
             }, 1500);
         }
 
+        // ORDER ID GENERATOR
         function generateOrderId() {
             const now = new Date();
             const year = now.getFullYear();
@@ -3257,6 +3363,7 @@
             return 'BQ-' + dateStr + '-' + String(counter).padStart(4, '0');
         }
 
+        // ESC KEY
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeMiniCart();
@@ -3265,6 +3372,7 @@
             }
         });
 
+        // INIT
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             setTimeout(handleInitialURL, 2500);
