@@ -85,11 +85,19 @@
                         safePrice = 'Coming Soon';
                     }
 
+                    // ⚡ STOCK SAFE
+                    let safeStock = 1;
+                    if (data.stock !== undefined && data.stock !== null) {
+                        safeStock = parseInt(data.stock);
+                        if (isNaN(safeStock) || safeStock < 0) safeStock = 0;
+                    }
+
                     products.push({
                         id: parseInt(data.id) || Math.floor(Math.random() * 100000),
                         name: data.name || 'Unnamed Product',
                         category: data.category || 'Uncategorized',
                         price: safePrice,
+                        stock: safeStock,
                         image: mainImage,
                         badge: data.badge || null,
                         badgeText: data.badgeText || null,
@@ -151,6 +159,9 @@
             --border-color: rgba(223, 177, 91, 0.2);
             --font-heading: 'Playfair Display', serif;
             --font-body: 'Poppins', sans-serif;
+            --ok-color: #22c55e;
+            --warn-color: #f59e0b;
+            --bad-color: #ef4444;
         }
 
         [data-theme="light"] {
@@ -258,6 +269,50 @@
         .product-badge.sale { background: linear-gradient(135deg, #ff007f, #d6006b); }
         .product-badge.hot { background: linear-gradient(135deg, #ff6b00, #d94f00); }
         .product-badge.soldout { background: linear-gradient(135deg, #666, #333); }
+
+        /* ⚡ OUT OF STOCK OVERLAY */
+        .out-of-stock-badge {
+            position: absolute; top: 12px; left: 12px;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 10px; font-weight: 800;
+            letter-spacing: 0.8px; text-transform: uppercase;
+            z-index: 7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #fff;
+        }
+        .out-of-stock-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .out-of-stock-overlay span {
+            color: #fff;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            transform: rotate(-8deg);
+        }
+        .product-card.out-of-stock { opacity: 0.85; }
+        .product-card.out-of-stock .add-to-cart-grid-btn {
+            background: #666 !important;
+            cursor: not-allowed !important;
+        }
+
+        /* ⚡ LOW STOCK HINT */
+        .low-stock-hint {
+            font-size: 10px;
+            color: var(--warn-color);
+            font-weight: 700;
+            margin-top: 3px;
+            display: flex; align-items: center; gap: 4px;
+        }
 
         .product-rating {
             display: flex; align-items: center; gap: 4px;
@@ -370,7 +425,7 @@
             color: var(--text-color);
             display: flex; align-items: center; justify-content: center;
             font-size: 15px; cursor: pointer;
-            z-index: 5;
+            z-index: 6;
         }
         .wishlist-btn:hover { border-color: var(--gold-color); color: var(--gold-color); }
         .wishlist-btn.active { background: #ff007f; border-color: #ff007f; color: #fff; }
@@ -388,7 +443,6 @@
         }
         .share-btn:hover { border-color: var(--gold-color); color: var(--gold-color); }
 
-        /* ⚡ CATEGORY FILTER BAR — Shop Page */
         .category-filter-bar {
             display: flex;
             gap: 10px;
@@ -1478,7 +1532,6 @@
         <h2 id="shop-title" style="margin-bottom: 5px;">Shop All Collections</h2>
         <p id="shop-desc" style="color: var(--text-muted); margin-bottom: 15px;">Explore our exclusive range of premium hijabs, burqas, and abayas.</p>
 
-        <!-- ⚡ CATEGORY FILTER BAR (NEW) -->
         <div class="category-filter-bar" id="category-filter-bar">
             <button class="filter-chip active" data-cat="all" onclick="filterCategory('all')">
                 <i class="fas fa-th-large"></i> All <span class="count" id="count-all">0</span>
@@ -1498,7 +1551,7 @@
             <!-- Dynamic Products -->
         </div>
     </div>
-<div id="product-details-section" class="page-section">
+    <div id="product-details-section" class="page-section">
         <div class="product-details-container" id="product-details-content">
         </div>
     </div>
@@ -1921,7 +1974,6 @@
   </div>
 </div>
     <script>
-        // URL EXTRACTOR
         function extractUrl(str) {
             if (!str || typeof str !== 'string') return '';
             const trimmed = str.trim();
@@ -1933,7 +1985,6 @@
             return '';
         }
 
-        // GLOBAL VARIABLES
         let productsData = [];
         let cart = JSON.parse(localStorage.getItem('burqa_cart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('burqa_wishlist')) || [];
@@ -1944,7 +1995,6 @@
         let currentShareProduct = null;
         let toastTimeout;
 
-        // UPDATE PRODUCTS DATA
         window.updateProductsData = function(firebaseProducts) {
             if (!Array.isArray(firebaseProducts)) return;
 
@@ -1977,11 +2027,19 @@
                     safePrice = 'Coming Soon';
                 }
 
+                // ⚡ STOCK SAFE
+                let safeStock = 1;
+                if (p.stock !== undefined && p.stock !== null) {
+                    safeStock = parseInt(p.stock);
+                    if (isNaN(safeStock) || safeStock < 0) safeStock = 0;
+                }
+
                 return {
                     id: parseInt(p.id) || Math.floor(Math.random() * 100000),
                     name: p.name || 'Unnamed Product',
                     category: p.category || 'Uncategorized',
                     price: safePrice,
+                    stock: safeStock,
                     image: mainImage,
                     badge: p.badge || null,
                     badgeText: p.badgeText || null,
@@ -1998,7 +2056,6 @@
             updateFilterCounts();
         };
 
-        // CATEGORY FILTER
         function filterCategory(categoryName) {
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.classList.remove('active');
@@ -2029,7 +2086,6 @@
             updateFilterCounts();
         }
 
-        // UPDATE FILTER COUNTS
         function updateFilterCounts() {
             if (!Array.isArray(productsData)) return;
             
@@ -2045,7 +2101,6 @@
             if (el('count-abaya')) el('count-abaya').textContent = abaya;
         }
 
-        // MINI CART
         function openMiniCart() {
             renderMiniCart();
             document.getElementById('mini-cart-overlay').classList.add('active');
@@ -2112,7 +2167,6 @@
             subtotalEl.textContent = '৳ ' + subtotal;
         }
 
-        // NEWSLETTER
         function subscribeNewsletter(event) {
             event.preventDefault();
             const emailInput = document.getElementById('newsletter-email');
@@ -2133,7 +2187,6 @@
             emailInput.value = '';
         }
 
-        // SOCIAL PLACEHOLDER
         function socialPlaceholder(event, platform) {
             event.preventDefault();
             showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!');
@@ -2141,7 +2194,6 @@
 
         document.body.classList.add('content-ready');
 
-        // SCROLL HANDLER
         let scrollTick = false;
         window.addEventListener('scroll', () => {
             if (scrollTick) return;
@@ -2174,7 +2226,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // WISHLIST
         function toggleWishlist(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const idx = wishlist.indexOf(productId);
@@ -2193,7 +2244,6 @@
             });
         }
 
-        // SHARE
         function openShareModal(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const product = productsData.find(p => p.id === productId);
@@ -2226,7 +2276,6 @@
             }).catch(() => showToast('❌ কপি করা যায়নি'));
         }
 
-        // RATING & REVIEW
         function getProductReviews(productId) {
             const allReviews = JSON.parse(localStorage.getItem('burqa_reviews')) || {};
             return allReviews[productId] || [];
@@ -2362,7 +2411,6 @@
             `;
         }
 
-        // RELATED PRODUCTS
         function renderRelatedProducts(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return '';
@@ -2382,8 +2430,10 @@
             related.forEach(prod => {
                 let priceDisplay = (typeof prod.price === 'number') ? ('৳ ' + prod.price) : prod.price;
                 const stats = calculateRatingStats(prod.id);
-                html += `<div class="product-card" onclick="openProductDetails(${prod.id})">
+                const isOOS = (prod.stock === 0);
+                html += `<div class="product-card ${isOOS ? 'out-of-stock' : ''}" onclick="openProductDetails(${prod.id})">
                     <div class="product-img-box">
+                        ${isOOS ? '<span class="out-of-stock-badge">Out of Stock</span>' : ''}
                         <img src="${prod.image}" alt="${prod.name}" loading="lazy" decoding="async" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
                     </div>
                     <div class="product-info">
@@ -2401,7 +2451,6 @@
             return html;
         }
 
-        // URL ROUTING
         function updateURL(tabName, productId) {
             let url = window.location.pathname;
             if (tabName === 'home') {
@@ -2430,7 +2479,6 @@
             }
         }
 
-        // SIDEBAR & THEME
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const openSidebar = document.getElementById('openSidebar');
@@ -2489,7 +2537,7 @@
             if (progress) progress.style.width = '0%';
         }
 
-        // RENDER PRODUCTS
+        // ⚡ RENDER PRODUCTS — with Out of Stock
         function renderProducts(itemsToRender) {
             const gridContainer = document.getElementById('product-grid-container');
             if (!gridContainer) return;
@@ -2504,9 +2552,13 @@
                 let priceDisplay = (typeof prod.price === 'number') ? ('৳ ' + prod.price) : prod.price;
                 const isWishlisted = wishlist.includes(prod.id);
                 const stats = calculateRatingStats(prod.id);
-                
+                const isOOS = (prod.stock === 0);
+                const isLow = (!isOOS && prod.stock !== undefined && prod.stock > 0 && prod.stock <= 5);
+
                 let badgeHtml = '';
-                if (prod.badge) {
+                if (isOOS) {
+                    badgeHtml = `<span class="product-badge soldout">SOLD OUT</span>`;
+                } else if (prod.badge) {
                     badgeHtml = `<span class="product-badge ${prod.badge}">${prod.badgeText || prod.badge.toUpperCase()}</span>`;
                 }
 
@@ -2518,10 +2570,16 @@
                     </div>`;
                 }
 
+                let lowStockHtml = '';
+                if (isLow) {
+                    lowStockHtml = `<div class="low-stock-hint"><i class="fas fa-fire"></i> মাত্র ${prod.stock}টি বাকি!</div>`;
+                }
+
                 html += `
-                    <div class="product-card" onclick="openProductDetails(${prod.id})">
+                    <div class="product-card ${isOOS ? 'out-of-stock' : ''}" onclick="openProductDetails(${prod.id})">
                         <div class="product-img-box">
                             ${badgeHtml}
+                            ${isOOS ? '<div class="out-of-stock-overlay"><span>Out of Stock</span></div>' : ''}
                             <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${prod.id}" onclick="toggleWishlist(${prod.id}, event)" title="Add to Wishlist">
                                 <i class="fas fa-heart"></i>
                             </button>
@@ -2531,9 +2589,12 @@
                             <span class="product-category-tag">${prod.category}</span>
                             <div class="product-title">${prod.name}</div>
                             ${ratingHtml}
+                            ${lowStockHtml}
                             <div class="product-price-row">
                                 <span class="product-price">${priceDisplay}</span>
-                                <button class="add-to-cart-grid-btn" onclick="event.stopPropagation(); quickAddToCart(${prod.id})"><i class="fas fa-shopping-bag"></i> Add</button>
+                                <button class="add-to-cart-grid-btn" onclick="event.stopPropagation(); quickAddToCart(${prod.id})" ${isOOS ? 'disabled' : ''}>
+                                    ${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -2543,11 +2604,17 @@
         }
 
         function quickAddToCart(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+            if (product.stock === 0) {
+                showToast('❌ এই প্রোডাক্টটি স্টক আউট!');
+                return;
+            }
             openProductDetails(productId);
             showToast('অনুগ্রহ করে Size ও Color নির্বাচন করুন');
         }
 
-        // PRODUCT DETAILS
+        // ⚡ PRODUCT DETAILS — with Out of Stock
         function openProductDetails(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
@@ -2557,6 +2624,7 @@
             selectedColor = null;
             currentRating = 0;
 
+            const isOOS = (product.stock === 0);
             const hasSizes = product.sizes && product.sizes.length > 0;
             const hasColors = product.colors && product.colors.length > 0;
 
@@ -2591,7 +2659,9 @@
             const stats = calculateRatingStats(product.id);
             
             let badgeHtml = '';
-            if (product.badge) {
+            if (isOOS) {
+                badgeHtml = `<span class="product-badge soldout" style="position: static; display: inline-block; margin-left: 8px;">SOLD OUT</span>`;
+            } else if (product.badge) {
                 badgeHtml = `<span class="product-badge ${product.badge}" style="position: static; display: inline-block; margin-left: 8px;">${product.badgeText || product.badge.toUpperCase()}</span>`;
             }
 
@@ -2601,6 +2671,14 @@
                     <span class="stars" style="font-size: 14px;">${renderStars(parseFloat(stats.average))}</span>
                     <span class="review-count" style="font-size: 12px;">${stats.average} (${stats.total} review${stats.total !== 1 ? 's' : ''})</span>
                 </div>`;
+            }
+
+            // ⚡ STOCK STATUS LINE
+            let stockLineHtml = '';
+            if (isOOS) {
+                stockLineHtml = `<div style="margin-top: 10px; padding: 10px 15px; background: rgba(239,68,68,.15); border: 1px solid #ef4444; border-radius: 8px; color: #fca5a5; font-size: 13px; font-weight: 600;"><i class="fas fa-times-circle"></i> এই প্রোডাক্টটি বর্তমানে Stock Out! খুব শীঘ্রই আবার পাওয়া যাবে।</div>`;
+            } else if (product.stock !== undefined && product.stock > 0 && product.stock <= 5) {
+                stockLineHtml = `<div style="margin-top: 10px; padding: 10px 15px; background: rgba(245,158,11,.15); border: 1px solid #f59e0b; border-radius: 8px; color: #fcd34d; font-size: 13px; font-weight: 600;"><i class="fas fa-fire"></i> দ্রুত অর্ডার করুন! মাত্র ${product.stock}টি স্টকে আছে।</div>`;
             }
 
             const ratingSectionHtml = renderRatingSection(product.id);
@@ -2616,6 +2694,7 @@
                 <div class="details-title">${product.name} ${badgeHtml}</div>
                 ${ratingLineHtml}
                 <div class="details-price" style="margin-top: 10px;">${priceDisplay}</div>
+                ${stockLineHtml}
 
                 ${sizeHtml}
                 ${colorHtml}
@@ -2623,7 +2702,10 @@
                 <div class="selection-warning" id="selection-warning">⚠️ অনুগ্রহ করে Size এবং Color নির্বাচন করুন</div>
 
                 <div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                    ${isOOS 
+                        ? `<button disabled style="flex: 1; min-width: 180px; background: #666; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: not-allowed;"><i class="fas fa-ban"></i> Out of Stock</button>`
+                        : `<button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>`
+                    }
                     <button onclick="toggleWishlist(${product.id}, event)" class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" style="position: static; width: 50px; height: 50px; background: ${isWishlisted ? '#ff007f' : 'var(--bg-color)'}; border: 1.5px solid ${isWishlisted ? '#ff007f' : 'var(--border-color)'}; color: ${isWishlisted ? '#fff' : 'var(--text-color)'}; border-radius: 8px; font-size: 18px;">
                         <i class="fas fa-heart"></i>
                     </button>
@@ -2688,6 +2770,7 @@
             if (!currentProductId) return;
             const product = productsData.find(p => p.id === currentProductId);
             if (!product) return;
+            if (product.stock === 0) { showToast('❌ এই প্রোডাক্টটি স্টক আউট!'); return; }
 
             const hasSizes = product.sizes && product.sizes.length > 0;
             const hasColors = product.colors && product.colors.length > 0;
@@ -2764,7 +2847,6 @@
             switchTab('shop');
         }
 
-        // CART UI
         function showToast(message) {
             const toast = document.getElementById('custom-toast');
             const toastMsg = document.getElementById('toast-message');
@@ -3007,7 +3089,6 @@
             }
         }
 
-        // SUBMIT ORDER
         async function submitOrder(event) {
             event.preventDefault();
             
@@ -3156,7 +3237,6 @@
             }, 1500);
         }
 
-        // ORDER ID GENERATOR
         function generateOrderId() {
             const now = new Date();
             const year = now.getFullYear();
@@ -3177,7 +3257,6 @@
             return 'BQ-' + dateStr + '-' + String(counter).padStart(4, '0');
         }
 
-        // ESC KEY
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeMiniCart();
@@ -3186,7 +3265,6 @@
             }
         });
 
-        // INIT
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             setTimeout(handleInitialURL, 2500);
