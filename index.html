@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -61,6 +60,7 @@
         window.fbOrderBy = orderBy;
 
         window.reviewsCache = {};
+        window.couponsCache = [];
 
         window.loadReviewsFromFirebase = async function() {
             try {
@@ -74,11 +74,26 @@
                     if (!window.reviewsCache[pid]) window.reviewsCache[pid] = [];
                     window.reviewsCache[pid].push({ id: doc.id, ...data });
                 });
-                console.log('✅ Reviews loaded:', Object.keys(window.reviewsCache).length, 'products');
+                console.log('✅ Reviews loaded');
                 return window.reviewsCache;
             } catch (err) {
-                console.error('❌ Reviews load error:', err);
+                console.error('❌ Reviews error:', err);
                 return {};
+            }
+        };
+
+        window.loadCouponsFromFirebase = async function() {
+            try {
+                const snap = await getDocs(collection(db, "coupons"));
+                window.couponsCache = [];
+                snap.forEach(doc => {
+                    window.couponsCache.push({ id: doc.id, ...doc.data() });
+                });
+                console.log('✅ Coupons loaded:', window.couponsCache.length);
+                return window.couponsCache;
+            } catch (err) {
+                console.error('❌ Coupons error:', err);
+                return [];
             }
         };
 
@@ -150,6 +165,9 @@
             setTimeout(async function() {
                 if (typeof window.loadReviewsFromFirebase === 'function') {
                     await window.loadReviewsFromFirebase();
+                }
+                if (typeof window.loadCouponsFromFirebase === 'function') {
+                    await window.loadCouponsFromFirebase();
                 }
                 if (typeof window.loadProductsFromFirebase === 'function') {
                     window.loadProductsFromFirebase();
@@ -1149,6 +1167,148 @@
         }
         .remove-item-btn:hover { opacity: 0.85; }
 
+        /* ⚡ COUPON INPUT STYLES */
+        .coupon-box {
+            background: linear-gradient(135deg, rgba(255,0,127,.08) 0%, rgba(121,40,202,.05) 100%);
+            border: 1px dashed rgba(255,0,127,.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .coupon-box-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ff6bb5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .coupon-input-row {
+            display: flex;
+            gap: 8px;
+        }
+        .coupon-input-row input {
+            flex: 1;
+            padding: 11px 14px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .coupon-input-row input:focus { border-color: #ff007f; }
+        .coupon-apply-btn {
+            background: linear-gradient(135deg, #ff007f, #7928ca);
+            color: #fff;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .coupon-apply-btn:hover { opacity: 0.9; }
+        .coupon-apply-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .coupon-msg {
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 600;
+            display: none;
+        }
+        .coupon-msg.show { display: block; }
+        .coupon-msg.success { color: var(--ok-color); }
+        .coupon-msg.error { color: var(--bad-color); }
+
+        .coupon-applied {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 15px;
+            background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(34,197,94,.05));
+            border: 1.5px solid var(--ok-color);
+            border-radius: 8px;
+        }
+        .coupon-applied-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+        .coupon-applied-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--ok-color);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .coupon-applied-text {
+            font-size: 13px;
+            color: var(--text-color);
+            line-height: 1.3;
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+        .coupon-applied-text strong {
+            color: var(--ok-color);
+            font-weight: 700;
+        }
+        .coupon-remove-btn {
+            background: transparent;
+            border: 1px solid var(--bad-color);
+            color: var(--bad-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .coupon-remove-btn:hover {
+            background: var(--bad-color);
+            color: #fff;
+        }
+
+        .discount-row {
+            color: var(--ok-color) !important;
+            font-weight: 700 !important;
+        }
+        .discount-row span:last-child {
+            color: var(--ok-color) !important;
+        }
+
+        .available-coupons-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-style: italic;
+        }
+        .available-coupons-hint i {
+            color: #ff6bb5;
+        }
+
         .site-footer {
             background-color: var(--secondary-color);
             border-top: 1px solid var(--border-color);
@@ -2034,6 +2194,11 @@
         let toastTimeout;
         let isSubmittingReview = false;
         let isSubscribing = false;
+        let isApplyingCoupon = false;
+
+        // ⚡ COUPON STATE
+        let appliedCoupon = null;   // {code, type, value, discountAmount}
+        let discountAmount = 0;
 
         window.updateProductsData = function(firebaseProducts) {
             if (!Array.isArray(firebaseProducts)) return;
@@ -2206,7 +2371,7 @@
             subtotalEl.textContent = '৳ ' + subtotal;
         }
 
-        // ⚡ NEWSLETTER — FIRESTORE (FIXED)
+        // NEWSLETTER
         async function subscribeNewsletter(event) {
             event.preventDefault();
             if (isSubscribing) return;
@@ -2231,7 +2396,6 @@
                     throw new Error('Firebase not ready. Please refresh the page.');
                 }
 
-                // ডুপ্লিকেট চেক
                 const snap = await window.fbGetDocs(window.fbCollection(window.db, 'newsletter'));
                 let exists = false;
                 snap.forEach(d => {
@@ -2247,7 +2411,6 @@
                     return;
                 }
 
-                // Firestore-এ সেভ
                 await window.fbAddDoc(window.fbCollection(window.db, 'newsletter'), {
                     email: email,
                     date: new Date().toISOString(),
@@ -3023,7 +3186,8 @@
             });
             const shippingSelect = document.getElementById('shipping-select');
             const deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
-            const totalAmount = subtotal + deliveryCharge;
+            const finalSubtotal = subtotal - discountAmount;
+            const totalAmount = finalSubtotal + deliveryCharge;
 
             if (selectedPayment === 'Cash on Delivery') {
                 if (codBox) {
@@ -3046,6 +3210,143 @@
             }
         }
 
+        // ⚡ CALCULATE CART SUBTOTAL
+        function calculateCartSubtotal() {
+            let subtotal = 0;
+            let hasPriceComingSoon = false;
+            cart.forEach(item => {
+                if (typeof item.price === 'number') subtotal += (item.price * item.quantity);
+                else hasPriceComingSoon = true;
+            });
+            return { subtotal, hasPriceComingSoon };
+        }
+
+        // ⚡ CALCULATE DISCOUNT
+        function calculateDiscount(subtotal) {
+            if (!appliedCoupon) return 0;
+            let disc = 0;
+            if (appliedCoupon.type === 'percentage') {
+                disc = Math.round((subtotal * appliedCoupon.value) / 100);
+            } else {
+                disc = appliedCoupon.value;
+            }
+            if (disc > subtotal) disc = subtotal;
+            return disc;
+        }
+
+        // ⚡ APPLY COUPON
+        async function applyCoupon() {
+            if (isApplyingCoupon) return;
+            const input = document.getElementById('coupon-input');
+            const msgBox = document.getElementById('coupon-msg');
+            const btn = document.getElementById('coupon-apply-btn');
+            if (!input || !msgBox) return;
+
+            const code = input.value.trim().toUpperCase();
+
+            // Message helper
+            const showCouponMsg = (text, type) => {
+                msgBox.textContent = text;
+                msgBox.className = 'coupon-msg show ' + type;
+            };
+
+            if (!code) {
+                showCouponMsg('⚠️ কুপন কোড লিখুন', 'error');
+                return;
+            }
+
+            isApplyingCoupon = true;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
+
+            try {
+                // Load coupons if not loaded
+                if (!window.couponsCache || window.couponsCache.length === 0) {
+                    if (typeof window.loadCouponsFromFirebase === 'function') {
+                        await window.loadCouponsFromFirebase();
+                    }
+                }
+
+                const coupons = window.couponsCache || [];
+                const found = coupons.find(c => (c.code || '').toUpperCase() === code);
+
+                if (!found) {
+                    showCouponMsg('❌ এই কোডে কোনো কুপন পাওয়া যায়নি', 'error');
+                    resetCouponBtn(btn);
+                    isApplyingCoupon = false;
+                    return;
+                }
+
+                // Active check
+                if (found.active === false) {
+                    showCouponMsg('⏸️ এই কুপনটি বন্ধ আছে', 'error');
+                    resetCouponBtn(btn);
+                    isApplyingCoupon = false;
+                    return;
+                }
+
+                // Expiry check
+                if (found.expiry) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const exp = new Date(found.expiry);
+                    if (exp < today) {
+                        showCouponMsg('⌛ এই কুপনের মেয়াদ শেষ হয়ে গেছে', 'error');
+                        resetCouponBtn(btn);
+                        isApplyingCoupon = false;
+                        return;
+                    }
+                }
+
+                // Min order check
+                const { subtotal } = calculateCartSubtotal();
+                const minOrder = parseInt(found.minOrder) || 0;
+                if (subtotal < minOrder) {
+                    showCouponMsg('🛒 ন্যূনতম ৳' + minOrder + ' অর্ডারে কুপনটি ব্যবহার করা যাবে', 'error');
+                    resetCouponBtn(btn);
+                    isApplyingCoupon = false;
+                    return;
+                }
+
+                // Apply
+                appliedCoupon = {
+                    code: found.code,
+                    type: found.type,
+                    value: parseInt(found.value) || 0
+                };
+                discountAmount = calculateDiscount(subtotal);
+
+                showCouponMsg('✅ কুপন সফলভাবে প্রয়োগ হয়েছে!', 'success');
+
+                // Re-render cart
+                isApplyingCoupon = false;
+                updateCartUI();
+            } catch (err) {
+                console.error('Coupon apply error:', err);
+                showCouponMsg('❌ কুপন যাচাই করা যায়নি। আবার চেষ্টা করুন।', 'error');
+                resetCouponBtn(btn);
+                isApplyingCoupon = false;
+            }
+        }
+
+        function resetCouponBtn(btn) {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Apply';
+            }
+        }
+
+        // ⚡ REMOVE COUPON
+        function removeCoupon() {
+            appliedCoupon = null;
+            discountAmount = 0;
+            updateCartUI();
+            showToast('🗑️ কুপন সরানো হয়েছে');
+        }
+
+        // ⚡ UPDATE CART UI (with coupon)
         function updateCartUI() {
             const cartCount = document.getElementById('cart-count');
             const cartContainer = document.getElementById('cart-items-container');
@@ -3055,152 +3356,204 @@
             cartCount.textContent = totalItemsCount;
 
             if (cart.length === 0) {
+                appliedCoupon = null;
+                discountAmount = 0;
                 cartContainer.innerHTML = `
                     <div style="text-align: center; padding: 30px 0;">
                         <i class="fas fa-shopping-cart" style="font-size: 40px; color: var(--gold-color); margin-bottom: 15px;"></i>
                         <p style="color: var(--text-muted); font-size: 15px;">Your cart is currently empty!</p>
                     </div>
                 `;
-            } else {
-                let subtotal = 0;
-                let hasPriceComingSoon = false;
-                cart.forEach(item => {
-                    if (typeof item.price === 'number') subtotal += (item.price * item.quantity);
-                    else hasPriceComingSoon = true;
-                });
+                return;
+            }
 
-                let shippingSelect = document.getElementById('shipping-select');
-                let deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
-                let totalAmount = subtotal + deliveryCharge;
+            const { subtotal, hasPriceComingSoon } = calculateCartSubtotal();
+            // Recalculate discount on every render
+            if (appliedCoupon) discountAmount = calculateDiscount(subtotal);
 
-                let html = `<h3 style="color: var(--gold-color); margin-bottom: 15px;">Selected Items</h3>
-                <ul style="list-style: none; padding: 0; margin-bottom: 20px;">`;
+            let shippingSelect = document.getElementById('shipping-select');
+            let deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
+            let finalSubtotal = subtotal - discountAmount;
+            if (finalSubtotal < 0) finalSubtotal = 0;
+            let totalAmount = finalSubtotal + deliveryCharge;
+
+            let html = `<h3 style="color: var(--gold-color); margin-bottom: 15px;">Selected Items</h3>
+            <ul style="list-style: none; padding: 0; margin-bottom: 20px;">`;
+            
+            cart.forEach((item, index) => {
+                let priceText = (typeof item.price === 'number') 
+                    ? '৳ ' + item.price + ' × ' + item.quantity + ' = <strong>৳ ' + (item.price * item.quantity) + '</strong>'
+                    : '<span style="color:#ffb15b;">Price Coming Soon</span>';
                 
-                cart.forEach((item, index) => {
-                    let priceText = (typeof item.price === 'number') 
-                        ? '৳ ' + item.price + ' × ' + item.quantity + ' = <strong>৳ ' + (item.price * item.quantity) + '</strong>'
-                        : '<span style="color:#ffb15b;">Price Coming Soon</span>';
-                    
-                    let metaText = '';
-                    if (item.size) metaText += 'Size: ' + item.size;
-                    if (item.color) metaText += (metaText ? ' • ' : '') + 'Color: ' + item.color;
+                let metaText = '';
+                if (item.size) metaText += 'Size: ' + item.size;
+                if (item.color) metaText += (metaText ? ' • ' : '') + 'Color: ' + item.color;
 
-                    html += `<li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; gap: 10px;">
-                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                            <img src="${item.image}" alt="${item.name}" class="cart-item-img" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
-                            <div>
-                                <span style="font-weight: 600;">${item.name}</span>
-                                ${metaText ? '<span class="cart-item-meta">' + metaText + '</span>' : ''}
-                                <span style="color: var(--gold-color); font-size: 13px; display: block; margin-top: 3px;">${priceText}</span>
+                html += `<li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-img" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
+                        <div>
+                            <span style="font-weight: 600;">${item.name}</span>
+                            ${metaText ? '<span class="cart-item-meta">' + metaText + '</span>' : ''}
+                            <span style="color: var(--gold-color); font-size: 13px; display: block; margin-top: 3px;">${priceText}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" onclick="decreaseQty(${index})">-</button>
+                            <span style="font-weight: bold; min-width: 15px; text-align: center;">${item.quantity}</span>
+                            <button type="button" class="qty-btn" onclick="increaseQty(${index})">+</button>
+                        </div>
+                        <button type="button" class="remove-item-btn" onclick="removeFromCart(${index})">Remove</button>
+                    </div>
+                </li>`;
+            });
+
+            html += `</ul>`;
+
+            // ⚡ COUPON BOX
+            html += `<div class="coupon-box">
+                <div class="coupon-box-title"><i class="fas fa-tag"></i> কুপন কোড আছে?</div>`;
+
+            if (appliedCoupon) {
+                const typeText = appliedCoupon.type === 'percentage' 
+                    ? appliedCoupon.value + '%' 
+                    : '৳' + appliedCoupon.value;
+                html += `
+                    <div class="coupon-applied">
+                        <div class="coupon-applied-info">
+                            <div class="coupon-applied-icon"><i class="fas fa-check"></i></div>
+                            <div class="coupon-applied-text">
+                                <strong>${appliedCoupon.code}</strong> প্রয়োগ হয়েছে<br>
+                                <span style="font-size: 11px; opacity: 0.9;">ছাড়: ${typeText} — সাশ্রয় ৳${discountAmount}</span>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="qty-control">
-                                <button type="button" class="qty-btn" onclick="decreaseQty(${index})">-</button>
-                                <span style="font-weight: bold; min-width: 15px; text-align: center;">${item.quantity}</span>
-                                <button type="button" class="qty-btn" onclick="increaseQty(${index})">+</button>
-                            </div>
-                            <button type="button" class="remove-item-btn" onclick="removeFromCart(${index})">Remove</button>
-                        </div>
-                    </li>`;
-                });
+                        <button type="button" class="coupon-remove-btn" onclick="removeCoupon()">
+                            <i class="fas fa-times"></i> Remove
+                        </button>
+                    </div>`;
+            } else {
+                html += `
+                    <div class="coupon-input-row">
+                        <input type="text" id="coupon-input" placeholder="কুপন কোড লিখুন" style="text-transform: uppercase;">
+                        <button type="button" class="coupon-apply-btn" id="coupon-apply-btn" onclick="applyCoupon()">
+                            <i class="fas fa-check"></i> Apply
+                        </button>
+                    </div>
+                    <div class="coupon-msg" id="coupon-msg"></div>
+                    <div class="available-coupons-hint">
+                        <i class="fas fa-info-circle"></i> কুপন কোড না থাকলে অর্ডার করতে সমস্যা নেই
+                    </div>`;
+            }
 
-                html += `</ul>
-                <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                        <span>Subtotal:</span>
-                        <span>৳ ${subtotal}${hasPriceComingSoon ? ' + (কিছু পণ্যের দাম আসবে)' : ''}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                        <span>Delivery Charge:</span>
-                        <span id="display-delivery-charge">৳ ${deliveryCharge}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; color: var(--gold-color); border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 8px;">
-                        <span>Total Amount:</span>
-                        <span id="dynamic-total-amount">৳ ${totalAmount}${hasPriceComingSoon ? ' +' : ''}</span>
-                    </div>
-                    ${hasPriceComingSoon ? '<p style="font-size: 12px; color: #ffb15b; margin-top: 8px; text-align: center;">কিছু পণ্যের দাম শীঘ্রই জানানো হবে।</p>' : ''}
+            html += `</div>`;
+
+            // ⚡ TOTALS
+            html += `
+            <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                    <span>Subtotal:</span>
+                    <span>৳ ${subtotal}${hasPriceComingSoon ? ' + (কিছু পণ্যের দাম আসবে)' : ''}</span>
+                </div>
+                ${appliedCoupon ? `<div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;" class="discount-row">
+                    <span>🎟️ Discount (${appliedCoupon.code}):</span>
+                    <span>- ৳ ${discountAmount}</span>
+                </div>` : ''}
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                    <span>Delivery Charge:</span>
+                    <span id="display-delivery-charge">৳ ${deliveryCharge}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; color: var(--gold-color); border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 8px;">
+                    <span>Total Amount:</span>
+                    <span id="dynamic-total-amount">৳ ${totalAmount}${hasPriceComingSoon ? ' +' : ''}</span>
+                </div>
+                ${hasPriceComingSoon ? '<p style="font-size: 12px; color: #ffb15b; margin-top: 8px; text-align: center;">কিছু পণ্যের দাম শীঘ্রই জানানো হবে।</p>' : ''}
+            </div>
+
+            <h3 style="color: var(--gold-color); margin-bottom: 15px;">Delivery Information</h3>
+            <form id="checkout-form" onsubmit="submitOrder(event)">
+                <div class="form-group"><label>Full Name *</label><input type="text" id="cus-name" required></div>
+                <div class="form-group"><label>Phone Number *</label><input type="tel" id="cus-phone" required></div>
+                <div class="form-group">
+                    <label>Shipping Area (Delivery Charge) *</label>
+                    <select id="shipping-select" required onchange="updateDeliveryCharge()">
+                        <option value="60">Inside Feni (৳60)</option>
+                        <option value="130">Outside Feni (৳130)</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>City *</label><input type="text" id="cus-city" required></div>
+                <div class="form-group"><label>District *</label><input type="text" id="cus-district" required></div>
+                <div class="form-group"><label>Upazila / Thana *</label><input type="text" id="cus-thana" required></div>
+                <div class="form-group"><label>Full Address *</label><input type="text" id="cus-address" required></div>
+                <div class="form-group"><label>Order Notes (Optional)</label><textarea id="cus-notes" rows="2"></textarea></div>
+
+                <h3 style="color: var(--gold-color); margin: 20px 0 10px 0;">Payment Method *</h3>
+                <div class="payment-methods-box">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="Cash on Delivery" onchange="handlePaymentChange()" checked>
+                        <img src="https://i.ibb.co/wNdmjHM2/images-1.png" alt="Cash on Delivery" loading="lazy">
+                        <span>Cash on Delivery (COD)</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="Bkash" onchange="handlePaymentChange()">
+                        <img src="https://i.ibb.co/rGn4KLgk/images.png" alt="bKash" loading="lazy">
+                        <span>bKash</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="Nagad" onchange="handlePaymentChange()">
+                        <img src="https://i.ibb.co/RpnrLg8f/images-1.jpg" alt="Nagad" loading="lazy">
+                        <span>Nagad</span>
+                    </label>
                 </div>
 
-                <h3 style="color: var(--gold-color); margin-bottom: 15px;">Delivery Information</h3>
-                <form id="checkout-form" onsubmit="submitOrder(event)">
-                    <div class="form-group"><label>Full Name *</label><input type="text" id="cus-name" required></div>
-                    <div class="form-group"><label>Phone Number *</label><input type="tel" id="cus-phone" required></div>
-                    <div class="form-group">
-                        <label>Shipping Area (Delivery Charge) *</label>
-                        <select id="shipping-select" required onchange="updateDeliveryCharge()">
-                            <option value="60">Inside Feni (৳60)</option>
-                            <option value="130">Outside Feni (৳130)</option>
-                        </select>
+                <div class="instruction-box" id="cod-instruction-box">
+                    <h4><i class="fas fa-info-circle"></i> ক্যাশ অন ডেলিভারি নির্দেশিকা:</h4>
+                    <p>ডেলিভারি চার্জ অগ্রিম <strong style="color: var(--gold-color);">৳ <span id="cod-amount-text">60</span></strong> প্রদান করতে হবে। পণ্য হাতে পেয়ে, ডেলিভারি ম্যানের সামনে চেক করে বাকি টাকা পরিশোধ করতে পারবেন।</p>
+                    <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 বিকাশ নম্বর (Personal):</div>
+                    <div class="number-row">
+                        <span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span>
+                        <button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button>
                     </div>
-                    <div class="form-group"><label>City *</label><input type="text" id="cus-city" required></div>
-                    <div class="form-group"><label>District *</label><input type="text" id="cus-district" required></div>
-                    <div class="form-group"><label>Upazila / Thana *</label><input type="text" id="cus-thana" required></div>
-                    <div class="form-group"><label>Full Address *</label><input type="text" id="cus-address" required></div>
-                    <div class="form-group"><label>Order Notes (Optional)</label><textarea id="cus-notes" rows="2"></textarea></div>
+                    <div class="form-group" style="margin-top: 15px;"><label>প্রেরকের নম্বর *</label><input type="tel" id="cod-sender-input" placeholder="017xxxxxxxx"></div>
+                    <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="cod-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
+                </div>
 
-                    <h3 style="color: var(--gold-color); margin: 20px 0 10px 0;">Payment Method *</h3>
-                    <div class="payment-methods-box">
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="Cash on Delivery" onchange="handlePaymentChange()" checked>
-                            <img src="https://i.ibb.co/wNdmjHM2/images-1.png" alt="Cash on Delivery" loading="lazy">
-                            <span>Cash on Delivery (COD)</span>
-                        </label>
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="Bkash" onchange="handlePaymentChange()">
-                            <img src="https://i.ibb.co/rGn4KLgk/images.png" alt="bKash" loading="lazy">
-                            <span>bKash</span>
-                        </label>
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="Nagad" onchange="handlePaymentChange()">
-                            <img src="https://i.ibb.co/RpnrLg8f/images-1.jpg" alt="Nagad" loading="lazy">
-                            <span>Nagad</span>
-                        </label>
+                <div class="instruction-box" id="bkash-instruction-box">
+                    <h4><i class="fas fa-shield-alt"></i> বিকাশ পেমেন্ট নির্দেশিকা:</h4>
+                    <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="bkash-amount-text">0</span></strong></p>
+                    <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 বিকাশ নম্বর (Personal):</div>
+                    <div class="number-row">
+                        <span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span>
+                        <button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button>
                     </div>
+                    <div class="form-group" style="margin-top: 15px;"><label>আপনার বিকাশ নম্বর *</label><input type="tel" id="bkash-sender-input" placeholder="017xxxxxxxx"></div>
+                    <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="bkash-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
+                </div>
 
-                    <div class="instruction-box" id="cod-instruction-box">
-                        <h4><i class="fas fa-info-circle"></i> ক্যাশ অন ডেলিভারি নির্দেশিকা:</h4>
-                        <p>ডেলিভারি চার্জ অগ্রিম <strong style="color: var(--gold-color);">৳ <span id="cod-amount-text">60</span></strong> প্রদান করতে হবে। পণ্য হাতে পেয়ে, ডেলিভারি ম্যানের সামনে চেক করে বাকি টাকা পরিশোধ করতে পারবেন।</p>
-                        <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 বিকাশ নম্বর (Personal):</div>
-                        <div class="number-row">
-                            <span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span>
-                            <button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button>
-                        </div>
-                        <div class="form-group" style="margin-top: 15px;"><label>প্রেরকের নম্বর *</label><input type="tel" id="cod-sender-input" placeholder="017xxxxxxxx"></div>
-                        <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="cod-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
+                <div class="instruction-box" id="nagad-instruction-box">
+                    <h4><i class="fas fa-wallet"></i> নগদ পেমেন্ট নির্দেশিকা:</h4>
+                    <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="nagad-amount-text">0</span></strong></p>
+                    <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 নগদ নম্বর (Personal):</div>
+                    <div class="number-row">
+                        <span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span>
+                        <button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'Nagad')"><i class="fas fa-copy"></i> কপি করুন</button>
                     </div>
+                    <div class="form-group" style="margin-top: 15px;"><label>আপনার নগদ নম্বর *</label><input type="tel" id="nagad-sender-input" placeholder="017xxxxxxxx"></div>
+                    <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="nagad-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
+                </div>
 
-                    <div class="instruction-box" id="bkash-instruction-box">
-                        <h4><i class="fas fa-shield-alt"></i> বিকাশ পেমেন্ট নির্দেশিকা:</h4>
-                        <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="bkash-amount-text">0</span></strong></p>
-                        <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 বিকাশ নম্বর (Personal):</div>
-                        <div class="number-row">
-                            <span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span>
-                            <button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button>
-                        </div>
-                        <div class="form-group" style="margin-top: 15px;"><label>আপনার বিকাশ নম্বর *</label><input type="tel" id="bkash-sender-input" placeholder="017xxxxxxxx"></div>
-                        <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="bkash-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
-                    </div>
-
-                    <div class="instruction-box" id="nagad-instruction-box">
-                        <h4><i class="fas fa-wallet"></i> নগদ পেমেন্ট নির্দেশিকা:</h4>
-                        <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="nagad-amount-text">0</span></strong></p>
-                        <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 নগদ নম্বর (Personal):</div>
-                        <div class="number-row">
-                            <span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span>
-                            <button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'Nagad')"><i class="fas fa-copy"></i> কপি করুন</button>
-                        </div>
-                        <div class="form-group" style="margin-top: 15px;"><label>আপনার নগদ নম্বর *</label><input type="tel" id="nagad-sender-input" placeholder="017xxxxxxxx"></div>
-                        <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="nagad-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
-                    </div>
-
-                    <button type="submit" style="margin-top: 25px; width: 100%; background: var(--gold-color); color: #0b0b0d; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;">Place Order</button>
-                </form>`;
+                <button type="submit" style="margin-top: 25px; width: 100%; background: var(--gold-color); color: #0b0b0d; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;">Place Order</button>
+            </form>`;
                 
-                let activeShippingVal = deliveryCharge;
-                cartContainer.innerHTML = html;
-                if (document.getElementById('shipping-select')) document.getElementById('shipping-select').value = activeShippingVal;
-                handlePaymentChange();
+            let activeShippingVal = deliveryCharge;
+            cartContainer.innerHTML = html;
+            if (document.getElementById('shipping-select')) document.getElementById('shipping-select').value = activeShippingVal;
+            handlePaymentChange();
+
+            // Restore coupon message if applied
+            if (appliedCoupon) {
+                const msgBox = document.getElementById('coupon-msg');
+                // Not needed since we show applied box
             }
         }
 
@@ -3238,15 +3591,12 @@
                 if (!senderNumber || !trxId) { alert('Please provide sender number and transaction ID for Nagad payment.'); return; }
             }
 
-            let subtotal = 0;
-            let hasPriceComingSoon = false;
-            cart.forEach(item => {
-                if (typeof item.price === 'number') subtotal += (item.price * item.quantity);
-                else hasPriceComingSoon = true;
-            });
+            const { subtotal, hasPriceComingSoon } = calculateCartSubtotal();
             const shippingSelect = document.getElementById('shipping-select');
             const deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
-            const totalAmount = subtotal + deliveryCharge;
+            const discount = appliedCoupon ? calculateDiscount(subtotal) : 0;
+            const finalSubtotal = Math.max(0, subtotal - discount);
+            const totalAmount = finalSubtotal + deliveryCharge;
             const shippingAreaText = (deliveryCharge === 60) ? 'Inside Feni (৳60)' : 'Outside Feni (৳130)';
 
             const orderId = generateOrderId();
@@ -3275,13 +3625,15 @@
                         subtotal: subtotal,
                         deliveryCharge: deliveryCharge,
                         totalAmount: totalAmount,
+                        couponCode: appliedCoupon ? appliedCoupon.code : null,
+                        discountAmount: discount,
                         paymentMethod: selectedPayment,
                         senderNumber: senderNumber,
                         trxId: trxId,
                         status: 'pending',
                         date: new Date().toISOString()
                     });
-                    console.log('✅ Order saved to Firebase:', orderId);
+                    console.log('✅ Order saved:', orderId);
                 }
             } catch (fbErr) {
                 console.error('Firebase order save error:', fbErr);
@@ -3292,6 +3644,8 @@
                 orderId: orderId, name: name, phone: phone, city: city, district: district,
                 thana: thana, address: address, notes: notes, products: cart,
                 subtotal: subtotal, deliveryCharge: deliveryCharge, totalAmount: totalAmount,
+                couponCode: appliedCoupon ? appliedCoupon.code : null,
+                discountAmount: discount,
                 paymentMethod: selectedPayment, senderNumber: senderNumber, trxId: trxId,
                 date: new Date().toISOString()
             });
@@ -3310,6 +3664,12 @@
             let subtotalText = '৳' + subtotal + (hasPriceComingSoon ? ' + (কিছু আইটেমের দাম আসবে)' : '');
             let totalText = '৳' + totalAmount + (hasPriceComingSoon ? ' +' : '');
 
+            let couponText = '';
+            if (appliedCoupon) {
+                couponText = `• Coupon: ${appliedCoupon.code}%0A` +
+                             `• Discount: -৳${discount}%0A`;
+            }
+
             let whatsappMessage = `👑 *New Order Received - Burqa Bazar* 👑%0A` +
                                   `-----------------------------------%0A` +
                                   `🔖 *Order ID: ${orderId}*%0A` +
@@ -3327,6 +3687,7 @@
                                   `-----------------------------------%0A` +
                                   `💰 *Payment Summary:*%0A` +
                                   `• Subtotal: ${subtotalText}%0A` +
+                                  couponText +
                                   `• Delivery Area: ${shippingAreaText}%0A` +
                                   `• Total Amount: ${totalText}%0A` +
                                   `• Payment Method: ${selectedPayment}%0A` +
@@ -3342,6 +3703,8 @@
             showToast('✅ Order ID: ' + orderId + ' - Redirecting...');
 
             cart = [];
+            appliedCoupon = null;
+            discountAmount = 0;
             localStorage.removeItem('burqa_cart');
             updateCartUI();
             renderMiniCart();
