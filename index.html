@@ -36,9 +36,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
-    <!-- ============================================
-         🔥 FIREBASE — Firestore থেকে প্রোডাক্ট লোড
-         ============================================ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -59,9 +56,6 @@
         window.fbAddDoc = addDoc;
         window.fbCollection = collection;
 
-        // ============================================
-        // PRODUCTS LOAD FROM FIRESTORE
-        // ============================================
         window.loadProductsFromFirebase = async function() {
             try {
                 const querySnapshot = await getDocs(collection(db, "products"));
@@ -70,7 +64,6 @@
                     const data = doc.data();
                     const mainImage = data.image || 'https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png';
 
-                    // Colors safe
                     let safeColors = [];
                     if (Array.isArray(data.colors) && data.colors.length > 0) {
                         safeColors = data.colors.map(function(c) {
@@ -84,7 +77,6 @@
                         safeColors = [{ name: 'Default', image: mainImage }];
                     }
 
-                    // Price safe
                     let safePrice = data.price;
                     if (typeof safePrice === 'string' && !safePrice.toLowerCase().includes('coming')) {
                         const parsed = parseInt(safePrice.replace(/[^0-9]/g, ''));
@@ -121,7 +113,6 @@
             }
         };
 
-        // Start loading after DOM ready
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 if (typeof window.loadProductsFromFirebase === 'function') {
@@ -130,7 +121,6 @@
             }, 300);
         });
     </script>
-    <!-- ========== END FIREBASE ========== -->
     
     <script type="application/ld+json">
     {
@@ -149,7 +139,7 @@
       "priceRange": "৳৳"
     }
     </script>
-        <style>
+    <style>
         :root {
             --primary-color: #dfb15b;
             --gold-color: #dfb15b;
@@ -215,9 +205,6 @@
             z-index: 9999;
             box-shadow: 0 0 12px rgba(223, 177, 91, 0.6);
         }
-
-        #skeleton-loader { display: none !important; }
-        .loader-logo, .loader-text, .loader-dots { display: none !important; }
 
         body.content-ready { animation: pageFadeIn 0.3s ease; }
         @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -401,7 +388,58 @@
         }
         .share-btn:hover { border-color: var(--gold-color); color: var(--gold-color); }
 
-        .ripple-effect { display: none; }
+        /* ⚡ CATEGORY FILTER BAR — Shop Page */
+        .category-filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-color) transparent;
+        }
+        .category-filter-bar::-webkit-scrollbar { height: 5px; }
+        .category-filter-bar::-webkit-scrollbar-track { background: transparent; }
+        .category-filter-bar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        .filter-chip {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-color);
+            padding: 9px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .filter-chip:hover {
+            border-color: var(--gold-color);
+            color: var(--gold-color);
+        }
+        .filter-chip.active {
+            background: var(--gold-color);
+            color: #0b0b0d;
+            border-color: var(--gold-color);
+            box-shadow: 0 4px 15px rgba(223, 177, 91, 0.35);
+        }
+        .filter-chip .count {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .filter-chip.active .count {
+            background: rgba(0, 0, 0, 0.2);
+            color: #0b0b0d;
+        }
 
         #share-modal {
             position: fixed; top: 0; left: 0;
@@ -1282,15 +1320,12 @@
 </head>
 <body>
     
-<!-- Reading Progress Bar -->
 <div id="reading-progress"></div>
 
-<!-- Back to Top Button -->
 <button id="back-to-top" onclick="scrollToTop()" title="Back to Top">
     <i class="fas fa-arrow-up"></i>
 </button>
 
-<!-- Mini Cart Sidebar -->
 <div id="mini-cart-overlay" onclick="closeMiniCart()"></div>
 <div id="mini-cart-sidebar">
     <div class="mini-cart-header">
@@ -1316,13 +1351,11 @@
     </div>
 </div>
 
-<!-- Image Zoom Lightbox Modal -->
 <div id="image-modal" onclick="closeImageModal()">
     <button class="modal-close-btn" onclick="closeImageModal()">&times;</button>
     <img id="modal-zoomed-img" src="" alt="Zoomed Image">
 </div>
 
-<!-- Share Modal -->
 <div id="share-modal" onclick="closeShareModal(event)">
     <div class="share-modal-content" onclick="event.stopPropagation()">
         <h3>🔗 Share This Product</h3>
@@ -1348,7 +1381,6 @@
     </div>
 </div>
 
-<!-- Sidebar Menu -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3 class="brand-title">Burqa Bazaar & Boutiques</h3>
@@ -1373,7 +1405,6 @@
 </div>
 <div class="overlay" id="overlay"></div>
 
-<!-- Header Section -->
 <header id="main-header">
     <div class="header-container">
         <div class="header-left">
@@ -1399,7 +1430,6 @@
     </div>
 </header>
 
-<!-- Search Bar Section -->
 <div class="search-section">
     <div class="search-box">
         <i class="fas fa-search"></i>
@@ -1407,10 +1437,8 @@
     </div>
 </div>
 
-<!-- Main Container -->
 <div class="container">
     
-    <!-- HOME PAGE SECTION -->
     <div id="home-section" class="page-section active-page">
         <div class="welcome-section">
             <h1 class="welcome-title">WELCOME TO BURQA BAZAR AND BOUTIQUES ✨</h1>
@@ -1448,21 +1476,33 @@
     <!-- SHOP PAGE SECTION -->
     <div id="shop-section" class="page-section">
         <h2 id="shop-title" style="margin-bottom: 5px;">Shop All Collections</h2>
-        <p id="shop-desc" style="color: var(--text-muted); margin-bottom: 20px;">Explore our exclusive range of premium hijabs, burqas, and abayas.</p>
-        
+        <p id="shop-desc" style="color: var(--text-muted); margin-bottom: 15px;">Explore our exclusive range of premium hijabs, burqas, and abayas.</p>
+
+        <!-- ⚡ CATEGORY FILTER BAR (NEW) -->
+        <div class="category-filter-bar" id="category-filter-bar">
+            <button class="filter-chip active" data-cat="all" onclick="filterCategory('all')">
+                <i class="fas fa-th-large"></i> All <span class="count" id="count-all">0</span>
+            </button>
+            <button class="filter-chip" data-cat="Hijab Collection" onclick="filterCategory('Hijab Collection')">
+                🌷 Hijab <span class="count" id="count-hijab">0</span>
+            </button>
+            <button class="filter-chip" data-cat="Burqa Collection" onclick="filterCategory('Burqa Collection')">
+                🖤 Burqa <span class="count" id="count-burqa">0</span>
+            </button>
+            <button class="filter-chip" data-cat="Abaya Collection" onclick="filterCategory('Abaya Collection')">
+                🤍 Abaya <span class="count" id="count-abaya">0</span>
+            </button>
+        </div>
+
         <div class="product-grid" id="product-grid-container">
             <!-- Dynamic Products -->
         </div>
     </div>
-
-    <!-- PRODUCT DETAILS PAGE SECTION -->
-    <div id="product-details-section" class="page-section">
+<div id="product-details-section" class="page-section">
         <div class="product-details-container" id="product-details-content">
-            <!-- Dynamic Product Details will load here -->
         </div>
     </div>
 
-    <!-- ABOUT US PAGE SECTION -->
     <div id="about-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🌸 আমাদের সম্পর্কে | About Us</h2>
@@ -1508,7 +1548,6 @@
         </div>
     </div>
 
-    <!-- PRIVACY POLICY PAGE SECTION -->
     <div id="privacy-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🔒 Privacy Policy | গোপনীয়তা নীতি</h2>
@@ -1589,7 +1628,6 @@
         </div>
     </div>
 
-    <!-- TERMS & CONDITIONS PAGE SECTION -->
     <div id="terms-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📜 Terms & Conditions | শর্তাবলি</h2>
@@ -1641,7 +1679,6 @@
         </div>
     </div>
 
-    <!-- RETURN POLICY PAGE SECTION -->
     <div id="return-policy-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🔄 Return & Exchange Policy</h2>
@@ -1687,7 +1724,6 @@
         </div>
     </div>
 
-    <!-- CONTACT US PAGE SECTION -->
     <div id="contact-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📞 Contact Us | যোগাযোগ করুন</h2>
@@ -1732,7 +1768,6 @@
         </div>
     </div>
 
-    <!-- TRACKING ORDER PAGE SECTION -->
     <div id="track-order-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📦 Tracking Order | অর্ডার ট্র্যাক করুন</h2>
@@ -1788,17 +1823,14 @@
         </div>
     </div>
 
-    <!-- CART & CHECKOUT PAGE SECTION -->
     <div id="cart-section" class="page-section">
         <h2 style="margin-bottom: 15px;"><i class="fas fa-shopping-cart"></i> Your Shopping Cart & Checkout</h2>
         <div id="cart-items-container" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px 20px; border-radius: 12px; margin-top: 20px; text-align: left;">
-            <!-- Cart items -->
         </div>
     </div>
 
 </div>
 
-<!-- Footer Section -->
 <footer class="site-footer">
     <div class="footer-container">
         <div class="footer-section">
@@ -1863,12 +1895,10 @@
     </div>
 </footer>
 
-<!-- Floating WhatsApp Live Chat Button -->
 <a href="https://wa.me/8801832140613?text=Hello,%20I%20want%20to%20know%20more%20about%20your%20products." target="_blank" class="whatsapp-chat-btn" title="Chat on WhatsApp">
     <i class="fab fa-whatsapp"></i>
 </a>
 
-<!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
     <button class="bottom-nav-item active" id="nav-home" onclick="switchTab('home')">
         <i class="fas fa-home"></i>
@@ -1884,21 +1914,14 @@
     </button>
 </div>
 
-<!-- Toast Notification Element -->
 <div id="custom-toast">
   <div class="toast-content">
     <span class="toast-icon">✨</span>
     <p id="toast-message">Successfully added to cart!</p>
   </div>
 </div>
-
-    <!-- ============================================
-         MAIN JAVASCRIPT
-         ============================================ -->
     <script>
-        // ============================================
         // URL EXTRACTOR
-        // ============================================
         function extractUrl(str) {
             if (!str || typeof str !== 'string') return '';
             const trimmed = str.trim();
@@ -1910,9 +1933,7 @@
             return '';
         }
 
-        // ============================================
         // GLOBAL VARIABLES
-        // ============================================
         let productsData = [];
         let cart = JSON.parse(localStorage.getItem('burqa_cart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('burqa_wishlist')) || [];
@@ -1923,9 +1944,7 @@
         let currentShareProduct = null;
         let toastTimeout;
 
-        // ============================================
-        // 🔥 UPDATE PRODUCTS DATA (called from Firebase)
-        // ============================================
+        // UPDATE PRODUCTS DATA
         window.updateProductsData = function(firebaseProducts) {
             if (!Array.isArray(firebaseProducts)) return;
 
@@ -1976,11 +1995,57 @@
             productsData.sort(function(a, b) { return a.id - b.id; });
             console.log('✅ Products ready:', productsData.length);
             renderProducts(productsData);
+            updateFilterCounts();
         };
 
-        // ============================================
+        // CATEGORY FILTER
+        function filterCategory(categoryName) {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.getAttribute('data-cat') === categoryName) {
+                    chip.classList.add('active');
+                }
+            });
+
+            let filtered = [];
+            let title = '';
+            let desc = '';
+
+            if (categoryName === 'all') {
+                filtered = productsData;
+                title = 'Shop All Collections';
+                desc = 'Explore our exclusive range of premium hijabs, burqas, and abayas.';
+            } else {
+                filtered = productsData.filter(p => p.category === categoryName);
+                title = categoryName;
+                desc = 'Showing exclusive items for ' + categoryName;
+            }
+
+            document.getElementById('shop-title').textContent = title;
+            document.getElementById('shop-desc').textContent = desc;
+            
+            renderProducts(filtered);
+            switchTab('shop');
+            updateFilterCounts();
+        }
+
+        // UPDATE FILTER COUNTS
+        function updateFilterCounts() {
+            if (!Array.isArray(productsData)) return;
+            
+            const total = productsData.length;
+            const hijab = productsData.filter(p => p.category === 'Hijab Collection').length;
+            const burqa = productsData.filter(p => p.category === 'Burqa Collection').length;
+            const abaya = productsData.filter(p => p.category === 'Abaya Collection').length;
+
+            const el = (id) => document.getElementById(id);
+            if (el('count-all')) el('count-all').textContent = total;
+            if (el('count-hijab')) el('count-hijab').textContent = hijab;
+            if (el('count-burqa')) el('count-burqa').textContent = burqa;
+            if (el('count-abaya')) el('count-abaya').textContent = abaya;
+        }
+
         // MINI CART
-        // ============================================
         function openMiniCart() {
             renderMiniCart();
             document.getElementById('mini-cart-overlay').classList.add('active');
@@ -2047,9 +2112,7 @@
             subtotalEl.textContent = '৳ ' + subtotal;
         }
 
-        // ============================================
         // NEWSLETTER
-        // ============================================
         function subscribeNewsletter(event) {
             event.preventDefault();
             const emailInput = document.getElementById('newsletter-email');
@@ -2070,22 +2133,15 @@
             emailInput.value = '';
         }
 
-        // ============================================
         // SOCIAL PLACEHOLDER
-        // ============================================
         function socialPlaceholder(event, platform) {
             event.preventDefault();
             showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!');
         }
 
-        // ============================================
-        // ⚡ SKELETON LOADER — সম্পূর্ণ বন্ধ
-        // ============================================
         document.body.classList.add('content-ready');
 
-        // ============================================
-        // ⚡ SCROLL HANDLER
-        // ============================================
+        // SCROLL HANDLER
         let scrollTick = false;
         window.addEventListener('scroll', () => {
             if (scrollTick) return;
@@ -2118,9 +2174,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ============================================
         // WISHLIST
-        // ============================================
         function toggleWishlist(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const idx = wishlist.indexOf(productId);
@@ -2139,9 +2193,7 @@
             });
         }
 
-        // ============================================
         // SHARE
-        // ============================================
         function openShareModal(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const product = productsData.find(p => p.id === productId);
@@ -2174,9 +2226,7 @@
             }).catch(() => showToast('❌ কপি করা যায়নি'));
         }
 
-        // ============================================
         // RATING & REVIEW
-        // ============================================
         function getProductReviews(productId) {
             const allReviews = JSON.parse(localStorage.getItem('burqa_reviews')) || {};
             return allReviews[productId] || [];
@@ -2312,9 +2362,7 @@
             `;
         }
 
-        // ============================================
         // RELATED PRODUCTS
-        // ============================================
         function renderRelatedProducts(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return '';
@@ -2353,9 +2401,7 @@
             return html;
         }
 
-        // ============================================
         // URL ROUTING
-        // ============================================
         function updateURL(tabName, productId) {
             let url = window.location.pathname;
             if (tabName === 'home') {
@@ -2384,9 +2430,7 @@
             }
         }
 
-        // ============================================
         // SIDEBAR & THEME
-        // ============================================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const openSidebar = document.getElementById('openSidebar');
@@ -2445,9 +2489,7 @@
             if (progress) progress.style.width = '0%';
         }
 
-        // ============================================
         // RENDER PRODUCTS
-        // ============================================
         function renderProducts(itemsToRender) {
             const gridContainer = document.getElementById('product-grid-container');
             if (!gridContainer) return;
@@ -2505,9 +2547,7 @@
             showToast('অনুগ্রহ করে Size ও Color নির্বাচন করুন');
         }
 
-        // ============================================
         // PRODUCT DETAILS
-        // ============================================
         function openProductDetails(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
@@ -2705,20 +2745,16 @@
             document.getElementById('image-modal').classList.remove('active');
         }
 
-        function filterCategory(categoryName) {
-            document.getElementById('shop-title').textContent = categoryName;
-            document.getElementById('shop-desc').textContent = 'Showing exclusive items for ' + categoryName;
-            const filtered = productsData.filter(p => p.category === categoryName);
-            renderProducts(filtered);
-            switchTab('shop');
-        }
-
         function filterProductsBySearch() {
             const query = document.getElementById('search-input').value.toLowerCase();
             if (query.trim() === '') {
                 document.getElementById('shop-title').textContent = "Shop All Collections";
                 document.getElementById('shop-desc').textContent = "Explore our exclusive range of premium hijabs, burqas, and abayas.";
                 renderProducts(productsData);
+                document.querySelectorAll('.filter-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                    if (chip.getAttribute('data-cat') === 'all') chip.classList.add('active');
+                });
             } else {
                 document.getElementById('shop-title').textContent = "Search Results";
                 document.getElementById('shop-desc').textContent = "Showing matches for: " + query;
@@ -2728,9 +2764,7 @@
             switchTab('shop');
         }
 
-        // ============================================
         // CART UI
-        // ============================================
         function showToast(message) {
             const toast = document.getElementById('custom-toast');
             const toastMsg = document.getElementById('toast-message');
@@ -2973,9 +3007,7 @@
             }
         }
 
-        // ============================================
-        // SUBMIT ORDER — Firebase + WhatsApp + localStorage
-        // ============================================
+        // SUBMIT ORDER
         async function submitOrder(event) {
             event.preventDefault();
             
@@ -3023,7 +3055,6 @@
 
             const orderId = generateOrderId();
 
-            // ===== FIREBASE-এ অর্ডার সেভ =====
             try {
                 if (window.db && window.fbAddDoc && window.fbCollection) {
                     await window.fbAddDoc(window.fbCollection(window.db, "orders"), {
@@ -3060,7 +3091,6 @@
                 console.error('Firebase order save error:', fbErr);
             }
 
-            // লোকাল স্টোরেজ ব্যাকআপ
             let orders = JSON.parse(localStorage.getItem('burqa_orders')) || [];
             orders.unshift({
                 orderId: orderId, name: name, phone: phone, city: city, district: district,
@@ -3071,7 +3101,6 @@
             });
             localStorage.setItem('burqa_orders', JSON.stringify(orders));
 
-            // WhatsApp মেসেজ
             let productsText = '';
             cart.forEach((item, index) => {
                 let priceStr = (typeof item.price === 'number') ? ('৳' + item.price) : 'Price Coming Soon';
@@ -3127,9 +3156,7 @@
             }, 1500);
         }
 
-        // ============================================
         // ORDER ID GENERATOR
-        // ============================================
         function generateOrderId() {
             const now = new Date();
             const year = now.getFullYear();
@@ -3150,9 +3177,7 @@
             return 'BQ-' + dateStr + '-' + String(counter).padStart(4, '0');
         }
 
-        // ============================================
         // ESC KEY
-        // ============================================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeMiniCart();
@@ -3161,14 +3186,11 @@
             }
         });
 
-        // ============================================
         // INIT
-        // ============================================
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
-            // Firebase will call updateProductsData()
             setTimeout(handleInitialURL, 2500);
         });
     </script>
 </body>
-  </html>
+</html>
