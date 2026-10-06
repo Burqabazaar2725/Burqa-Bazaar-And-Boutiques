@@ -2021,7 +2021,7 @@
     <p id="toast-message">Successfully added to cart!</p>
   </div>
 </div>
-    <script>
+      <script>
         // URL EXTRACTOR
         function extractUrl(str) {
             if (!str || typeof str !== 'string') return '';
@@ -2034,7 +2034,6 @@
             return '';
         }
 
-        // GLOBAL VARIABLES
         let productsData = [];
         let cart = JSON.parse(localStorage.getItem('burqa_cart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('burqa_wishlist')) || [];
@@ -2045,8 +2044,8 @@
         let currentShareProduct = null;
         let toastTimeout;
         let isSubmittingReview = false;
+        let isSubscribing = false;
 
-        // UPDATE PRODUCTS DATA
         window.updateProductsData = function(firebaseProducts) {
             if (!Array.isArray(firebaseProducts)) return;
 
@@ -2107,7 +2106,6 @@
             updateFilterCounts();
         };
 
-        // ⚡ CATEGORY FILTER
         function filterCategory(categoryName) {
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.classList.remove('active');
@@ -2138,7 +2136,6 @@
             updateFilterCounts();
         }
 
-        // UPDATE FILTER COUNTS
         function updateFilterCounts() {
             if (!Array.isArray(productsData)) return;
             
@@ -2154,7 +2151,6 @@
             if (el('count-abaya')) el('count-abaya').textContent = abaya;
         }
 
-        // MINI CART
         function openMiniCart() {
             renderMiniCart();
             document.getElementById('mini-cart-overlay').classList.add('active');
@@ -2221,28 +2217,66 @@
             subtotalEl.textContent = '৳ ' + subtotal;
         }
 
-        // NEWSLETTER
-        function subscribeNewsletter(event) {
+        // ⚡ NEWSLETTER — FIRESTORE VERSION
+        async function subscribeNewsletter(event) {
             event.preventDefault();
+            if (isSubscribing) return;
+
             const emailInput = document.getElementById('newsletter-email');
-            const email = emailInput.value.trim();
-            if (!email || !email.includes('@')) {
+            const form = event.target;
+            const btn = form.querySelector('button');
+            const origText = btn.innerHTML;
+            const email = emailInput.value.trim().toLowerCase();
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
                 showToast('⚠️ সঠিক email address দিন');
                 return;
             }
-            let subscribers = JSON.parse(localStorage.getItem('burqa_newsletter')) || [];
-            if (subscribers.includes(email)) {
-                showToast('ℹ️ আপনি ইতিমধ্যে সাবস্ক্রাইব করেছেন');
+
+            isSubscribing = true;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+
+            try {
+                if (!window.db || !window.fbAddDoc || !window.fbCollection) {
+                    throw new Error('Firebase not ready');
+                }
+
+                // ডুপ্লিকেট চেক
+                const snap = await getDocs(collection(window.db, 'newsletter'));
+                let exists = false;
+                snap.forEach(d => {
+                    if ((d.data().email || '').toLowerCase() === email) exists = true;
+                });
+
+                if (exists) {
+                    showToast('ℹ️ আপনি ইতিমধ্যে সাবস্ক্রাইব করেছেন');
+                    emailInput.value = '';
+                    isSubscribing = false;
+                    btn.disabled = false;
+                    btn.innerHTML = origText;
+                    return;
+                }
+
+                // Firestore-এ সেভ
+                await window.fbAddDoc(window.fbCollection(window.db, 'newsletter'), {
+                    email: email,
+                    date: new Date().toISOString(),
+                    source: 'website'
+                });
+
+                showToast('✅ ধন্যবাদ! আপনি সাবস্ক্রাইব করেছেন');
                 emailInput.value = '';
-                return;
+            } catch (err) {
+                console.error('Newsletter error:', err);
+                showToast('❌ সাবস্ক্রাইব করা যায়নি। আবার চেষ্টা করুন।');
             }
-            subscribers.push(email);
-            localStorage.setItem('burqa_newsletter', JSON.stringify(subscribers));
-            showToast('✅ ধন্যবাদ! আপনি সাবস্ক্রাইব করেছেন');
-            emailInput.value = '';
+
+            isSubscribing = false;
+            btn.disabled = false;
+            btn.innerHTML = origText;
         }
 
-        // SOCIAL PLACEHOLDER
         function socialPlaceholder(event, platform) {
             event.preventDefault();
             showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!');
@@ -2250,7 +2284,6 @@
 
         document.body.classList.add('content-ready');
 
-        // SCROLL HANDLER
         let scrollTick = false;
         window.addEventListener('scroll', () => {
             if (scrollTick) return;
@@ -2283,7 +2316,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // WISHLIST
         function toggleWishlist(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const idx = wishlist.indexOf(productId);
@@ -2302,7 +2334,6 @@
             });
         }
 
-        // SHARE
         function openShareModal(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const product = productsData.find(p => p.id === productId);
@@ -2335,7 +2366,6 @@
             }).catch(() => showToast('❌ কপি করা যায়নি'));
         }
 
-        // ⚡ RATING & REVIEW — FIRESTORE EDITION
         function getProductReviews(productId) {
             if (!window.reviewsCache) return [];
             return window.reviewsCache[productId] || [];
@@ -2353,7 +2383,6 @@
                 date: new Date().toISOString(),
                 createdAt: new Date().toISOString()
             });
-            // Cache-এ যোগ করুন সাথে সাথে দেখানোর জন্য
             if (!window.reviewsCache) window.reviewsCache = {};
             if (!window.reviewsCache[productId]) window.reviewsCache[productId] = [];
             window.reviewsCache[productId].unshift({
@@ -2405,7 +2434,6 @@
             });
         }
 
-        // ⚡ SUBMIT REVIEW TO FIRESTORE
         async function submitReview() {
             if (!currentProductId) return;
             if (isSubmittingReview) return;
@@ -2511,7 +2539,6 @@
             `;
         }
 
-        // RELATED PRODUCTS
         function renderRelatedProducts(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return '';
@@ -2552,7 +2579,6 @@
             return html;
         }
 
-        // URL ROUTING
         function updateURL(tabName, productId) {
             let url = window.location.pathname;
             if (tabName === 'home') {
@@ -2581,7 +2607,6 @@
             }
         }
 
-        // SIDEBAR & THEME
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const openSidebar = document.getElementById('openSidebar');
@@ -2640,7 +2665,6 @@
             if (progress) progress.style.width = '0%';
         }
 
-        // RENDER PRODUCTS
         function renderProducts(itemsToRender) {
             const gridContainer = document.getElementById('product-grid-container');
             if (!gridContainer) return;
@@ -2717,7 +2741,6 @@
             showToast('অনুগ্রহ করে Size ও Color নির্বাচন করুন');
         }
 
-        // PRODUCT DETAILS
         function openProductDetails(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
@@ -2950,7 +2973,6 @@
             switchTab('shop');
         }
 
-        // CART UI
         function showToast(message) {
             const toast = document.getElementById('custom-toast');
             const toastMsg = document.getElementById('toast-message');
@@ -3193,7 +3215,6 @@
             }
         }
 
-        // SUBMIT ORDER
         async function submitOrder(event) {
             event.preventDefault();
             
@@ -3342,7 +3363,6 @@
             }, 1500);
         }
 
-        // ORDER ID GENERATOR
         function generateOrderId() {
             const now = new Date();
             const year = now.getFullYear();
@@ -3363,7 +3383,6 @@
             return 'BQ-' + dateStr + '-' + String(counter).padStart(4, '0');
         }
 
-        // ESC KEY
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeMiniCart();
@@ -3372,7 +3391,6 @@
             }
         });
 
-        // INIT
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             setTimeout(handleInitialURL, 2500);
