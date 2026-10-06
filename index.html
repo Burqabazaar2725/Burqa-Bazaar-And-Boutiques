@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -55,8 +56,10 @@
         window.db = db;
         window.fbAddDoc = addDoc;
         window.fbCollection = collection;
+        window.fbGetDocs = getDocs;
+        window.fbQuery = query;
+        window.fbOrderBy = orderBy;
 
-        // ⚡ REVIEWS CACHE (সব রিভিউ একবার লোড হবে)
         window.reviewsCache = {};
 
         window.loadReviewsFromFirebase = async function() {
@@ -71,7 +74,7 @@
                     if (!window.reviewsCache[pid]) window.reviewsCache[pid] = [];
                     window.reviewsCache[pid].push({ id: doc.id, ...data });
                 });
-                console.log('✅ Reviews loaded:', Object.keys(window.reviewsCache).length, 'products with reviews');
+                console.log('✅ Reviews loaded:', Object.keys(window.reviewsCache).length, 'products');
                 return window.reviewsCache;
             } catch (err) {
                 console.error('❌ Reviews load error:', err);
@@ -131,7 +134,7 @@
                 });
 
                 products.sort(function(a, b) { return a.id - b.id; });
-                console.log('✅ Products loaded from Firebase:', products.length);
+                console.log('✅ Products loaded:', products.length);
 
                 if (typeof window.updateProductsData === 'function') {
                     window.updateProductsData(products);
@@ -143,7 +146,6 @@
             }
         };
 
-        // ⚡ INIT: প্রথমে Reviews, তারপর Products লোড হবে
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(async function() {
                 if (typeof window.loadReviewsFromFirebase === 'function') {
@@ -439,20 +441,6 @@
         .review-stars { color: #ffb800; font-size: 12px; }
         .review-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         .review-date { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin-top: 4px; }
-
-        .reviews-loading {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .reviews-loading i {
-            color: var(--gold-color);
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 6px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .related-section { margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border-color); }
         .related-title {
@@ -1403,6 +1391,7 @@
             font-family: inherit;
             white-space: nowrap;
         }
+        .newsletter-form button:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .social-icons-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
         .social-icon {
@@ -2021,7 +2010,7 @@
     <p id="toast-message">Successfully added to cart!</p>
   </div>
 </div>
-      <script>
+    <script>
         // URL EXTRACTOR
         function extractUrl(str) {
             if (!str || typeof str !== 'string') return '';
@@ -2217,7 +2206,7 @@
             subtotalEl.textContent = '৳ ' + subtotal;
         }
 
-        // ⚡ NEWSLETTER — FIRESTORE VERSION
+        // ⚡ NEWSLETTER — FIRESTORE (FIXED)
         async function subscribeNewsletter(event) {
             event.preventDefault();
             if (isSubscribing) return;
@@ -2238,12 +2227,12 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
 
             try {
-                if (!window.db || !window.fbAddDoc || !window.fbCollection) {
-                    throw new Error('Firebase not ready');
+                if (!window.db || !window.fbAddDoc || !window.fbCollection || !window.fbGetDocs) {
+                    throw new Error('Firebase not ready. Please refresh the page.');
                 }
 
                 // ডুপ্লিকেট চেক
-                const snap = await getDocs(collection(window.db, 'newsletter'));
+                const snap = await window.fbGetDocs(window.fbCollection(window.db, 'newsletter'));
                 let exists = false;
                 snap.forEach(d => {
                     if ((d.data().email || '').toLowerCase() === email) exists = true;
