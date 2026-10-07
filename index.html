@@ -40,7 +40,7 @@
         window.fbOrderBy = orderBy;
         window.fbWhere = where;
         window.reviewsCache = {};
-        window.couponsCache = {};
+        window.couponsCache = [];
 
         window.loadReviewsFromFirebase = async function() {
             try {
@@ -173,25 +173,22 @@
         #back-to-top.visible { opacity: 1; visibility: visible; }
         #back-to-top:hover { transform: translateY(-3px) scale(1.1); background: var(--gold-color); color: #0b0b0d; }
 
-        /* ⚡ HOME COUPONS */
+        /* COUPONS */
         .home-coupons-section { margin-bottom: 30px; margin-top: 10px; }
         .home-coupons-header { font-family: var(--font-heading); font-size: 17px; color: var(--gold-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
         .home-coupons-header .badge-count { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-family: var(--font-body); font-weight: 800; }
         .home-coupons-grid { display: flex; flex-direction: column; gap: 12px; }
-        .home-coupon-card { background: linear-gradient(135deg, rgba(255,0,127,.08), rgba(121,40,202,.05)); border: 1.5px dashed rgba(255,0,127,.5); border-radius: 14px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; gap: 15px; position: relative; overflow: hidden; transition: all 0.2s ease; }
-        .home-coupon-card:hover { border-color: #ff007f; box-shadow: 0 6px 25px rgba(255,0,127,.2); transform: translateY(-2px); }
+        .home-coupon-card { background: linear-gradient(135deg, rgba(255,0,127,.08), rgba(121,40,202,.05)); border: 1.5px dashed rgba(255,0,127,.5); border-radius: 14px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; gap: 15px; position: relative; overflow: hidden; }
         .home-coupon-card::before { content: '🎟️'; position: absolute; right: -10px; top: -10px; font-size: 60px; opacity: 0.08; pointer-events: none; }
         .home-coupon-left { flex: 1; min-width: 0; position: relative; z-index: 1; }
         .home-coupon-code { font-family: 'Courier New', monospace; font-size: 20px; font-weight: 800; color: var(--gold-color); letter-spacing: 3px; background: rgba(0,0,0,.2); padding: 3px 12px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
         .home-coupon-discount { font-size: 15px; font-weight: 800; color: #ff6bb5; margin-bottom: 5px; }
         .home-coupon-info { font-size: 11px; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 10px; }
-        .home-coupon-info span { display: inline-flex; align-items: center; gap: 3px; }
         .home-coupon-info i { color: var(--gold-color); }
-        .home-coupon-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; position: relative; z-index: 1; }
-        .home-coupon-btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .home-coupon-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
         .home-coupon-btn.copied { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
-        /* ⚡ COUPON */
+        /* COUPON */
         .available-coupons-list { margin-top: 12px; padding: 12px 14px; background: rgba(255,0,127,.05); border: 1px solid rgba(255,0,127,.25); border-radius: 8px; }
         .available-coupons-title { font-size: 12px; font-weight: 700; color: #ff6bb5; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .available-coupon-item { font-size: 12px; color: var(--text-muted); padding: 5px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px dashed rgba(255,0,127,.15); }
@@ -202,222 +199,251 @@
         .coupon-box-title { font-size: 13px; font-weight: 700; color: #ff6bb5; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .coupon-input-row { display: flex; gap: 8px; }
         .coupon-input-row input { flex: 1; padding: 11px 14px; background: var(--bg-color); border: 1.5px solid var(--border-color); border-radius: 8px; color: var(--text-color); font-size: 14px; outline: none; font-family: inherit; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .coupon-input-row input:focus { border-color: #ff007f; }
         .coupon-apply-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
         .coupon-msg { font-size: 12px; margin-top: 8px; font-weight: 600; display: none; }
         .coupon-msg.show { display: block; }
         .coupon-msg.success { color: var(--ok-color); }
         .coupon-msg.error { color: var(--bad-color); }
         .coupon-applied { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 15px; background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(34,197,94,.05)); border: 1.5px solid var(--ok-color); border-radius: 8px; }
-        .coupon-applied-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
         .coupon-applied-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--ok-color); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-        .coupon-applied-text { font-size: 13px; color: var(--text-color); line-height: 1.3; flex: 1; min-width: 0; word-break: break-word; }
+        .coupon-applied-text { font-size: 13px; line-height: 1.3; flex: 1; word-break: break-word; }
         .coupon-applied-text strong { color: var(--ok-color); font-weight: 700; }
         .coupon-remove-btn { background: transparent; border: 1px solid var(--bad-color); color: var(--bad-color); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
         .discount-row { color: var(--ok-color) !important; font-weight: 700 !important; }
 
-        /* ⚡ WISHLIST PAGE STYLES */
-        .wishlist-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .wishlist-header h2 {
-            font-family: var(--font-heading);
-            color: var(--gold-color);
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .wishlist-header .wishlist-count {
-            background: linear-gradient(135deg, #ff007f, #7928ca);
-            color: #fff;
-            padding: 3px 12px;
-            border-radius: 15px;
-            font-size: 13px;
-            font-family: var(--font-body);
-            font-weight: 800;
-        }
-        .wishlist-sort-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .wishlist-sort-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .wishlist-sort-btn {
-            background: var(--card-bg);
-            border: 1.5px solid var(--border-color);
-            color: var(--text-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            white-space: nowrap;
-        }
-        .wishlist-sort-btn.active {
-            background: var(--gold-color);
-            color: #0b0b0d;
-            border-color: var(--gold-color);
-        }
-        .wishlist-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        @media (min-width: 768px) {
-            .wishlist-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        }
-        .wishlist-empty {
-            text-align: center;
-            padding: 60px 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-        }
-        .wishlist-empty i {
-            font-size: 70px;
-            color: #ff007f;
-            opacity: 0.4;
-            display: block;
-            margin-bottom: 20px;
-        }
-        .wishlist-empty h3 {
-            font-family: var(--font-heading);
-            color: var(--text-color);
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        .wishlist-empty p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        .wishlist-shop-btn {
-            background: var(--gold-color);
-            color: #0b0b0d;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .wishlist-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-            position: relative;
-        }
+        /* WISHLIST */
+        .wishlist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .wishlist-header h2 { font-family: var(--font-heading); color: var(--gold-color); font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .wishlist-header .wishlist-count { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; padding: 3px 12px; border-radius: 15px; font-size: 13px; font-family: var(--font-body); font-weight: 800; }
+        .wishlist-sort-row { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
+        .wishlist-sort-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .wishlist-sort-btn { background: var(--card-bg); border: 1.5px solid var(--border-color); color: var(--text-color); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .wishlist-sort-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); }
+        .wishlist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        @media (min-width: 768px) { .wishlist-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+        .wishlist-empty { text-align: center; padding: 60px 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; }
+        .wishlist-empty i { font-size: 70px; color: #ff007f; opacity: 0.4; display: block; margin-bottom: 20px; }
+        .wishlist-empty h3 { font-family: var(--font-heading); color: var(--text-color); font-size: 20px; margin-bottom: 10px; }
+        .wishlist-empty p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+        .wishlist-shop-btn { background: var(--gold-color); color: #0b0b0d; border: none; padding: 12px 28px; border-radius: 25px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+        .wishlist-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 6px 20px rgba(0,0,0,0.25); position: relative; }
         .wishlist-card:hover { border-color: #ff007f; }
-        .wishlist-card-img-box {
-            width: 100%;
-            height: 190px;
-            overflow: hidden;
-            background: #000;
-            position: relative;
-            cursor: pointer;
-        }
-        .wishlist-card-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .wishlist-remove-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #ff007f;
-            border: none;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            cursor: pointer;
-            z-index: 5;
-            box-shadow: 0 4px 12px rgba(255,0,127,.5);
-        }
-        .wishlist-remove-btn:hover { background: #d6006b; transform: scale(1.1); }
-        .wishlist-card-info {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex: 1;
-        }
-        .wishlist-card-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-color);
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .wishlist-card-price-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: auto;
-            padding-top: 8px;
-            border-top: 1px solid var(--border-color);
-        }
-        .wishlist-card-price {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--gold-color);
-        }
-        .wishlist-cart-btn {
-            background: var(--gold-color);
-            color: #0b0b0d;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .wishlist-cart-btn:hover { opacity: 0.85; }
+        .wishlist-card-img-box { width: 100%; height: 190px; overflow: hidden; background: #000; position: relative; cursor: pointer; }
+        .wishlist-card-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .wishlist-remove-btn { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; background: #ff007f; border: none; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; z-index: 5; box-shadow: 0 4px 12px rgba(255,0,127,.5); }
+        .wishlist-card-info { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+        .wishlist-card-title { font-size: 13px; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+        .wishlist-card-price-row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border-color); }
+        .wishlist-card-price { font-size: 14px; font-weight: bold; color: var(--gold-color); }
+        .wishlist-cart-btn { background: var(--gold-color); color: #0b0b0d; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
         .wishlist-cart-btn:disabled { background: #666; cursor: not-allowed; }
 
-        /* Product badge */
+        /* PRODUCT BADGES */
         .product-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; z-index: 6; color: #fff; }
         .product-badge.new { background: linear-gradient(135deg, #00dfd8, #00a99d); }
         .product-badge.sale { background: linear-gradient(135deg, #ff007f, #d6006b); }
         .product-badge.hot { background: linear-gradient(135deg, #ff6b00, #d94f00); }
         .product-badge.soldout { background: linear-gradient(135deg, #666, #333); }
         .out-of-stock-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; z-index: 7; background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; }
+        .out-of-stock-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.65); display: flex; align-items: center; justify-content: center; z-index: 5; pointer-events: none; }
+        .out-of-stock-overlay span { color: #fff; font-weight: 800; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; padding: 8px 20px; border: 2px solid #fff; border-radius: 4px; transform: rotate(-8deg); }
+        .product-card.out-of-stock { opacity: 0.85; }
+        .product-card.out-of-stock .add-to-cart-grid-btn { background: #666 !important; cursor: not-allowed !important; }
         .low-stock-hint { font-size: 10px; color: var(--warn-color); font-weight: 700; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
         .product-rating { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
         .product-rating .stars { color: #ffb800; letter-spacing: -1px; font-size: 12px; }
         .review-count { font-size: 10px; opacity: 0.7; }
         .product-category-tag { font-size: 10px; text-transform: uppercase; color: var(--gold-color); font-weight: 700; letter-spacing: 0.5px; }
+
+        /* ⚡ SIZE CHART MODAL STYLES (NEW) */
+        .size-guide-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59,130,246,.12);
+            border: 1.5px solid #3b82f6;
+            color: #60a5fa;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 8px;
+            transition: all 0.2s ease;
+        }
+        .size-guide-btn:hover {
+            background: #3b82f6;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59,130,246,.3);
+        }
+        .size-guide-btn i { font-size: 14px; }
+
+        .size-chart-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 8500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .size-chart-modal.active { display: flex; }
+
+        .size-chart-box {
+            background: var(--card-bg);
+            border: 1.5px solid var(--gold-color);
+            border-radius: 18px;
+            padding: 25px 20px;
+            max-width: 620px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        .size-chart-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+            position: relative;
+        }
+        .size-chart-header h2 {
+            font-family: var(--font-heading);
+            color: var(--gold-color);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .size-chart-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .size-chart-close {
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1.5px solid var(--bad-color);
+            color: var(--bad-color);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .size-chart-close:hover { background: var(--bad-color); color: #fff; }
+
+        .size-unit-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .size-unit-btn {
+            padding: 6px 20px;
+            border-radius: 20px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .size-unit-btn.active {
+            background: var(--gold-color);
+            color: #0b0b0d;
+            border-color: var(--gold-color);
+        }
+
+        .size-chart-table-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 18px;
+        }
+        .size-chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .size-chart-table thead {
+            background: linear-gradient(135deg, rgba(223,177,91,.15), rgba(223,177,91,.05));
+        }
+        .size-chart-table th {
+            padding: 12px 8px;
+            text-align: center;
+            color: var(--gold-color);
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .size-chart-table td {
+            padding: 11px 8px;
+            text-align: center;
+            color: var(--text-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .size-chart-table tr:last-child td { border-bottom: none; }
+        .size-chart-table tr:nth-child(even) {
+            background: rgba(223,177,91,.03);
+        }
+        .size-chart-table tr:hover {
+            background: rgba(223,177,91,.08);
+        }
+        .size-chart-table td:first-child {
+            font-weight: 800;
+            color: var(--gold-color);
+            font-size: 14px;
+        }
+
+        .size-tips {
+            background: linear-gradient(135deg, rgba(59,130,246,.1), rgba(59,130,246,.03));
+            border: 1px solid rgba(59,130,246,.35);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .size-tips-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #60a5fa;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .size-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+        .size-tips li {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            padding-left: 20px;
+            position: relative;
+        }
+        .size-tips li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--ok-color);
+            font-weight: 900;
+        }
 
         /* Rest of product/rating/review styles */
         .rating-summary { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; margin: 15px 0; }
@@ -451,7 +477,6 @@
         .related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 600px) { .related-grid { grid-template-columns: repeat(3, 1fr); } }
         .wishlist-btn { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, 0.6); border: 1.5px solid var(--border-color); color: var(--text-color); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; z-index: 6; }
-        .wishlist-btn:hover { border-color: var(--gold-color); color: var(--gold-color); }
         .wishlist-btn.active { background: #ff007f; border-color: #ff007f; color: #fff; }
         .share-btn { background: var(--bg-color); border: 1.5px solid var(--border-color); color: var(--text-color); padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
         .category-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 8px; }
@@ -498,7 +523,7 @@
         .wishlist-badge { background: #ff007f; color: #fff; }
         .wishlist-icon-wrapper { position: relative; cursor: pointer; }
         .wishlist-icon-wrapper i { color: #ff007f; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background-color: var(--secondary-color); box-shadow: 5px 0 25px rgba(0,0,0,0.7); z-index: 3000; transition: left 0.3s ease; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background-color: var(--secondary-color); z-index: 3000; transition: left 0.3s ease; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); }
         .sidebar.active { left: 0; }
         .sidebar-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
         .close-sidebar { font-size: 20px; cursor: pointer; color: var(--text-color); }
@@ -520,7 +545,7 @@
         .center-logo-container { display: flex; justify-content: center; margin-bottom: 20px; }
         .center-logo-circle { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--gold-color); overflow: hidden; background: #000; box-shadow: 0 0 20px rgba(223, 177, 91, 0.3); }
         .center-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .promo-banner { width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .promo-banner { width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 25px; }
         .promo-banner img { width: 100%; height: auto; display: block; }
         .collections-header { font-size: 17px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
         .collection-card { background: var(--card-bg); border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 25px; cursor: pointer; }
@@ -630,6 +655,11 @@
         .social-icon.whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); }
         .social-icon.youtube { background: linear-gradient(135deg, #ff0000, #c4302b); }
         .social-icon.tiktok { background: linear-gradient(135deg, #000, #25f4ee, #fe2c55); }
+        @media (max-width: 500px) {
+            .size-chart-box { padding: 20px 15px; }
+            .size-chart-table th, .size-chart-table td { padding: 9px 5px; font-size: 12px; }
+            .size-chart-table td:first-child { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -639,6 +669,41 @@
 <button id="back-to-top" onclick="scrollToTop()" title="Back to Top">
     <i class="fas fa-arrow-up"></i>
 </button>
+
+<!-- ⚡ SIZE CHART MODAL (NEW) -->
+<div class="size-chart-modal" id="size-chart-modal" onclick="closeSizeChart(event)">
+    <div class="size-chart-box" onclick="event.stopPropagation()">
+        <div class="size-chart-header">
+            <button class="size-chart-close" onclick="closeSizeChart()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-ruler"></i> <span id="size-chart-title">Size Guide</span></h2>
+            <p id="size-chart-subtitle">সঠিক সাইজ বেছে নিন — আরামে থাকুন</p>
+        </div>
+
+        <div class="size-unit-toggle">
+            <button class="size-unit-btn active" data-unit="cm" onclick="switchSizeUnit('cm')">সেন্টিমিটার (CM)</button>
+            <button class="size-unit-btn" data-unit="inch" onclick="switchSizeUnit('inch')">ইঞ্চি (Inch)</button>
+        </div>
+
+        <div class="size-chart-table-wrap">
+            <table class="size-chart-table" id="size-chart-table">
+                <!-- Dynamic Content -->
+            </table>
+        </div>
+
+        <div class="size-tips">
+            <div class="size-tips-title"><i class="fas fa-lightbulb"></i> সাইজ মাপার টিপস</div>
+            <ul>
+                <li>মাপার সময় টাইট টেপ ব্যবহার করবেন না — আলগা রাখুন</li>
+                <li>বুকের সবচেয়ে চওড়া অংশ থেকে বুকের মাপ নিন</li>
+                <li>কোমরের সবচেয়ে সরু অংশ থেকে কোমরের মাপ নিন</li>
+                <li>কোনো সন্দেহ থাকলে বড় সাইজ বেছে নিন</li>
+                <li>দ্বিধা থাকলে আমাদের সাথে WhatsApp-এ কথা বলুন</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <div id="mini-cart-overlay" onclick="closeMiniCart()"></div>
 <div id="mini-cart-sidebar">
@@ -737,7 +802,6 @@
                 <i class="fas fa-sun"></i>
             </button>
 
-            <!-- ⚡ WISHLIST ICON (NEW) -->
             <div class="wishlist-icon-wrapper" id="wishlist-icon-wrapper" onclick="switchTab('wishlist')" title="Wishlist">
                 <i class="fas fa-heart"></i>
                 <span class="wishlist-badge" id="wishlist-count">0</span>
@@ -780,7 +844,6 @@
                 <span class="badge-count" id="coupons-count-badge">0</span>
             </div>
             <div class="home-coupons-grid" id="home-coupons-grid">
-                <!-- Dynamic Coupons -->
             </div>
         </div>
 
@@ -825,11 +888,10 @@
         </div>
 
         <div class="product-grid" id="product-grid-container">
-            <!-- Dynamic Products -->
         </div>
     </div>
 
-    <!-- ⚡ WISHLIST PAGE SECTION (NEW) -->
+    <!-- WISHLIST PAGE SECTION -->
     <div id="wishlist-section" class="page-section">
         <div class="wishlist-header">
             <h2>
@@ -858,7 +920,6 @@
         </div>
 
         <div id="wishlist-container">
-            <!-- Dynamic Wishlist Items -->
         </div>
     </div>
     <div id="product-details-section" class="page-section">
@@ -1230,7 +1291,130 @@
         let isApplyingCoupon = false;
         let appliedCoupon = null;
         let discountAmount = 0;
-        let wishlistSortMode = 'added'; // added | low | high | name
+        let wishlistSortMode = 'added';
+
+        // ⚡ SIZE CHART STATE
+        let sizeChartUnit = 'cm'; // cm | inch
+        let currentSizeChartCategory = 'default';
+
+        // ============================================
+        // ⚡ SIZE CHART DATA
+        // ============================================
+        const SIZE_CHART_DATA = {
+            'default': {
+                title: 'সাধারণ সাইজ চার্ট (Burqa / Abaya)',
+                rows: [
+                    { size: '50', chest: 40, waist: 38, length: 52, shoulder: 15, sleeve: 22 },
+                    { size: '52', chest: 42, waist: 40, length: 54, shoulder: 15.5, sleeve: 22.5 },
+                    { size: '54', chest: 44, waist: 42, length: 56, shoulder: 16, sleeve: 23 },
+                    { size: '56', chest: 46, waist: 44, length: 58, shoulder: 16.5, sleeve: 23.5 }
+                ]
+            },
+            'Burqa Collection': {
+                title: 'বোরকা সাইজ চার্ট',
+                rows: [
+                    { size: '50', chest: 40, waist: 38, length: 52, shoulder: 15, sleeve: 22 },
+                    { size: '52', chest: 42, waist: 40, length: 54, shoulder: 15.5, sleeve: 22.5 },
+                    { size: '54', chest: 44, waist: 42, length: 56, shoulder: 16, sleeve: 23 },
+                    { size: '56', chest: 46, waist: 44, length: 58, shoulder: 16.5, sleeve: 23.5 }
+                ]
+            },
+            'Abaya Collection': {
+                title: 'আবায়া সাইজ চার্ট',
+                rows: [
+                    { size: '50', chest: 38, waist: 36, length: 54, shoulder: 14.5, sleeve: 22 },
+                    { size: '52', chest: 40, waist: 38, length: 55, shoulder: 15, sleeve: 22.5 },
+                    { size: '54', chest: 42, waist: 40, length: 56, shoulder: 15.5, sleeve: 23 },
+                    { size: '56', chest: 44, waist: 42, length: 57, shoulder: 16, sleeve: 23.5 }
+                ]
+            },
+            'Hijab Collection': {
+                title: 'হিজাব সাইজ চার্ট',
+                rows: [
+                    { size: 'Standard', chest: 0, waist: 0, length: 70, shoulder: 0, sleeve: 0 }
+                ]
+            }
+        };
+
+        // ⚡ INCH CONVERTER
+        function cmToInch(cm) {
+            return (cm / 2.54).toFixed(1);
+        }
+        function formatMeasure(cm) {
+            if (sizeChartUnit === 'inch') {
+                return cmToInch(cm) + '"';
+            }
+            return cm + ' cm';
+        }
+
+        // ============================================
+        // ⚡ SIZE CHART FUNCTIONS
+        // ============================================
+        function openSizeChart(category) {
+            currentSizeChartCategory = category || 'default';
+            const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
+            
+            document.getElementById('size-chart-title').textContent = data.title;
+            document.getElementById('size-chart-subtitle').textContent = 'সঠিক সাইজ বেছে নিন — আরামে থাকুন';
+            
+            renderSizeChartTable();
+            document.getElementById('size-chart-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSizeChart(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('size-chart-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function switchSizeUnit(unit) {
+            sizeChartUnit = unit;
+            document.querySelectorAll('.size-unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-unit') === unit) btn.classList.add('active');
+            });
+            renderSizeChartTable();
+        }
+
+        function renderSizeChartTable() {
+            const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
+            const table = document.getElementById('size-chart-table');
+            if (!table) return;
+
+            const isHijab = currentSizeChartCategory === 'Hijab Collection';
+            
+            let html = '<thead><tr>';
+            html += '<th>সাইজ</th>';
+            if (!isHijab) {
+                html += '<th>বুক<br><span style="font-size:9px; opacity:0.7;">Chest</span></th>';
+                html += '<th>কোমর<br><span style="font-size:9px; opacity:0.7;">Waist</span></th>';
+            }
+            html += '<th>লম্বা<br><span style="font-size:9px; opacity:0.7;">Length</span></th>';
+            if (!isHijab) {
+                html += '<th>কাঁধ<br><span style="font-size:9px; opacity:0.7;">Shoulder</span></th>';
+                html += '<th>হাতা<br><span style="font-size:9px; opacity:0.7;">Sleeve</span></th>';
+            }
+            html += '</tr></thead><tbody>';
+
+            data.rows.forEach(row => {
+                html += '<tr>';
+                html += `<td>${row.size}</td>`;
+                if (!isHijab) {
+                    html += `<td>${formatMeasure(row.chest)}</td>`;
+                    html += `<td>${formatMeasure(row.waist)}</td>`;
+                }
+                html += `<td>${formatMeasure(row.length)}</td>`;
+                if (!isHijab) {
+                    html += `<td>${formatMeasure(row.shoulder)}</td>`;
+                    html += `<td>${formatMeasure(row.sleeve)}</td>`;
+                }
+                html += '</tr>';
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
 
         // ============================================
         // UPDATE PRODUCTS DATA
@@ -1285,11 +1469,8 @@
             renderProducts(productsData);
             updateFilterCounts();
             updateWishlistBadge();
-            // যদি wishlist section active থাকে, আবার render করি
             const wl = document.getElementById('wishlist-section');
-            if (wl && wl.classList.contains('active-page')) {
-                renderWishlist();
-            }
+            if (wl && wl.classList.contains('active-page')) renderWishlist();
         };
 
         // ============================================
@@ -1350,7 +1531,7 @@
         }
 
         // ============================================
-        // ⚡ WISHLIST CORE
+        // WISHLIST
         // ============================================
         function updateWishlistBadge() {
             const badge = document.getElementById('wishlist-count');
@@ -1365,58 +1546,30 @@
         function toggleWishlist(productId, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
             const idx = wishlist.indexOf(productId);
-            if (idx > -1) {
-                wishlist.splice(idx, 1);
-                showToast('💔 Wishlist থেকে সরানো হয়েছে');
-            } else {
-                wishlist.push(productId);
-                showToast('❤️ Wishlist এ যোগ হয়েছে');
-            }
+            if (idx > -1) { wishlist.splice(idx, 1); showToast('💔 Wishlist থেকে সরানো হয়েছে'); }
+            else { wishlist.push(productId); showToast('❤️ Wishlist এ যোগ হয়েছে'); }
             localStorage.setItem('burqa_wishlist', JSON.stringify(wishlist));
-            // সব wishlist button update
             document.querySelectorAll('.wishlist-btn').forEach(btn => {
                 const pid = parseInt(btn.getAttribute('data-pid'));
                 if (wishlist.includes(pid)) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
             updateWishlistBadge();
-            // যদি wishlist page active থাকে, re-render
             const wl = document.getElementById('wishlist-section');
-            if (wl && wl.classList.contains('active-page')) {
-                renderWishlist();
-            }
-            // Bounce effect
+            if (wl && wl.classList.contains('active-page')) renderWishlist();
             const icon = document.getElementById('wishlist-icon-wrapper');
-            if (icon) {
-                icon.classList.add('bounce');
-                setTimeout(() => icon.classList.remove('bounce'), 600);
-            }
+            if (icon) { icon.classList.add('bounce'); setTimeout(() => icon.classList.remove('bounce'), 600); }
         }
 
-        // ⚡ RENDER WISHLIST PAGE
         function renderWishlist() {
             const container = document.getElementById('wishlist-container');
             if (!container) return;
             updateWishlistBadge();
-
-            // Filter wishlisted products
             let items = productsData.filter(p => wishlist.includes(p.id));
-
             if (items.length === 0) {
-                container.innerHTML = `
-                    <div class="wishlist-empty">
-                        <i class="fas fa-heart-broken"></i>
-                        <h3>আপনার Wishlist এখন খালি</h3>
-                        <p>পছন্দের প্রোডাক্টে ❤️ আইকনে ক্লিক করে Wishlist এ যোগ করুন।</p>
-                        <button class="wishlist-shop-btn" onclick="switchTab('shop')">
-                            <i class="fas fa-shopping-bag"></i> Shop Now
-                        </button>
-                    </div>
-                `;
+                container.innerHTML = `<div class="wishlist-empty"><i class="fas fa-heart-broken"></i><h3>আপনার Wishlist এখন খালি</h3><p>পছন্দের প্রোডাক্টে ❤️ আইকনে ক্লিক করে Wishlist এ যোগ করুন।</p><button class="wishlist-shop-btn" onclick="switchTab('shop')"><i class="fas fa-shopping-bag"></i> Shop Now</button></div>`;
                 return;
             }
-
-            // Sort
             if (wishlistSortMode === 'low') {
                 items.sort((a, b) => {
                     const pa = typeof a.price === 'number' ? a.price : 999999;
@@ -1432,71 +1585,35 @@
             } else if (wishlistSortMode === 'name') {
                 items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
             } else {
-                // added = reverse of wishlist order (newest first)
                 items.sort((a, b) => wishlist.indexOf(b.id) - wishlist.indexOf(a.id));
             }
-
             let html = '<div class="wishlist-grid">';
             items.forEach(prod => {
                 const priceDisplay = (typeof prod.price === 'number') ? ('৳ ' + prod.price) : prod.price;
                 const stats = calculateRatingStats(prod.id);
                 const isOOS = (prod.stock === 0);
                 const isLow = (!isOOS && prod.stock !== undefined && prod.stock > 0 && prod.stock <= 5);
-
                 let badgeHtml = '';
                 if (isOOS) badgeHtml = `<span class="out-of-stock-badge">OUT OF STOCK</span>`;
                 else if (prod.badge) badgeHtml = `<span class="product-badge ${prod.badge}">${prod.badgeText || prod.badge.toUpperCase()}</span>`;
-
                 let ratingHtml = '';
-                if (stats.total > 0) {
-                    ratingHtml = `<div class="product-rating"><span class="stars">${renderStars(parseFloat(stats.average))}</span><span class="review-count">(${stats.total})</span></div>`;
-                }
-
+                if (stats.total > 0) ratingHtml = `<div class="product-rating"><span class="stars">${renderStars(parseFloat(stats.average))}</span><span class="review-count">(${stats.total})</span></div>`;
                 let lowStockHtml = '';
                 if (isLow) lowStockHtml = `<div class="low-stock-hint"><i class="fas fa-fire"></i> মাত্র ${prod.stock}টি বাকি!</div>`;
-
-                html += `
-                    <div class="wishlist-card">
-                        <div class="wishlist-card-img-box" onclick="openProductDetails(${prod.id})">
-                            ${badgeHtml}
-                            <button class="wishlist-remove-btn" onclick="event.stopPropagation(); toggleWishlist(${prod.id}, event)" title="Remove from Wishlist">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                            <img src="${prod.image}" alt="${prod.name}" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
-                        </div>
-                        <div class="wishlist-card-info">
-                            <span class="product-category-tag">${prod.category}</span>
-                            <div class="wishlist-card-title" onclick="openProductDetails(${prod.id})">${prod.name}</div>
-                            ${ratingHtml}
-                            ${lowStockHtml}
-                            <div class="wishlist-card-price-row">
-                                <span class="wishlist-card-price">${priceDisplay}</span>
-                                <button class="wishlist-cart-btn" onclick="event.stopPropagation(); addToCartFromWishlist(${prod.id})" ${isOOS ? 'disabled' : ''}>
-                                    ${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                html += `<div class="wishlist-card"><div class="wishlist-card-img-box" onclick="openProductDetails(${prod.id})">${badgeHtml}<button class="wishlist-remove-btn" onclick="event.stopPropagation(); toggleWishlist(${prod.id}, event)" title="Remove from Wishlist"><i class="fas fa-heart"></i></button><img src="${prod.image}" alt="${prod.name}" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'"></div><div class="wishlist-card-info"><span class="product-category-tag">${prod.category}</span><div class="wishlist-card-title" onclick="openProductDetails(${prod.id})">${prod.name}</div>${ratingHtml}${lowStockHtml}<div class="wishlist-card-price-row"><span class="wishlist-card-price">${priceDisplay}</span><button class="wishlist-cart-btn" onclick="event.stopPropagation(); addToCartFromWishlist(${prod.id})" ${isOOS ? 'disabled' : ''}>${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}</button></div></div></div>`;
             });
             html += '</div>';
             container.innerHTML = html;
         }
 
-        // ⚡ ADD TO CART FROM WISHLIST
         function addToCartFromWishlist(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
-            if (product.stock === 0) {
-                showToast('❌ এই প্রোডাক্টটি স্টক আউট!');
-                return;
-            }
-            // Product details page-এ নিয়ে যাই (size/color select করার জন্য)
+            if (product.stock === 0) { showToast('❌ এই প্রোডাক্টটি স্টক আউট!'); return; }
             openProductDetails(productId);
             showToast('📝 Size ও Color সিলেক্ট করুন');
         }
 
-        // ⚡ SORT WISHLIST
         function sortWishlist(mode) {
             wishlistSortMode = mode;
             document.querySelectorAll('.wishlist-sort-btn').forEach(btn => {
@@ -1506,18 +1623,13 @@
             renderWishlist();
         }
 
-        // ⚡ CLEAR ALL WISHLIST
         function clearAllWishlist() {
-            if (wishlist.length === 0) {
-                showToast('⚠️ Wishlist ইতিমধ্যে খালি');
-                return;
-            }
+            if (wishlist.length === 0) { showToast('⚠️ Wishlist ইতিমধ্যে খালি'); return; }
             if (!confirm('Wishlist এর সব প্রোডাক্ট মুছে ফেলতে চান?')) return;
             wishlist = [];
             localStorage.setItem('burqa_wishlist', JSON.stringify([]));
             updateWishlistBadge();
             renderWishlist();
-            // Update product cards
             document.querySelectorAll('.wishlist-btn').forEach(btn => btn.classList.remove('active'));
             showToast('🗑️ Wishlist খালি করা হয়েছে');
         }
@@ -1525,9 +1637,7 @@
         // ============================================
         // COUPONS
         // ============================================
-        function getUsedCouponsLocal() {
-            return JSON.parse(localStorage.getItem('burqa_used_coupons')) || [];
-        }
+        function getUsedCouponsLocal() { return JSON.parse(localStorage.getItem('burqa_used_coupons')) || []; }
         function markCouponUsedLocal(code) {
             const used = getUsedCouponsLocal();
             if (!used.includes(code.toUpperCase())) {
@@ -1535,7 +1645,6 @@
                 localStorage.setItem('burqa_used_coupons', JSON.stringify(used));
             }
         }
-
         function isCouponValid(c) {
             if (!c) return { valid: false, reason: 'invalid' };
             if (c.active === false) return { valid: false, reason: 'inactive' };
@@ -1547,7 +1656,6 @@
             }
             return { valid: true, reason: 'ok' };
         }
-
         function formatExpiryShort(expiry) {
             if (!expiry) return '';
             try {
@@ -1593,9 +1701,7 @@
                     btn.classList.remove('copied');
                     btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
                 }, 2000);
-            }).catch(() => {
-                showToast('❌ কপি করা যায়নি: ' + code);
-            });
+            }).catch(() => showToast('❌ কপি করা যায়নি: ' + code));
         }
 
         function getAvailableCouponsHtml() {
@@ -1636,11 +1742,8 @@
         function calculateDiscount(subtotal) {
             if (!appliedCoupon) return 0;
             let disc = 0;
-            if (appliedCoupon.type === 'percentage') {
-                disc = Math.round((subtotal * appliedCoupon.value) / 100);
-            } else {
-                disc = appliedCoupon.value;
-            }
+            if (appliedCoupon.type === 'percentage') disc = Math.round((subtotal * appliedCoupon.value) / 100);
+            else disc = appliedCoupon.value;
             if (disc > subtotal) disc = subtotal;
             return disc;
         }
@@ -1652,10 +1755,7 @@
             const btn = document.getElementById('coupon-apply-btn');
             if (!input || !msgBox) return;
             const code = input.value.trim().toUpperCase();
-            const showCouponMsg = (text, type) => {
-                msgBox.textContent = text;
-                msgBox.className = 'coupon-msg show ' + type;
-            };
+            const showCouponMsg = (text, type) => { msgBox.textContent = text; msgBox.className = 'coupon-msg show ' + type; };
             if (!code) { showCouponMsg('⚠️ কুপন কোড লিখুন', 'error'); return; }
             isApplyingCoupon = true;
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
@@ -1683,22 +1783,10 @@
                 showCouponMsg('✅ কুপন সফলভাবে প্রয়োগ হয়েছে!', 'success');
                 isApplyingCoupon = false;
                 updateCartUI();
-            } catch (err) {
-                showCouponMsg('❌ কুপন যাচাই করা যায়নি', 'error');
-                resetCouponBtn(btn); isApplyingCoupon = false;
-            }
+            } catch (err) { showCouponMsg('❌ কুপন যাচাই করা যায়নি', 'error'); resetCouponBtn(btn); isApplyingCoupon = false; }
         }
-
-        function resetCouponBtn(btn) {
-            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Apply'; }
-        }
-
-        function removeCoupon() {
-            appliedCoupon = null;
-            discountAmount = 0;
-            updateCartUI();
-            showToast('🗑️ কুপন সরানো হয়েছে');
-        }
+        function resetCouponBtn(btn) { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Apply'; } }
+        function removeCoupon() { appliedCoupon = null; discountAmount = 0; updateCartUI(); showToast('🗑️ কুপন সরানো হয়েছে'); }
 
         // ============================================
         // MINI CART
@@ -1727,9 +1815,7 @@
             let subtotal = 0;
             let html = '';
             cart.forEach((item, index) => {
-                let priceText = (typeof item.price === 'number') 
-                    ? '৳ ' + item.price + ' × ' + item.quantity + ' = <strong>৳ ' + (item.price * item.quantity) + '</strong>'
-                    : '<span style="color:#ffb15b;">Coming Soon</span>';
+                let priceText = (typeof item.price === 'number') ? '৳ ' + item.price + ' × ' + item.quantity + ' = <strong>৳ ' + (item.price * item.quantity) + '</strong>' : '<span style="color:#ffb15b;">Coming Soon</span>';
                 if (typeof item.price === 'number') subtotal += (item.price * item.quantity);
                 let metaText = '';
                 if (item.size) metaText += 'Size: ' + item.size;
@@ -1765,24 +1851,16 @@
                 await window.fbAddDoc(window.fbCollection(window.db, 'newsletter'), { email: email, date: new Date().toISOString(), source: 'website' });
                 showToast('✅ ধন্যবাদ! আপনি সাবস্ক্রাইব করেছেন');
                 emailInput.value = '';
-            } catch (err) {
-                showToast('❌ সাবস্ক্রাইব করা যায়নি। আবার চেষ্টা করুন।');
-            }
+            } catch (err) { showToast('❌ সাবস্ক্রাইব করা যায়নি। আবার চেষ্টা করুন।'); }
             isSubscribing = false;
             btn.disabled = false;
             btn.innerHTML = origText;
         }
 
-        function socialPlaceholder(event, platform) {
-            event.preventDefault();
-            showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!');
-        }
+        function socialPlaceholder(event, platform) { event.preventDefault(); showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!'); }
 
         document.body.classList.add('content-ready');
 
-        // ============================================
-        // SCROLL
-        // ============================================
         let scrollTick = false;
         window.addEventListener('scroll', () => {
             if (scrollTick) return;
@@ -1827,27 +1905,18 @@
             document.getElementById('share-twitter').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
             document.getElementById('share-modal').classList.add('active');
         }
-        function closeShareModal(event) {
-            if (event && event.target !== event.currentTarget) return;
-            document.getElementById('share-modal').classList.remove('active');
-        }
+        function closeShareModal(event) { if (event && event.target !== event.currentTarget) return; document.getElementById('share-modal').classList.remove('active'); }
         function copyProductLink() {
             if (!currentShareProduct) return;
             const pageUrl = window.location.href.split('?')[0].split('#')[0];
             const shareUrl = pageUrl + '?product=' + currentShareProduct.id;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showToast('✅ Link কপি হয়েছে!');
-                closeShareModal();
-            }).catch(() => showToast('❌ কপি করা যায়নি'));
+            navigator.clipboard.writeText(shareUrl).then(() => { showToast('✅ Link কপি হয়েছে!'); closeShareModal(); }).catch(() => showToast('❌ কপি করা যায়নি'));
         }
 
         // ============================================
         // REVIEWS
         // ============================================
-        function getProductReviews(productId) {
-            if (!window.reviewsCache) return [];
-            return window.reviewsCache[productId] || [];
-        }
+        function getProductReviews(productId) { if (!window.reviewsCache) return []; return window.reviewsCache[productId] || []; }
 
         async function saveProductReviewToFirestore(productId, review) {
             if (!window.db || !window.fbAddDoc || !window.fbCollection) throw new Error('Firebase not ready');
@@ -1966,7 +2035,7 @@
         }
 
         // ============================================
-        // ROUTING / TABS
+        // ROUTING
         // ============================================
         function updateURL(tabName, productId) {
             let url = window.location.pathname;
@@ -1981,10 +2050,7 @@
             const hash = window.location.hash.replace('#', '');
             if (productId) {
                 const pid = parseInt(productId);
-                if (productsData.find(p => p.id === pid)) {
-                    setTimeout(() => openProductDetails(pid), 300);
-                    return;
-                }
+                if (productsData.find(p => p.id === pid)) { setTimeout(() => openProductDetails(pid), 300); return; }
             }
             if (hash && ['shop', 'wishlist', 'about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order', 'cart'].includes(hash)) {
                 setTimeout(() => switchTab(hash), 300);
@@ -2029,25 +2095,17 @@
             document.getElementById('nav-shop').classList.remove('active');
             if (document.getElementById('nav-wishlist')) document.getElementById('nav-wishlist').classList.remove('active');
             document.getElementById('nav-cart').classList.remove('active');
-
             let targetSection = document.getElementById(tabName + '-section');
             if (targetSection) targetSection.classList.add('active-page');
-
             if (tabName === 'home' || tabName === 'shop' || tabName === 'cart' || tabName === 'wishlist') {
                 let navBtn = document.getElementById('nav-' + tabName);
                 if (navBtn) navBtn.classList.add('active');
             }
-
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
             window.scrollTo(0, 0);
             if (tabName !== 'product-details') updateURL(tabName);
-
-            // Wishlist page এ ঢুকলে render করি
-            if (tabName === 'wishlist') {
-                renderWishlist();
-            }
-
+            if (tabName === 'wishlist') renderWishlist();
             const progress = document.getElementById('reading-progress');
             if (progress) progress.style.width = '0%';
         }
@@ -2110,6 +2168,10 @@
                 sizeHtml = `<div class="option-label">📏 Select Size <span class="selected-info" id="size-info"></span></div><div class="size-options-box" id="size-options-box">`;
                 product.sizes.forEach(size => { sizeHtml += `<button type="button" class="size-btn" data-size="${size}" onclick="selectSize('${size}')">${size}</button>`; });
                 sizeHtml += `</div>`;
+                // ⚡ SIZE GUIDE BUTTON
+                sizeHtml += `<button type="button" class="size-guide-btn" onclick="event.stopPropagation(); openSizeChart('${product.category}')">
+                    <i class="fas fa-ruler-combined"></i> 📏 Size Guide — সাইজ মাপ দেখুন
+                </button>`;
             }
             let colorHtml = '';
             if (hasColors) {
@@ -2384,10 +2446,7 @@
                         alert('❌ দুঃখিত!\n\nএই ফোন নম্বর (' + phone + ') থেকে ইতিমধ্যে "' + appliedCoupon.code + '" কুপনটি ব্যবহার করা হয়েছে।');
                         return;
                     }
-                } catch (checkErr) {
-                    alert('⚠️ কুপন যাচাই করা যায়নি। আবার চেষ্টা করুন।');
-                    return;
-                }
+                } catch (checkErr) { alert('⚠️ কুপন যাচাই করা যায়নি। আবার চেষ্টা করুন।'); return; }
             }
 
             try {
@@ -2461,7 +2520,12 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') { closeMiniCart(); closeShareModal(); closeImageModal(); }
+            if (e.key === 'Escape') {
+                closeMiniCart();
+                closeShareModal();
+                closeImageModal();
+                closeSizeChart();
+            }
         });
 
         window.addEventListener('DOMContentLoaded', function() {
