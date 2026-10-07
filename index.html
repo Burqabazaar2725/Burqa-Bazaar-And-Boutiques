@@ -273,145 +273,81 @@
         .faq-contact-btn.phone { background: var(--gold-color); color: #0b0b0d; }
         .faq-contact-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* ⚡ PRODUCT IMAGE GALLERY (NEW) */
-        .product-gallery {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        .gallery-main {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            background: #000;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            touch-action: pan-y;
-        }
-        .gallery-main-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            cursor: zoom-in;
-            display: block;
-            transition: opacity 0.2s ease;
-        }
-        .gallery-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.55);
-            border: 1.5px solid var(--gold-color);
-            color: var(--gold-color);
+        /* ⚡ PAGINATION (NEW) */
+        .pagination-info {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 20px 0 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
-            cursor: pointer;
-            z-index: 5;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .gallery-nav-btn:hover {
-            background: var(--gold-color);
-            color: #0b0b0d;
-            transform: translateY(-50%) scale(1.1);
-        }
-        .gallery-nav-btn.prev { left: 10px; }
-        .gallery-nav-btn.next { right: 10px; }
-        .gallery-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            background: rgba(0, 0, 0, 0.55);
-            color: var(--gold-color);
-        }
-
-        .gallery-counter {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--gold-color);
-            color: var(--gold-color);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            z-index: 5;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            -webkit-backdrop-filter: blur(5px);
-            backdrop-filter: blur(5px);
-        }
-
-        .gallery-thumbnails {
-            display: flex;
             gap: 8px;
-            margin-top: 12px;
-            overflow-x: auto;
-            padding-bottom: 6px;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+            flex-wrap: wrap;
         }
-        .gallery-thumbnails::-webkit-scrollbar { height: 5px; }
-        .gallery-thumbnails::-webkit-scrollbar-track { background: transparent; }
-        .gallery-thumbnails::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-
-        .gallery-thumb {
-            width: 68px;
-            height: 68px;
-            flex-shrink: 0;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid var(--border-color);
-            background: #000;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-        .gallery-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .gallery-thumb:hover {
-            border-color: var(--gold-color);
-            transform: translateY(-2px);
-        }
-        .gallery-thumb.active {
-            border-color: var(--gold-color);
-            box-shadow: 0 0 12px rgba(223, 177, 91, 0.5);
-        }
-        .gallery-thumb.active::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, transparent 60%, rgba(223, 177, 91, 0.3));
-            pointer-events: none;
+        .pagination-info strong {
+            color: var(--gold-color);
+            font-weight: 700;
         }
 
-        .gallery-hint {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 8px;
+        .pagination-wrap {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            margin: 20px 0 30px;
+            flex-wrap: wrap;
         }
-        .gallery-hint i { color: var(--gold-color); }
+        .pagination-btn {
+            min-width: 40px;
+            height: 40px;
+            padding: 0 12px;
+            border-radius: 10px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+        .pagination-btn:hover:not(:disabled):not(.active) {
+            border-color: var(--gold-color);
+            color: var(--gold-color);
+            transform: translateY(-2px);
+        }
+        .pagination-btn.active {
+            background: var(--gold-color);
+            color: #0b0b0d;
+            border-color: var(--gold-color);
+            box-shadow: 0 4px 15px rgba(223,177,91,.35);
+            cursor: default;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .pagination-ellipsis {
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0 4px;
+            user-select: none;
+        }
 
         @media (max-width: 500px) {
-            .gallery-main { height: 340px; }
-            .gallery-nav-btn { width: 34px; height: 34px; font-size: 13px; }
-            .gallery-nav-btn.prev { left: 6px; }
-            .gallery-nav-btn.next { right: 6px; }
-            .gallery-thumb { width: 58px; height: 58px; }
+            .pagination-btn {
+                min-width: 36px;
+                height: 36px;
+                padding: 0 8px;
+                font-size: 12px;
+                border-radius: 8px;
+            }
         }
 
         /* PRODUCT BADGES */
@@ -906,8 +842,14 @@
             </button>
         </div>
 
+        <!-- ⚡ PAGINATION INFO (TOP) -->
+        <div class="pagination-info" id="pagination-info-top" style="display:none;"></div>
+
         <div class="product-grid" id="product-grid-container">
         </div>
+
+        <!-- ⚡ PAGINATION CONTROLS (BOTTOM) -->
+        <div class="pagination-wrap" id="pagination-wrap" style="display:none;"></div>
     </div>
 
     <!-- WISHLIST PAGE SECTION -->
@@ -1216,23 +1158,6 @@
                 </div>
             </div>
 
-            <div class="premium-contact-grid">
-                <div class="premium-contact-card">
-                    <img src="https://i.ibb.co/vWtCxwz/images-3.png" alt="Phone" class="premium-contact-icon-img" loading="lazy">
-                    <div class="premium-contact-info">
-                        <span class="premium-contact-label">PHONE</span>
-                        <a href="tel:+8801832140613" class="premium-contact-value">+880 1832-140613</a>
-                    </div>
-                </div>
-                <div class="premium-contact-card">
-                    <img src="https://i.ibb.co/twXQ8zyW/images-4.png" alt="WhatsApp" class="premium-contact-icon-img" loading="lazy">
-                    <div class="premium-contact-info">
-                        <span class="premium-contact-label">WHATSAPP</span>
-                        <a href="https://wa.me/8801832140613" target="_blank" class="premium-contact-value">+880 1832-140613</a>
-                    </div>
-                </div>
-            </div>
-
             <div class="policy-footer">
                 <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px; text-align: center; padding-left: 0;">🛍️ Burqa Bazaar and Boutiques</h3>
                 <p style="font-weight: 600; font-size: 14px; line-height: 1.6;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
@@ -1380,26 +1305,29 @@
         let currentSizeChartCategory = 'default';
         let faqFilterCategory = 'all';
         let openFAQIndex = null;
-
-        // ⚡ GALLERY STATE
         let currentGalleryImages = [];
         let currentGalleryIndex = 0;
         let gallerySwipeStartX = 0;
         let gallerySwipeEndX = 0;
 
+        // ⚡ PAGINATION STATE
+        const PRODUCTS_PER_PAGE = 12;
+        let currentPage = 1;
+        let currentShopFilteredProducts = [];  // Shop page-এ যা দেখানো হচ্ছে
+
         // ============================================
-        // ⚡ FAQ DATA
+        // FAQ DATA
         // ============================================
         const FAQ_DATA = [
             { category: 'order', q: 'কীভাবে অর্ডার করবো?', a: 'অর্ডার করা খুবই সহজ —<ul><li>১. পছন্দের প্রোডাক্টে ক্লিক করুন</li><li>২. Size ও Color সিলেক্ট করুন</li><li>৩. <strong>"Add to Cart"</strong> বাটনে ক্লিক করুন</li><li>৪. কার্টে গিয়ে <strong>"Checkout"</strong> করুন</li><li>৫. নাম, ফোন, ঠিকানা দিয়ে <strong>"Place Order"</strong> ক্লিক করুন</li></ul>অর্ডার সম্পন্ন হলে WhatsApp-এ কনফার্মেশন পাবেন।' },
-            { category: 'order', q: 'অর্ডার কনফার্মেশন কখন পাবো?', a: 'অর্ডার করার সাথে সাথেই আপনার WhatsApp-এ <strong>Order ID সহ কনফার্মেশন</strong> পাবেন। আমাদের টিম ২৪ ঘণ্টার মধ্যে অর্ডার যাচাই করে কনফার্ম করবে।' },
+            { category: 'order', q: 'অর্ডার কনফার্মেশন কখন পাবো?', a: 'অর্ডার করার সাথে সাথেই আপনার WhatsApp-এ <strong>Order ID সহ কনফার্মেশন</strong> পাবেন।' },
             { category: 'order', q: 'অর্ডার ক্যান্সেল করা যাবে?', a: 'হ্যাঁ, অর্ডার <strong>শিপিং হওয়ার আগে</strong> পর্যন্ত ক্যান্সেল করা যাবে। WhatsApp-এ (<strong>01832140613</strong>) আপনার Order ID সহ মেসেজ দিন।' },
             { category: 'payment', q: 'কী কী পেমেন্ট মেথড আছে?', a: 'আমরা তিনটি পেমেন্ট মেথড গ্রহণ করি —<ul><li>✅ <strong>Cash on Delivery (COD)</strong></li><li>✅ <strong>bKash</strong></li><li>✅ <strong>Nagad</strong></li></ul>' },
-            { category: 'payment', q: 'Cash on Delivery-তে কী কী দিতে হয়?', a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয় (ফেনীর ভিতরে ৳৬০, বাইরে ৳১৩০)। পণ্য হাতে পেয়ে <strong>বাকি টাকা</strong> পরিশোধ করবেন।' },
+            { category: 'payment', q: 'Cash on Delivery-তে কী কী দিতে হয়?', a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয় (ফেনীর ভিতরে ৳৬০, বাইরে ৳১৩০)।' },
             { category: 'payment', q: 'bKash/Nagad পেমেন্ট কীভাবে করবো?', a: 'আমাদের বিকাশ/নগদ নম্বরে (<strong>01832140613 — Personal</strong>) <strong>Send Money</strong> করুন। তারপর চেকআউট ফর্মে প্রেরকের নম্বর ও TrxID লিখুন।' },
             { category: 'delivery', q: 'ডেলিভারি চার্জ কত?', a: '<ul><li>🏠 <strong>ফেনীর ভিতরে:</strong> ৳৬০</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ৳১৩০</li></ul>' },
             { category: 'delivery', q: 'ডেলিভারি কত দিনে পাবো?', a: '<ul><li>📍 <strong>ফেনীর ভিতরে:</strong> ১-২ কার্যদিবস</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ২-৪ কার্যদিবস</li></ul>' },
-            { category: 'delivery', q: 'কীভাবে অর্ডার ট্র্যাক করবো?', a: 'শিপিং হওয়ার পর আমরা আপনাকে WhatsApp-এ <strong>Tracking Number / CN Number</strong> পাঠাবো। সেটি দিয়ে আমাদের <strong>"Track Order"</strong> পেজ থেকে সহজেই ট্র্যাক করতে পারবেন।' },
+            { category: 'delivery', q: 'কীভাবে অর্ডার ট্র্যাক করবো?', a: 'শিপিং হওয়ার পর আমরা আপনাকে WhatsApp-এ <strong>Tracking Number / CN Number</strong> পাঠাবো।' },
             { category: 'return', q: 'পণ্য রিটার্ন করা যাবে?', a: 'হ্যাঁ, পণ্য হাতে পাওয়ার <strong>৪৮ ঘণ্টার মধ্যে</strong> রিটার্ন/এক্সচেঞ্জের জন্য যোগাযোগ করতে হবে।' },
             { category: 'return', q: 'কোন কোন ক্ষেত্রে এক্সচেঞ্জ করা যাবে?', a: 'নিম্নলিখিত ক্ষেত্রে —<ul><li>• ভুল পণ্য পাঠানো হলে</li><li>• ভুল Size পাঠানো হলে</li><li>• ডেলিভারিতে পণ্য ক্ষতিগ্রস্ত হলে</li><li>• Manufacturing Defect থাকলে</li></ul>' },
             { category: 'product', q: 'সাইজ কীভাবে বেছে নেবো?', a: 'প্রতিটি প্রোডাক্টে <strong>"📏 Size Guide"</strong> বাটন আছে — সেটা ক্লিক করে সঠিক সাইজ দেখে নিন।' },
@@ -1408,7 +1336,7 @@
         ];
 
         // ============================================
-        // ⚡ SIZE CHART DATA
+        // SIZE CHART DATA
         // ============================================
         const SIZE_CHART_DATA = {
             'default': {
@@ -1450,64 +1378,167 @@
             return cm + ' cm';
         }
 
-        function openSizeChart(category) {
-            currentSizeChartCategory = category || 'default';
-            const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
-            document.getElementById('size-chart-title').textContent = data.title;
-            document.getElementById('size-chart-subtitle').textContent = 'সঠিক সাইজ বেছে নিন — আরামে থাকুন';
-            renderSizeChartTable();
-            document.getElementById('size-chart-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+        // ============================================
+        // ⚡ PAGINATION FUNCTIONS (NEW)
+        // ============================================
+        function paginateProducts(products, page) {
+            const start = (page - 1) * PRODUCTS_PER_PAGE;
+            const end = start + PRODUCTS_PER_PAGE;
+            return products.slice(start, end);
         }
-        function closeSizeChart(event) {
-            if (event && event.target !== event.currentTarget) return;
-            document.getElementById('size-chart-modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        function switchSizeUnit(unit) {
-            sizeChartUnit = unit;
-            document.querySelectorAll('.size-unit-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-unit') === unit) btn.classList.add('active');
-            });
-            renderSizeChartTable();
-        }
-        function renderSizeChartTable() {
-            const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
-            const table = document.getElementById('size-chart-table');
-            if (!table) return;
-            const isHijab = currentSizeChartCategory === 'Hijab Collection';
-            let html = '<thead><tr><th>সাইজ</th>';
-            if (!isHijab) {
-                html += '<th>বুক<br><span style="font-size:9px; opacity:0.7;">Chest</span></th>';
-                html += '<th>কোমর<br><span style="font-size:9px; opacity:0.7;">Waist</span></th>';
+
+        function renderPaginationControls() {
+            const totalItems = currentShopFilteredProducts.length;
+            const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
+            const infoTop = document.getElementById('pagination-info-top');
+            const wrap = document.getElementById('pagination-wrap');
+
+            if (totalPages <= 1) {
+                if (infoTop) infoTop.style.display = 'none';
+                if (wrap) wrap.style.display = 'none';
+                return;
             }
-            html += '<th>লম্বা<br><span style="font-size:9px; opacity:0.7;">Length</span></th>';
-            if (!isHijab) {
-                html += '<th>কাঁধ<br><span style="font-size:9px; opacity:0.7;">Shoulder</span></th>';
-                html += '<th>হাতা<br><span style="font-size:9px; opacity:0.7;">Sleeve</span></th>';
+
+            // Show info
+            const startItem = (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
+            const endItem = Math.min(currentPage * PRODUCTS_PER_PAGE, totalItems);
+
+            if (infoTop) {
+                infoTop.style.display = 'flex';
+                infoTop.innerHTML = `<i class="fas fa-box-open" style="color: var(--gold-color);"></i> দেখানো হচ্ছে <strong>${startItem}–${endItem}</strong> এর মধ্যে <strong>${totalItems}</strong>টি প্রোডাক্ট`;
             }
-            html += '</tr></thead><tbody>';
-            data.rows.forEach(row => {
-                html += '<tr>';
-                html += `<td>${row.size}</td>`;
-                if (!isHijab) {
-                    html += `<td>${formatMeasure(row.chest)}</td>`;
-                    html += `<td>${formatMeasure(row.waist)}</td>`;
+
+            // Build buttons
+            let html = '';
+
+            // Prev button
+            html += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> <span style="display:none;">Prev</span>
+            </button>`;
+
+            // Page numbers with ellipsis
+            const pages = [];
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+                if (currentPage <= 3) {
+                    pages.push(1, 2, 3, 4, '...', totalPages);
+                } else if (currentPage >= totalPages - 2) {
+                    pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                } else {
+                    pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
                 }
-                html += `<td>${formatMeasure(row.length)}</td>`;
-                if (!isHijab) {
-                    html += `<td>${formatMeasure(row.shoulder)}</td>`;
-                    html += `<td>${formatMeasure(row.sleeve)}</td>`;
+            }
+
+            pages.forEach(p => {
+                if (p === '...') {
+                    html += `<span class="pagination-ellipsis">…</span>`;
+                } else {
+                    html += `<button class="pagination-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
                 }
-                html += '</tr>';
             });
-            html += '</tbody>';
-            table.innerHTML = html;
+
+            // Next button
+            html += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                <i class="fas fa-chevron-right"></i> <span style="display:none;">Next</span>
+            </button>`;
+
+            if (wrap) {
+                wrap.style.display = 'flex';
+                wrap.innerHTML = html;
+            }
+        }
+
+        window.goToPage = function(page) {
+            const totalItems = currentShopFilteredProducts.length;
+            const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
+            if (page < 1 || page > totalPages || page === currentPage) return;
+
+            currentPage = page;
+
+            // Render the paginated products
+            const pageProducts = paginateProducts(currentShopFilteredProducts, currentPage);
+            renderProductsGrid(pageProducts);
+            renderPaginationControls();
+
+            // Scroll to top of shop section
+            const shopSection = document.getElementById('shop-section');
+            if (shopSection) {
+                const yOffset = -100; // account for sticky header
+                const y = shopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        };
+
+        // ⚡ Render ONLY the grid (no pagination)
+        function renderProductsGrid(itemsToRender) {
+            const gridContainer = document.getElementById('product-grid-container');
+            if (!gridContainer) return;
+
+            if (!itemsToRender || itemsToRender.length === 0) {
+                gridContainer.innerHTML = `<p style="grid-column: span 2; text-align: center; color: var(--text-muted); padding: 30px;">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>`;
+                return;
+            }
+
+            let html = '';
+            itemsToRender.forEach(prod => {
+                let priceDisplay = (typeof prod.price === 'number') ? ('৳ ' + prod.price) : prod.price;
+                const isWishlisted = wishlist.includes(prod.id);
+                const stats = calculateRatingStats(prod.id);
+                const isOOS = (prod.stock === 0);
+                const isLow = (!isOOS && prod.stock !== undefined && prod.stock > 0 && prod.stock <= 5);
+
+                let badgeHtml = '';
+                if (isOOS) badgeHtml = `<span class="product-badge soldout">SOLD OUT</span>`;
+                else if (prod.badge) badgeHtml = `<span class="product-badge ${prod.badge}">${prod.badgeText || prod.badge.toUpperCase()}</span>`;
+
+                let ratingHtml = '';
+                if (stats.total > 0) {
+                    ratingHtml = `<div class="product-rating"><span class="stars">${renderStars(parseFloat(stats.average))}</span><span class="review-count">(${stats.total})</span></div>`;
+                }
+
+                let lowStockHtml = '';
+                if (isLow) lowStockHtml = `<div class="low-stock-hint"><i class="fas fa-fire"></i> মাত্র ${prod.stock}টি বাকি!</div>`;
+
+                html += `
+                    <div class="product-card ${isOOS ? 'out-of-stock' : ''}" onclick="openProductDetails(${prod.id})">
+                        <div class="product-img-box">
+                            ${badgeHtml}
+                            ${isOOS ? '<div class="out-of-stock-overlay"><span>Out of Stock</span></div>' : ''}
+                            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${prod.id}" onclick="toggleWishlist(${prod.id}, event)" title="Add to Wishlist">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <img src="${prod.image}" alt="${prod.name}" loading="lazy" decoding="async" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category-tag">${prod.category}</span>
+                            <div class="product-title">${prod.name}</div>
+                            ${ratingHtml}
+                            ${lowStockHtml}
+                            <div class="product-price-row">
+                                <span class="product-price">${priceDisplay}</span>
+                                <button class="add-to-cart-grid-btn" onclick="event.stopPropagation(); quickAddToCart(${prod.id})" ${isOOS ? 'disabled' : ''}>
+                                    ${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            gridContainer.innerHTML = html;
+        }
+
+        // ⚡ SHOP PAGE RENDER — with pagination
+        function renderProducts(itemsToRender) {
+            currentShopFilteredProducts = itemsToRender || [];
+            currentPage = 1;
+            const pageProducts = paginateProducts(currentShopFilteredProducts, currentPage);
+            renderProductsGrid(pageProducts);
+            renderPaginationControls();
         }
 
         // ============================================
-        // ⚡ GALLERY FUNCTIONS
+        // GALLERY FUNCTIONS
         // ============================================
         function setGalleryImages(images, mainImage) {
             let safeImages = [];
@@ -1515,17 +1546,13 @@
                 safeImages = images.map(i => extractUrl(i)).filter(i => i && i.length > 5);
             }
             if (safeImages.length === 0) safeImages = [mainImage || 'https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'];
-            
-            // Remove duplicates
             safeImages = [...new Set(safeImages)];
-            
             currentGalleryImages = safeImages;
             currentGalleryIndex = 0;
         }
 
         function renderGallery() {
             if (!currentGalleryImages || currentGalleryImages.length === 0) return '';
-            
             const total = currentGalleryImages.length;
             const currentImg = currentGalleryImages[currentGalleryIndex];
 
@@ -1533,20 +1560,14 @@
                 <div class="gallery-main" id="gallery-main">
                     <img src="${currentImg}" alt="Product Image" class="gallery-main-img" id="gallery-main-img" onclick="openImageModal('${currentImg}')" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">`;
             
-            // Navigation arrows (only if >1 image)
             if (total > 1) {
-                html += `<button type="button" class="gallery-nav-btn prev" onclick="event.stopPropagation(); galleryPrev()" ${currentGalleryIndex === 0 ? 'disabled' : ''}>
-                    <i class="fas fa-chevron-left"></i>
-                </button>`;
-                html += `<button type="button" class="gallery-nav-btn next" onclick="event.stopPropagation(); galleryNext()" ${currentGalleryIndex === total - 1 ? 'disabled' : ''}>
-                    <i class="fas fa-chevron-right"></i>
-                </button>`;
+                html += `<button type="button" class="gallery-nav-btn prev" onclick="event.stopPropagation(); galleryPrev()" ${currentGalleryIndex === 0 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+                html += `<button type="button" class="gallery-nav-btn next" onclick="event.stopPropagation(); galleryNext()" ${currentGalleryIndex === total - 1 ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
                 html += `<div class="gallery-counter"><i class="fas fa-images"></i> ${currentGalleryIndex + 1} / ${total}</div>`;
             }
             
             html += `</div>`;
 
-            // Thumbnails (only if >1 image)
             if (total > 1) {
                 html += `<div class="gallery-thumbnails" id="gallery-thumbnails">`;
                 currentGalleryImages.forEach((img, idx) => {
@@ -1562,24 +1583,9 @@
             return html;
         }
 
-        function galleryPrev() {
-            if (currentGalleryIndex > 0) {
-                currentGalleryIndex--;
-                updateGalleryDisplay();
-            }
-        }
-        function galleryNext() {
-            if (currentGalleryIndex < currentGalleryImages.length - 1) {
-                currentGalleryIndex++;
-                updateGalleryDisplay();
-            }
-        }
-        function goToGalleryImage(idx) {
-            if (idx >= 0 && idx < currentGalleryImages.length) {
-                currentGalleryIndex = idx;
-                updateGalleryDisplay();
-            }
-        }
+        function galleryPrev() { if (currentGalleryIndex > 0) { currentGalleryIndex--; updateGalleryDisplay(); } }
+        function galleryNext() { if (currentGalleryIndex < currentGalleryImages.length - 1) { currentGalleryIndex++; updateGalleryDisplay(); } }
+        function goToGalleryImage(idx) { if (idx >= 0 && idx < currentGalleryImages.length) { currentGalleryIndex = idx; updateGalleryDisplay(); } }
 
         function updateGalleryDisplay() {
             const mainImg = document.getElementById('gallery-main-img');
@@ -1591,52 +1597,29 @@
                     mainImg.style.opacity = '1';
                 }, 100);
             }
-            // Update arrows
             const prevBtn = document.querySelector('.gallery-nav-btn.prev');
             const nextBtn = document.querySelector('.gallery-nav-btn.next');
             if (prevBtn) prevBtn.disabled = currentGalleryIndex === 0;
             if (nextBtn) nextBtn.disabled = currentGalleryIndex === currentGalleryImages.length - 1;
-            // Update counter
             const counter = document.querySelector('.gallery-counter');
-            if (counter) {
-                counter.innerHTML = `<i class="fas fa-images"></i> ${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
-            }
-            // Update thumbs
-            document.querySelectorAll('.gallery-thumb').forEach((thumb, idx) => {
-                thumb.classList.toggle('active', idx === currentGalleryIndex);
-            });
-            // Scroll active thumb into view
+            if (counter) counter.innerHTML = `<i class="fas fa-images"></i> ${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+            document.querySelectorAll('.gallery-thumb').forEach((thumb, idx) => { thumb.classList.toggle('active', idx === currentGalleryIndex); });
             const activeThumb = document.querySelector('.gallery-thumb.active');
-            if (activeThumb) {
-                activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }
+            if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
-        // ⚡ SWIPE HANDLERS (Attached after rendering)
         function attachGallerySwipeHandlers() {
             const galleryMain = document.getElementById('gallery-main');
             if (!galleryMain || currentGalleryImages.length <= 1) return;
-
-            galleryMain.addEventListener('touchstart', (e) => {
-                gallerySwipeStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
-
-            galleryMain.addEventListener('touchend', (e) => {
-                gallerySwipeEndX = e.changedTouches[0].screenX;
-                handleGallerySwipe();
-            }, { passive: true });
+            galleryMain.addEventListener('touchstart', (e) => { gallerySwipeStartX = e.changedTouches[0].screenX; }, { passive: true });
+            galleryMain.addEventListener('touchend', (e) => { gallerySwipeEndX = e.changedTouches[0].screenX; handleGallerySwipe(); }, { passive: true });
         }
 
         function handleGallerySwipe() {
             const diff = gallerySwipeStartX - gallerySwipeEndX;
             const minSwipe = 50;
-            if (diff > minSwipe) {
-                // Swiped left → next image
-                galleryNext();
-            } else if (diff < -minSwipe) {
-                // Swiped right → prev image
-                galleryPrev();
-            }
+            if (diff > minSwipe) galleryNext();
+            else if (diff < -minSwipe) galleryPrev();
         }
 
         // ============================================
@@ -1658,11 +1641,11 @@
             let items = FAQ_DATA;
             if (faqFilterCategory !== 'all') items = FAQ_DATA.filter(f => f.category === faqFilterCategory);
             if (items.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><i class="fas fa-question-circle" style="font-size:40px; color:var(--gold-color); opacity:0.5; display:block; margin-bottom:12px;"></i><p>এই ক্যাটাগরিতে কোনো প্রশ্ন নেই।</p></div>';
+                container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><p>এই ক্যাটাগরিতে কোনো প্রশ্ন নেই।</p></div>';
                 return;
             }
             let html = '';
-            items.forEach((item, idx) => {
+            items.forEach((item) => {
                 const globalIdx = FAQ_DATA.indexOf(item);
                 const isOpen = openFAQIndex === globalIdx;
                 html += `<div class="faq-item ${isOpen ? 'open' : ''}" data-faq-idx="${globalIdx}">
@@ -1678,10 +1661,7 @@
             });
             container.innerHTML = html;
         }
-        function toggleFAQ(idx) {
-            openFAQIndex = (openFAQIndex === idx) ? null : idx;
-            renderFAQ();
-        }
+        function toggleFAQ(idx) { openFAQIndex = (openFAQIndex === idx) ? null : idx; renderFAQ(); }
         function filterFAQ(cat) {
             faqFilterCategory = cat;
             openFAQIndex = null;
@@ -1708,13 +1688,11 @@
                 } else {
                     safeColors = [{ name: 'Default', image: mainImage }];
                 }
-                // ⚡ Ensure images array properly parsed
                 let safeImages = [];
                 if (Array.isArray(p.images) && p.images.length > 0) {
                     safeImages = p.images.map(i => extractUrl(i)).filter(i => i && i.length > 5);
                 }
                 if (safeImages.length === 0) safeImages = [mainImage];
-                
                 let safePrice = p.price;
                 if (typeof safePrice === 'string' && !safePrice.toLowerCase().includes('coming')) {
                     const parsed = parseInt(safePrice.replace(/[^0-9]/g, ''));
@@ -1813,10 +1791,7 @@
         // ============================================
         function updateWishlistBadge() {
             const badge = document.getElementById('wishlist-count');
-            if (badge) {
-                badge.textContent = wishlist.length;
-                badge.style.display = wishlist.length > 0 ? 'block' : 'none';
-            }
+            if (badge) { badge.textContent = wishlist.length; badge.style.display = wishlist.length > 0 ? 'block' : 'none'; }
             const pageCount = document.getElementById('wishlist-page-count');
             if (pageCount) pageCount.textContent = wishlist.length;
         }
@@ -1849,17 +1824,9 @@
                 return;
             }
             if (wishlistSortMode === 'low') {
-                items.sort((a, b) => {
-                    const pa = typeof a.price === 'number' ? a.price : 999999;
-                    const pb = typeof b.price === 'number' ? b.price : 999999;
-                    return pa - pb;
-                });
+                items.sort((a, b) => { const pa = typeof a.price === 'number' ? a.price : 999999; const pb = typeof b.price === 'number' ? b.price : 999999; return pa - pb; });
             } else if (wishlistSortMode === 'high') {
-                items.sort((a, b) => {
-                    const pa = typeof a.price === 'number' ? a.price : -1;
-                    const pb = typeof b.price === 'number' ? b.price : -1;
-                    return pb - pa;
-                });
+                items.sort((a, b) => { const pa = typeof a.price === 'number' ? a.price : -1; const pb = typeof b.price === 'number' ? b.price : -1; return pb - pa; });
             } else if (wishlistSortMode === 'name') {
                 items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
             } else {
@@ -1918,10 +1885,7 @@
         function getUsedCouponsLocal() { return JSON.parse(localStorage.getItem('burqa_used_coupons')) || []; }
         function markCouponUsedLocal(code) {
             const used = getUsedCouponsLocal();
-            if (!used.includes(code.toUpperCase())) {
-                used.push(code.toUpperCase());
-                localStorage.setItem('burqa_used_coupons', JSON.stringify(used));
-            }
+            if (!used.includes(code.toUpperCase())) { used.push(code.toUpperCase()); localStorage.setItem('burqa_used_coupons', JSON.stringify(used)); }
         }
         function isCouponValid(c) {
             if (!c) return { valid: false, reason: 'invalid' };
@@ -1973,10 +1937,7 @@
                 btn.classList.add('copied');
                 btn.innerHTML = '<i class="fas fa-check"></i> কপি হয়েছে!';
                 showToast('✅ কুপন কোড কপি হয়েছে: ' + code);
-                setTimeout(() => {
-                    btn.classList.remove('copied');
-                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
-                }, 2000);
+                setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
             }).catch(() => showToast('❌ কপি করা যায়নি: ' + code));
         }
         function getAvailableCouponsHtml() {
@@ -2063,17 +2024,8 @@
         // ============================================
         // MINI CART
         // ============================================
-        function openMiniCart() {
-            renderMiniCart();
-            document.getElementById('mini-cart-overlay').classList.add('active');
-            document.getElementById('mini-cart-sidebar').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeMiniCart() {
-            document.getElementById('mini-cart-overlay').classList.remove('active');
-            document.getElementById('mini-cart-sidebar').classList.remove('active');
-            document.body.style.overflow = '';
-        }
+        function openMiniCart() { renderMiniCart(); document.getElementById('mini-cart-overlay').classList.add('active'); document.getElementById('mini-cart-sidebar').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeMiniCart() { document.getElementById('mini-cart-overlay').classList.remove('active'); document.getElementById('mini-cart-sidebar').classList.remove('active'); document.body.style.overflow = ''; }
         function renderMiniCart() {
             const body = document.getElementById('mini-cart-body');
             const footer = document.getElementById('mini-cart-footer');
@@ -2373,35 +2325,6 @@
             if (progress) progress.style.width = '0%';
         }
 
-        // ============================================
-        // RENDER PRODUCTS
-        // ============================================
-        function renderProducts(itemsToRender) {
-            const gridContainer = document.getElementById('product-grid-container');
-            if (!gridContainer) return;
-            if (!itemsToRender || itemsToRender.length === 0) {
-                gridContainer.innerHTML = `<p style="grid-column: span 2; text-align: center; color: var(--text-muted); padding: 30px;">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>`;
-                return;
-            }
-            let html = '';
-            itemsToRender.forEach(prod => {
-                let priceDisplay = (typeof prod.price === 'number') ? ('৳ ' + prod.price) : prod.price;
-                const isWishlisted = wishlist.includes(prod.id);
-                const stats = calculateRatingStats(prod.id);
-                const isOOS = (prod.stock === 0);
-                const isLow = (!isOOS && prod.stock !== undefined && prod.stock > 0 && prod.stock <= 5);
-                let badgeHtml = '';
-                if (isOOS) badgeHtml = `<span class="product-badge soldout">SOLD OUT</span>`;
-                else if (prod.badge) badgeHtml = `<span class="product-badge ${prod.badge}">${prod.badgeText || prod.badge.toUpperCase()}</span>`;
-                let ratingHtml = '';
-                if (stats.total > 0) ratingHtml = `<div class="product-rating"><span class="stars">${renderStars(parseFloat(stats.average))}</span><span class="review-count">(${stats.total})</span></div>`;
-                let lowStockHtml = '';
-                if (isLow) lowStockHtml = `<div class="low-stock-hint"><i class="fas fa-fire"></i> মাত্র ${prod.stock}টি বাকি!</div>`;
-                html += `<div class="product-card ${isOOS ? 'out-of-stock' : ''}" onclick="openProductDetails(${prod.id})"><div class="product-img-box">${badgeHtml}${isOOS ? '<div class="out-of-stock-overlay"><span>Out of Stock</span></div>' : ''}<button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${prod.id}" onclick="toggleWishlist(${prod.id}, event)" title="Add to Wishlist"><i class="fas fa-heart"></i></button><img src="${prod.image}" alt="${prod.name}" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'"></div><div class="product-info"><span class="product-category-tag">${prod.category}</span><div class="product-title">${prod.name}</div>${ratingHtml}${lowStockHtml}<div class="product-price-row"><span class="product-price">${priceDisplay}</span><button class="add-to-cart-grid-btn" onclick="event.stopPropagation(); quickAddToCart(${prod.id})" ${isOOS ? 'disabled' : ''}>${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}</button></div></div></div>`;
-            });
-            gridContainer.innerHTML = html;
-        }
-
         function quickAddToCart(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
@@ -2411,7 +2334,7 @@
         }
 
         // ============================================
-        // PRODUCT DETAILS (with Multi-Image Gallery)
+        // PRODUCT DETAILS
         // ============================================
         function openProductDetails(productId) {
             const product = productsData.find(p => p.id === productId);
@@ -2426,13 +2349,8 @@
             const hasSizes = product.sizes && product.sizes.length > 0;
             const hasColors = product.colors && product.colors.length > 0;
 
-            // ⚡ Set gallery images
-            const mainImageUrl = (product.colors && product.colors.length > 0 && product.colors[0].image) 
-                ? product.colors[0].image 
-                : product.image;
+            const mainImageUrl = (product.colors && product.colors.length > 0 && product.colors[0].image) ? product.colors[0].image : product.image;
             setGalleryImages(product.images, mainImageUrl);
-
-            // ⚡ Render gallery
             const galleryHtml = renderGallery();
 
             let sizeHtml = '';
@@ -2463,12 +2381,9 @@
             const relatedHtml = renderRelatedProducts(product.id);
             const detailsContainer = document.getElementById('product-details-content');
             detailsContainer.innerHTML = `<button onclick="switchTab('shop')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back to Shop</button>${galleryHtml}<span class="product-category-tag">${product.category}</span><div class="details-title">${product.name} ${badgeHtml}</div>${ratingLineHtml}<div class="details-price" style="margin-top: 10px;">${priceDisplay}</div>${stockLineHtml}${sizeHtml}${colorHtml}<div class="selection-warning" id="selection-warning">⚠️ অনুগ্রহ করে Size এবং Color নির্বাচন করুন</div><div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;">${isOOS ? `<button disabled style="flex: 1; min-width: 180px; background: #666; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: not-allowed;"><i class="fas fa-ban"></i> Out of Stock</button>` : `<button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>`}<button onclick="toggleWishlist(${product.id}, event)" class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" style="position: static; width: 50px; height: 50px; background: ${isWishlisted ? '#ff007f' : 'var(--bg-color)'}; border: 1.5px solid ${isWishlisted ? '#ff007f' : 'var(--border-color)'}; color: ${isWishlisted ? '#fff' : 'var(--text-color)'}; border-radius: 8px; font-size: 18px;"><i class="fas fa-heart"></i></button><button onclick="openShareModal(${product.id}, event)" class="share-btn" style="width: 50px; height: 50px; justify-content: center; padding: 0;"><i class="fas fa-share-alt"></i></button></div><div class="details-desc-box">${product.fullDescription}</div>${ratingSectionHtml}${relatedHtml}`;
-            
             updateURL('product-details', productId);
             switchTab('product-details');
             window.scrollTo(0, 0);
-
-            // ⚡ Attach swipe handlers after render
             setTimeout(attachGallerySwipeHandlers, 50);
         }
 
@@ -2490,15 +2405,12 @@
             });
             const info = document.getElementById('color-info');
             if (info) info.textContent = '✓ ' + colorName;
-            
-            // ⚡ Update gallery main image with color image (as first)
             if (imageUrl) {
                 const newImages = [imageUrl, ...currentGalleryImages.filter(i => i !== imageUrl)];
                 currentGalleryImages = newImages;
                 currentGalleryIndex = 0;
                 updateGalleryDisplay();
             }
-            
             hideWarning();
         }
         function hideWarning() { const w = document.getElementById('selection-warning'); if (w) w.classList.remove('show'); }
@@ -2552,18 +2464,10 @@
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => toast.classList.remove('toast-visible'), 2500);
         }
-        function copyNumber(num, typeName) {
-            navigator.clipboard.writeText(num).then(() => { showToast(typeName + ' number copied: ' + num); }).catch(() => showToast('Failed to copy number!'));
-        }
+        function copyNumber(num, typeName) { navigator.clipboard.writeText(num).then(() => { showToast(typeName + ' number copied: ' + num); }).catch(() => showToast('Failed to copy number!')); }
         function increaseQty(index) { cart[index].quantity += 1; localStorage.setItem('burqa_cart', JSON.stringify(cart)); updateCartUI(); renderMiniCart(); }
         function decreaseQty(index) { if (cart[index].quantity > 1) cart[index].quantity -= 1; else cart.splice(index, 1); localStorage.setItem('burqa_cart', JSON.stringify(cart)); updateCartUI(); renderMiniCart(); }
-        function removeFromCart(index) {
-            let removedItem = cart[index].name;
-            cart.splice(index, 1);
-            localStorage.setItem('burqa_cart', JSON.stringify(cart));
-            updateCartUI();
-            showToast(removedItem + ' removed from cart!');
-        }
+        function removeFromCart(index) { let removedItem = cart[index].name; cart.splice(index, 1); localStorage.setItem('burqa_cart', JSON.stringify(cart)); updateCartUI(); showToast(removedItem + ' removed from cart!'); }
         function updateDeliveryCharge() { updateCartUI(); }
 
         function handlePaymentChange() {
@@ -2789,6 +2693,56 @@
             return 'BQ-' + dateStr + '-' + String(counter).padStart(4, '0');
         }
 
+        // ============================================
+        // SIZE CHART FUNCTIONS
+        // ============================================
+        function openSizeChart(category) {
+            currentSizeChartCategory = category || 'default';
+            const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
+            document.getElementById('size-chart-title').textContent = data.title;
+            document.getElementById('size-chart-subtitle').textContent = 'সঠিক সাইজ বেছে নিন — আরামে থাকুন';
+            renderSizeChartTable();
+            document.getElementById('size-chart-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSizeChart(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('size-chart-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function switchSizeUnit(unit) {
+            sizeChartUnit = unit;
+            document.querySelectorAll('.size-unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-unit') === unit) btn.classList.add('active');
+            });
+            renderSizeChartTable();
+        }
+        function renderSizeChartTable() {
+            const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
+            const table = document.getElementById('size-chart-table');
+            if (!table) return;
+            const isHijab = currentSizeChartCategory === 'Hijab Collection';
+            let html = '<thead><tr><th>সাইজ</th>';
+            if (!isHijab) { html += '<th>বুক<br><span style="font-size:9px; opacity:0.7;">Chest</span></th>'; html += '<th>কোমর<br><span style="font-size:9px; opacity:0.7;">Waist</span></th>'; }
+            html += '<th>লম্বা<br><span style="font-size:9px; opacity:0.7;">Length</span></th>';
+            if (!isHijab) { html += '<th>কাঁধ<br><span style="font-size:9px; opacity:0.7;">Shoulder</span></th>'; html += '<th>হাতা<br><span style="font-size:9px; opacity:0.7;">Sleeve</span></th>'; }
+            html += '</tr></thead><tbody>';
+            data.rows.forEach(row => {
+                html += '<tr>';
+                html += `<td>${row.size}</td>`;
+                if (!isHijab) { html += `<td>${formatMeasure(row.chest)}</td>`; html += `<td>${formatMeasure(row.waist)}</td>`; }
+                html += `<td>${formatMeasure(row.length)}</td>`;
+                if (!isHijab) { html += `<td>${formatMeasure(row.shoulder)}</td>`; html += `<td>${formatMeasure(row.sleeve)}</td>`; }
+                html += '</tr>';
+            });
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        // ============================================
+        // KEYBOARD ESC
+        // ============================================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeMiniCart();
@@ -2798,6 +2752,9 @@
             }
         });
 
+        // ============================================
+        // INIT
+        // ============================================
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             updateWishlistBadge();
