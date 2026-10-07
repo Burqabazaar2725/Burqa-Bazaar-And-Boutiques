@@ -188,7 +188,6 @@
         .home-coupon-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
         .home-coupon-btn.copied { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
-        /* COUPON */
         .available-coupons-list { margin-top: 12px; padding: 12px 14px; background: rgba(255,0,127,.05); border: 1px solid rgba(255,0,127,.25); border-radius: 8px; }
         .available-coupons-title { font-size: 12px; font-weight: 700; color: #ff6bb5; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .available-coupon-item { font-size: 12px; color: var(--text-muted); padding: 5px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px dashed rgba(255,0,127,.15); }
@@ -238,247 +237,182 @@
         .wishlist-cart-btn { background: var(--gold-color); color: #0b0b0d; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
         .wishlist-cart-btn:disabled { background: #666; cursor: not-allowed; }
 
-        /* ⚡ FAQ STYLES (NEW) */
-        .faq-hero {
-            text-align: center;
-            margin-bottom: 25px;
+        /* FAQ */
+        .faq-hero { text-align: center; margin-bottom: 25px; }
+        .faq-hero-icon { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #dfb15b, #9c7526); color: #0b0b0d; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px; box-shadow: 0 8px 25px rgba(223,177,91,.4); }
+        .faq-hero h2 { font-family: var(--font-heading); color: var(--gold-color); font-size: 26px; margin-bottom: 8px; }
+        .faq-hero p { color: var(--text-muted); font-size: 14px; max-width: 500px; margin: 0 auto; }
+        .faq-category-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .faq-cat-btn { background: var(--card-bg); border: 1.5px solid var(--border-color); color: var(--text-color); padding: 8px 18px; border-radius: 25px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; }
+        .faq-cat-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); }
+        .faq-cat-btn .count { background: rgba(0,0,0,.15); padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 800; }
+        .faq-list { display: flex; flex-direction: column; gap: 12px; }
+        .faq-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.2s ease; }
+        .faq-item:hover { border-color: var(--gold-color); }
+        .faq-item.open { border-color: var(--gold-color); box-shadow: 0 6px 25px rgba(223,177,91,.15); }
+        .faq-question { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; user-select: none; background: transparent; border: none; width: 100%; text-align: left; font-family: inherit; color: var(--text-color); }
+        .faq-question-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0; }
+        .faq-q-icon { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, rgba(223,177,91,.25), rgba(223,177,91,.1)); border: 1.5px solid var(--gold-color); color: var(--gold-color); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; flex-shrink: 0; font-family: var(--font-heading); }
+        .faq-q-text { font-size: 14px; font-weight: 700; color: var(--text-color); line-height: 1.5; padding-top: 3px; }
+        .faq-item.open .faq-q-text { color: var(--gold-color); }
+        .faq-toggle-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-color); border: 1.5px solid var(--border-color); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; transition: all 0.3s ease; }
+        .faq-item.open .faq-toggle-icon { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); transform: rotate(180deg); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; padding: 0 18px; background: linear-gradient(180deg, rgba(223,177,91,.03), transparent); }
+        .faq-item.open .faq-answer { max-height: 600px; padding: 0 18px 18px 18px; }
+        .faq-answer-content { padding-top: 4px; padding-left: 40px; font-size: 13px; color: var(--text-muted); line-height: 1.8; border-left: 2px solid var(--border-color); padding-bottom: 4px; }
+        .faq-answer-content strong { color: var(--gold-color); font-weight: 700; }
+        .faq-answer-content ul { padding-left: 20px; margin-top: 6px; margin-bottom: 6px; }
+        .faq-answer-content li { margin-bottom: 4px; }
+        .faq-contact-cta { margin-top: 30px; padding: 25px 20px; background: linear-gradient(135deg, rgba(223,177,91,.12), rgba(223,177,91,.03)); border: 1.5px solid var(--gold-color); border-radius: 16px; text-align: center; }
+        .faq-contact-cta-icon { font-size: 36px; color: var(--gold-color); margin-bottom: 12px; }
+        .faq-contact-cta h3 { font-family: var(--font-heading); color: var(--gold-color); font-size: 18px; margin-bottom: 8px; }
+        .faq-contact-cta p { color: var(--text-muted); font-size: 13px; margin-bottom: 18px; }
+        .faq-contact-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .faq-contact-btn { padding: 11px 22px; border-radius: 25px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; border: none; text-decoration: none; }
+        .faq-contact-btn.whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); color: #fff; }
+        .faq-contact-btn.phone { background: var(--gold-color); color: #0b0b0d; }
+        .faq-contact-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* ⚡ PRODUCT IMAGE GALLERY (NEW) */
+        .product-gallery {
+            position: relative;
+            margin-bottom: 15px;
         }
-        .faq-hero-icon {
-            width: 70px;
-            height: 70px;
+        .gallery-main {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+        .gallery-main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            cursor: zoom-in;
+            display: block;
+            transition: opacity 0.2s ease;
+        }
+        .gallery-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #dfb15b, #9c7526);
-            color: #0b0b0d;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1.5px solid var(--gold-color);
+            color: var(--gold-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            margin: 0 auto 15px;
-            box-shadow: 0 8px 25px rgba(223,177,91,.4);
-        }
-        .faq-hero h2 {
-            font-family: var(--font-heading);
-            color: var(--gold-color);
-            font-size: 26px;
-            margin-bottom: 8px;
-        }
-        .faq-hero p {
-            color: var(--text-muted);
-            font-size: 14px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .faq-category-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            justify-content: flex-start;
-        }
-        .faq-category-tabs::-webkit-scrollbar { height: 4px; }
-        .faq-category-tabs::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-        .faq-cat-btn {
-            background: var(--card-bg);
-            border: 1.5px solid var(--border-color);
-            color: var(--text-color);
-            padding: 8px 18px;
-            border-radius: 25px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 15px;
             cursor: pointer;
-            font-family: inherit;
-            white-space: nowrap;
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            z-index: 5;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        .faq-cat-btn.active {
+        .gallery-nav-btn:hover {
             background: var(--gold-color);
             color: #0b0b0d;
-            border-color: var(--gold-color);
-            box-shadow: 0 4px 12px rgba(223,177,91,.3);
+            transform: translateY(-50%) scale(1.1);
         }
-        .faq-cat-btn .count {
-            background: rgba(0,0,0,.15);
-            padding: 1px 7px;
+        .gallery-nav-btn.prev { left: 10px; }
+        .gallery-nav-btn.next { right: 10px; }
+        .gallery-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: rgba(0, 0, 0, 0.55);
+            color: var(--gold-color);
+        }
+
+        .gallery-counter {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--gold-color);
+            color: var(--gold-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 5;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+
+        .gallery-thumbnails {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .gallery-thumbnails::-webkit-scrollbar { height: 5px; }
+        .gallery-thumbnails::-webkit-scrollbar-track { background: transparent; }
+        .gallery-thumbnails::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        .gallery-thumb {
+            width: 68px;
+            height: 68px;
+            flex-shrink: 0;
             border-radius: 10px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .faq-list { display: flex; flex-direction: column; gap: 12px; }
-
-        .faq-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
             overflow: hidden;
+            border: 2px solid var(--border-color);
+            background: #000;
+            cursor: pointer;
+            position: relative;
             transition: all 0.2s ease;
         }
-        .faq-item:hover {
-            border-color: var(--gold-color);
-        }
-        .faq-item.open {
-            border-color: var(--gold-color);
-            box-shadow: 0 6px 25px rgba(223,177,91,.15);
-        }
-
-        .faq-question {
-            padding: 16px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            cursor: pointer;
-            user-select: none;
-            background: transparent;
-            border: none;
+        .gallery-thumb img {
             width: 100%;
-            text-align: left;
-            font-family: inherit;
-            color: var(--text-color);
+            height: 100%;
+            object-fit: cover;
         }
-        .faq-question-left {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            flex: 1;
-            min-width: 0;
-        }
-        .faq-q-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(223,177,91,.25), rgba(223,177,91,.1));
-            border: 1.5px solid var(--gold-color);
-            color: var(--gold-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 900;
-            flex-shrink: 0;
-            font-family: var(--font-heading);
-        }
-        .faq-q-text {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-color);
-            line-height: 1.5;
-            padding-top: 3px;
-        }
-        .faq-item.open .faq-q-text {
-            color: var(--gold-color);
-        }
-        .faq-toggle-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--bg-color);
-            border: 1.5px solid var(--border-color);
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-        .faq-item.open .faq-toggle-icon {
-            background: var(--gold-color);
-            color: #0b0b0d;
+        .gallery-thumb:hover {
             border-color: var(--gold-color);
-            transform: rotate(180deg);
+            transform: translateY(-2px);
+        }
+        .gallery-thumb.active {
+            border-color: var(--gold-color);
+            box-shadow: 0 0 12px rgba(223, 177, 91, 0.5);
+        }
+        .gallery-thumb.active::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 60%, rgba(223, 177, 91, 0.3));
+            pointer-events: none;
         }
 
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease, padding 0.35s ease;
-            padding: 0 18px;
-            background: linear-gradient(180deg, rgba(223,177,91,.03), transparent);
-        }
-        .faq-item.open .faq-answer {
-            max-height: 600px;
-            padding: 0 18px 18px 18px;
-        }
-        .faq-answer-content {
-            padding-top: 4px;
-            padding-left: 40px;
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.8;
-            border-left: 2px solid var(--border-color);
-            padding-bottom: 4px;
-        }
-        .faq-answer-content strong {
-            color: var(--gold-color);
-            font-weight: 700;
-        }
-        .faq-answer-content ul {
-            padding-left: 20px;
-            margin-top: 6px;
-            margin-bottom: 6px;
-        }
-        .faq-answer-content li {
-            margin-bottom: 4px;
-        }
-
-        .faq-contact-cta {
-            margin-top: 30px;
-            padding: 25px 20px;
-            background: linear-gradient(135deg, rgba(223,177,91,.12), rgba(223,177,91,.03));
-            border: 1.5px solid var(--gold-color);
-            border-radius: 16px;
+        .gallery-hint {
             text-align: center;
-        }
-        .faq-contact-cta-icon {
-            font-size: 36px;
-            color: var(--gold-color);
-            margin-bottom: 12px;
-        }
-        .faq-contact-cta h3 {
-            font-family: var(--font-heading);
-            color: var(--gold-color);
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        .faq-contact-cta p {
+            font-size: 11px;
             color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 18px;
-        }
-        .faq-contact-buttons {
+            margin-top: 8px;
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .faq-contact-btn {
-            padding: 11px 22px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: inherit;
-            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            border: none;
-            text-decoration: none;
+            justify-content: center;
+            gap: 6px;
         }
-        .faq-contact-btn.whatsapp {
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            color: #fff;
+        .gallery-hint i { color: var(--gold-color); }
+
+        @media (max-width: 500px) {
+            .gallery-main { height: 340px; }
+            .gallery-nav-btn { width: 34px; height: 34px; font-size: 13px; }
+            .gallery-nav-btn.prev { left: 6px; }
+            .gallery-nav-btn.next { right: 6px; }
+            .gallery-thumb { width: 58px; height: 58px; }
         }
-        .faq-contact-btn.phone {
-            background: var(--gold-color);
-            color: #0b0b0d;
-        }
-        .faq-contact-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
         /* PRODUCT BADGES */
         .product-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; z-index: 6; color: #fff; }
@@ -497,7 +431,7 @@
         .review-count { font-size: 10px; opacity: 0.7; }
         .product-category-tag { font-size: 10px; text-transform: uppercase; color: var(--gold-color); font-weight: 700; letter-spacing: 0.5px; }
 
-        /* SIZE CHART MODAL */
+        /* SIZE CHART */
         .size-guide-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(59,130,246,.12); border: 1.5px solid #3b82f6; color: #60a5fa; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; transition: all 0.2s ease; }
         .size-guide-btn:hover { background: #3b82f6; color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,.3); }
         .size-guide-btn i { font-size: 14px; }
@@ -526,7 +460,7 @@
         .size-tips li { font-size: 12px; color: var(--text-muted); line-height: 1.7; padding-left: 20px; position: relative; }
         .size-tips li::before { content: '✓'; position: absolute; left: 0; color: var(--ok-color); font-weight: 900; }
 
-        /* Ratings & Reviews */
+        /* Ratings/Reviews */
         .rating-summary { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; margin: 15px 0; }
         .rating-average-box { text-align: center; min-width: 70px; padding-right: 15px; border-right: 1px solid var(--border-color); }
         .rating-average { font-size: 32px; font-weight: 800; color: var(--gold-color); line-height: 1; font-family: var(--font-heading); }
@@ -663,10 +597,10 @@
         .selection-warning { font-size: 12px; color: #ff9999; margin-top: 5px; margin-bottom: 10px; display: none; }
         .selection-warning.show { display: block; }
         .cart-item-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; display: block; }
-        #image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 7000; display: none; justify-content: center; align-items: center; }
+        #image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9000; display: none; justify-content: center; align-items: center; }
         #image-modal.active { display: flex; }
-        #image-modal img { max-width: 90%; max-height: 85vh; border-radius: 10px; border: 2px solid var(--gold-color); object-fit: contain; }
-        .modal-close-btn { position: absolute; top: 25px; right: 25px; background: var(--card-bg); color: var(--gold-color); border: 1px solid var(--gold-color); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 7100; }
+        #image-modal img { max-width: 95%; max-height: 90vh; border-radius: 10px; border: 2px solid var(--gold-color); object-fit: contain; }
+        .modal-close-btn { position: absolute; top: 25px; right: 25px; background: var(--card-bg); color: var(--gold-color); border: 1px solid var(--gold-color); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 9100; }
         .page-content-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 35px 25px; border-radius: 16px; text-align: left; line-height: 1.8; max-width: 950px; margin: auto; }
         .page-content-box h2 { color: var(--gold-color); border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 25px; font-size: 24px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
         .form-group { margin-bottom: 15px; text-align: left; }
@@ -1008,7 +942,7 @@
         </div>
     </div>
 
-    <!-- ⚡ FAQ PAGE SECTION (NEW) -->
+    <!-- FAQ PAGE SECTION -->
     <div id="faq-section" class="page-section">
         <div class="faq-hero">
             <div class="faq-hero-icon"><i class="fas fa-question"></i></div>
@@ -1038,7 +972,6 @@
         </div>
 
         <div class="faq-list" id="faq-list">
-            <!-- Dynamic FAQ Items -->
         </div>
 
         <div class="faq-contact-cta">
@@ -1445,157 +1378,34 @@
         let wishlistSortMode = 'added';
         let sizeChartUnit = 'cm';
         let currentSizeChartCategory = 'default';
-
-        // ⚡ FAQ STATE
         let faqFilterCategory = 'all';
         let openFAQIndex = null;
 
+        // ⚡ GALLERY STATE
+        let currentGalleryImages = [];
+        let currentGalleryIndex = 0;
+        let gallerySwipeStartX = 0;
+        let gallerySwipeEndX = 0;
+
         // ============================================
-        // ⚡ FAQ DATA (NEW)
+        // ⚡ FAQ DATA
         // ============================================
         const FAQ_DATA = [
-            {
-                category: 'order',
-                q: 'কীভাবে অর্ডার করবো?',
-                a: 'অর্ডার করা খুবই সহজ —<ul><li>১. পছন্দের প্রোডাক্টে ক্লিক করুন</li><li>২. Size ও Color সিলেক্ট করুন</li><li>৩. <strong>"Add to Cart"</strong> বাটনে ক্লিক করুন</li><li>৪. কার্টে গিয়ে <strong>"Checkout"</strong> করুন</li><li>৫. নাম, ফোন, ঠিকানা দিয়ে <strong>"Place Order"</strong> ক্লিক করুন</li></ul>অর্ডার সম্পন্ন হলে WhatsApp-এ কনফার্মেশন পাবেন।'
-            },
-            {
-                category: 'order',
-                q: 'অর্ডার কনফার্মেশন কখন পাবো?',
-                a: 'অর্ডার করার সাথে সাথেই আপনার WhatsApp-এ <strong>Order ID সহ কনফার্মেশন</strong> পাবেন। আমাদের টিম ২৪ ঘণ্টার মধ্যে অর্ডার যাচাই করে কনফার্ম করবে।'
-            },
-            {
-                category: 'order',
-                q: 'অর্ডার ক্যান্সেল করা যাবে?',
-                a: 'হ্যাঁ, অর্ডার <strong>শিপিং হওয়ার আগে</strong> পর্যন্ত ক্যান্সেল করা যাবে। WhatsApp-এ (<strong>01832140613</strong>) আপনার Order ID সহ মেসেজ দিন। শিপিং হয়ে গেলে আর ক্যান্সেল করা যাবে না।'
-            },
-            {
-                category: 'payment',
-                q: 'কী কী পেমেন্ট মেথড আছে?',
-                a: 'আমরা তিনটি পেমেন্ট মেথড গ্রহণ করি —<ul><li>✅ <strong>Cash on Delivery (COD)</strong> — পণ্য হাতে পেয়ে টাকা দিন</li><li>✅ <strong>bKash</strong> — সম্পূর্ণ পেমেন্ট আগে</li><li>✅ <strong>Nagad</strong> — সম্পূর্ণ পেমেন্ট আগে</li></ul>'
-            },
-            {
-                category: 'payment',
-                q: 'Cash on Delivery-তে কী কী দিতে হয়?',
-                a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয় (ফেনীর ভিতরে ৳৬০, বাইরে ৳১৩০)। পণ্য হাতে পেয়ে ডেলিভারি ম্যানের সামনে চেক করে <strong>বাকি টাকা</strong> পরিশোধ করবেন।'
-            },
-            {
-                category: 'payment',
-                q: 'bKash/Nagad পেমেন্ট কীভাবে করবো?',
-                a: 'আমাদের বিকাশ/নগদ নম্বরে (<strong>01832140613 — Personal</strong>) <strong>Send Money</strong> করুন। তারপর চেকআউট ফর্মে প্রেরকের নম্বর ও TrxID লিখুন। পেমেন্ট যাচাই করে অর্ডার কনফার্ম করা হবে।'
-            },
-            {
-                category: 'delivery',
-                q: 'ডেলিভারি চার্জ কত?',
-                a: '<ul><li>🏠 <strong>ফেনীর ভিতরে:</strong> ৳৬০</li><li>🚚 <strong>ফেনীর বাইরে (সারা বাংলাদেশ):</strong> ৳১৩০</li></ul>'
-            },
-            {
-                category: 'delivery',
-                q: 'ডেলিভারি কত দিনে পাবো?',
-                a: '<ul><li>📍 <strong>ফেনীর ভিতরে:</strong> ১-২ কার্যদিবস</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ২-৪ কার্যদিবস</li></ul>কুরিয়ার সার্ভিস ও আবহাওয়ার উপর নির্ভর করে সময় কিছুটা বাড়তে পারে।'
-            },
-            {
-                category: 'delivery',
-                q: 'কীভাবে অর্ডার ট্র্যাক করবো?',
-                a: 'শিপিং হওয়ার পর আমরা আপনাকে WhatsApp-এ <strong>Tracking Number / CN Number</strong> পাঠাবো। সেটি দিয়ে আমাদের <strong>"Track Order"</strong> পেজ থেকে সহজেই ট্র্যাক করতে পারবেন।'
-            },
-            {
-                category: 'return',
-                q: 'পণ্য রিটার্ন করা যাবে?',
-                a: 'হ্যাঁ, পণ্য হাতে পাওয়ার <strong>৪৮ ঘণ্টার মধ্যে</strong> রিটার্ন/এক্সচেঞ্জের জন্য যোগাযোগ করতে হবে। তবে পণ্য অব্যবহৃত ও আসল প্যাকেজিং-এ থাকতে হবে। <strong>৪৮ ঘণ্টা পর</strong> রিটার্ন গ্রহণ করা হয় না।'
-            },
-            {
-                category: 'return',
-                q: 'কোন কোন ক্ষেত্রে এক্সচেঞ্জ করা যাবে?',
-                a: 'নিম্নলিখিত ক্ষেত্রে এক্সচেঞ্জ করা যাবে —<ul><li>• ভুল পণ্য পাঠানো হলে</li><li>• ভুল Size পাঠানো হলে</li><li>• ডেলিভারিতে পণ্য ক্ষতিগ্রস্ত হলে</li><li>• Manufacturing Defect থাকলে</li></ul>'
-            },
-            {
-                category: 'product',
-                q: 'সাইজ কীভাবে বেছে নেবো?',
-                a: 'প্রতিটি প্রোডাক্টে <strong>"📏 Size Guide"</strong> বাটন আছে — সেটা ক্লিক করে সঠিক সাইজ দেখে নিন। এছাড়া আমাদের সাইজ চার্টে <strong>বুক, কোমর, লম্বা, কাঁধ, হাতা</strong> — সব মাপ দেওয়া আছে। দ্বিধা থাকলে WhatsApp-এ যোগাযোগ করুন।'
-            },
-            {
-                category: 'product',
-                q: 'প্রোডাক্টের ছবি ও আসল রঙে পার্থক্য হবে?',
-                a: 'ছবি সাধারণত আসল রঙের কাছাকাছি হয়, তবে আপনার মোবাইল বা কম্পিউটারের <strong>Display Settings</strong>-এর কারণে ৫-১০% রঙের পার্থক্য হতে পারে।'
-            },
-            {
-                category: 'product',
-                q: 'প্রোডাক্টের কাপড় কী মানের?',
-                a: 'আমরা <strong>উন্নত মানের কাপড়</strong> ব্যবহার করি — আরামদায়ক, টেকসই ও শালীনতার সাথে সামঞ্জস্যপূর্ণ। প্রতিটি প্রোডাক্টের বিস্তারিত বিবরণ প্রোডাক্ট পেজে দেওয়া আছে।'
-            }
+            { category: 'order', q: 'কীভাবে অর্ডার করবো?', a: 'অর্ডার করা খুবই সহজ —<ul><li>১. পছন্দের প্রোডাক্টে ক্লিক করুন</li><li>২. Size ও Color সিলেক্ট করুন</li><li>৩. <strong>"Add to Cart"</strong> বাটনে ক্লিক করুন</li><li>৪. কার্টে গিয়ে <strong>"Checkout"</strong> করুন</li><li>৫. নাম, ফোন, ঠিকানা দিয়ে <strong>"Place Order"</strong> ক্লিক করুন</li></ul>অর্ডার সম্পন্ন হলে WhatsApp-এ কনফার্মেশন পাবেন।' },
+            { category: 'order', q: 'অর্ডার কনফার্মেশন কখন পাবো?', a: 'অর্ডার করার সাথে সাথেই আপনার WhatsApp-এ <strong>Order ID সহ কনফার্মেশন</strong> পাবেন। আমাদের টিম ২৪ ঘণ্টার মধ্যে অর্ডার যাচাই করে কনফার্ম করবে।' },
+            { category: 'order', q: 'অর্ডার ক্যান্সেল করা যাবে?', a: 'হ্যাঁ, অর্ডার <strong>শিপিং হওয়ার আগে</strong> পর্যন্ত ক্যান্সেল করা যাবে। WhatsApp-এ (<strong>01832140613</strong>) আপনার Order ID সহ মেসেজ দিন।' },
+            { category: 'payment', q: 'কী কী পেমেন্ট মেথড আছে?', a: 'আমরা তিনটি পেমেন্ট মেথড গ্রহণ করি —<ul><li>✅ <strong>Cash on Delivery (COD)</strong></li><li>✅ <strong>bKash</strong></li><li>✅ <strong>Nagad</strong></li></ul>' },
+            { category: 'payment', q: 'Cash on Delivery-তে কী কী দিতে হয়?', a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয় (ফেনীর ভিতরে ৳৬০, বাইরে ৳১৩০)। পণ্য হাতে পেয়ে <strong>বাকি টাকা</strong> পরিশোধ করবেন।' },
+            { category: 'payment', q: 'bKash/Nagad পেমেন্ট কীভাবে করবো?', a: 'আমাদের বিকাশ/নগদ নম্বরে (<strong>01832140613 — Personal</strong>) <strong>Send Money</strong> করুন। তারপর চেকআউট ফর্মে প্রেরকের নম্বর ও TrxID লিখুন।' },
+            { category: 'delivery', q: 'ডেলিভারি চার্জ কত?', a: '<ul><li>🏠 <strong>ফেনীর ভিতরে:</strong> ৳৬০</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ৳১৩০</li></ul>' },
+            { category: 'delivery', q: 'ডেলিভারি কত দিনে পাবো?', a: '<ul><li>📍 <strong>ফেনীর ভিতরে:</strong> ১-২ কার্যদিবস</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ২-৪ কার্যদিবস</li></ul>' },
+            { category: 'delivery', q: 'কীভাবে অর্ডার ট্র্যাক করবো?', a: 'শিপিং হওয়ার পর আমরা আপনাকে WhatsApp-এ <strong>Tracking Number / CN Number</strong> পাঠাবো। সেটি দিয়ে আমাদের <strong>"Track Order"</strong> পেজ থেকে সহজেই ট্র্যাক করতে পারবেন।' },
+            { category: 'return', q: 'পণ্য রিটার্ন করা যাবে?', a: 'হ্যাঁ, পণ্য হাতে পাওয়ার <strong>৪৮ ঘণ্টার মধ্যে</strong> রিটার্ন/এক্সচেঞ্জের জন্য যোগাযোগ করতে হবে।' },
+            { category: 'return', q: 'কোন কোন ক্ষেত্রে এক্সচেঞ্জ করা যাবে?', a: 'নিম্নলিখিত ক্ষেত্রে —<ul><li>• ভুল পণ্য পাঠানো হলে</li><li>• ভুল Size পাঠানো হলে</li><li>• ডেলিভারিতে পণ্য ক্ষতিগ্রস্ত হলে</li><li>• Manufacturing Defect থাকলে</li></ul>' },
+            { category: 'product', q: 'সাইজ কীভাবে বেছে নেবো?', a: 'প্রতিটি প্রোডাক্টে <strong>"📏 Size Guide"</strong> বাটন আছে — সেটা ক্লিক করে সঠিক সাইজ দেখে নিন।' },
+            { category: 'product', q: 'প্রোডাক্টের ছবি ও আসল রঙে পার্থক্য হবে?', a: 'ছবি সাধারণত আসল রঙের কাছাকাছি হয়, তবে আপনার ডিভাইসের <strong>Display Settings</strong>-এর কারণে ৫-১০% রঙের পার্থক্য হতে পারে।' },
+            { category: 'product', q: 'প্রোডাক্টের কাপড় কী মানের?', a: 'আমরা <strong>উন্নত মানের কাপড়</strong> ব্যবহার করি — আরামদায়ক, টেকসই ও শালীনতার সাথে সামঞ্জস্যপূর্ণ।' }
         ];
-
-        // ============================================
-        // ⚡ FAQ FUNCTIONS
-        // ============================================
-        function renderFAQ() {
-            const container = document.getElementById('faq-list');
-            if (!container) return;
-
-            // Update counts
-            const counts = { all: FAQ_DATA.length, order: 0, payment: 0, delivery: 0, return: 0, product: 0 };
-            FAQ_DATA.forEach(item => counts[item.category]++);
-
-            const el = (id) => document.getElementById(id);
-            if (el('faq-count-all')) el('faq-count-all').textContent = counts.all;
-            if (el('faq-count-order')) el('faq-count-order').textContent = counts.order;
-            if (el('faq-count-payment')) el('faq-count-payment').textContent = counts.payment;
-            if (el('faq-count-delivery')) el('faq-count-delivery').textContent = counts.delivery;
-            if (el('faq-count-return')) el('faq-count-return').textContent = counts.return;
-            if (el('faq-count-product')) el('faq-count-product').textContent = counts.product;
-
-            // Filter items
-            let items = FAQ_DATA;
-            if (faqFilterCategory !== 'all') {
-                items = FAQ_DATA.filter(f => f.category === faqFilterCategory);
-            }
-
-            if (items.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><i class="fas fa-question-circle" style="font-size:40px; color:var(--gold-color); opacity:0.5; display:block; margin-bottom:12px;"></i><p>এই ক্যাটাগরিতে কোনো প্রশ্ন নেই।</p></div>';
-                return;
-            }
-
-            let html = '';
-            items.forEach((item, idx) => {
-                const globalIdx = FAQ_DATA.indexOf(item);
-                const isOpen = openFAQIndex === globalIdx;
-                html += `
-                    <div class="faq-item ${isOpen ? 'open' : ''}" data-faq-idx="${globalIdx}">
-                        <button class="faq-question" onclick="toggleFAQ(${globalIdx})">
-                            <div class="faq-question-left">
-                                <span class="faq-q-icon">Q</span>
-                                <span class="faq-q-text">${item.q}</span>
-                            </div>
-                            <span class="faq-toggle-icon"><i class="fas fa-chevron-down"></i></span>
-                        </button>
-                        <div class="faq-answer">
-                            <div class="faq-answer-content">${item.a}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function toggleFAQ(idx) {
-            if (openFAQIndex === idx) {
-                openFAQIndex = null;
-            } else {
-                openFAQIndex = idx;
-            }
-            renderFAQ();
-        }
-
-        function filterFAQ(cat) {
-            faqFilterCategory = cat;
-            openFAQIndex = null;
-            document.querySelectorAll('.faq-cat-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-faq-cat') === cat) btn.classList.add('active');
-            });
-            renderFAQ();
-        }
 
         // ============================================
         // ⚡ SIZE CHART DATA
@@ -1630,9 +1440,7 @@
             },
             'Hijab Collection': {
                 title: 'হিজাব সাইজ চার্ট',
-                rows: [
-                    { size: 'Standard', chest: 0, waist: 0, length: 70, shoulder: 0, sleeve: 0 }
-                ]
+                rows: [{ size: 'Standard', chest: 0, waist: 0, length: 70, shoulder: 0, sleeve: 0 }]
             }
         };
 
@@ -1651,13 +1459,11 @@
             document.getElementById('size-chart-modal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-
         function closeSizeChart(event) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById('size-chart-modal').classList.remove('active');
             document.body.style.overflow = '';
         }
-
         function switchSizeUnit(unit) {
             sizeChartUnit = unit;
             document.querySelectorAll('.size-unit-btn').forEach(btn => {
@@ -1666,14 +1472,12 @@
             });
             renderSizeChartTable();
         }
-
         function renderSizeChartTable() {
             const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
             const table = document.getElementById('size-chart-table');
             if (!table) return;
             const isHijab = currentSizeChartCategory === 'Hijab Collection';
-            let html = '<thead><tr>';
-            html += '<th>সাইজ</th>';
+            let html = '<thead><tr><th>সাইজ</th>';
             if (!isHijab) {
                 html += '<th>বুক<br><span style="font-size:9px; opacity:0.7;">Chest</span></th>';
                 html += '<th>কোমর<br><span style="font-size:9px; opacity:0.7;">Waist</span></th>';
@@ -1703,6 +1507,192 @@
         }
 
         // ============================================
+        // ⚡ GALLERY FUNCTIONS
+        // ============================================
+        function setGalleryImages(images, mainImage) {
+            let safeImages = [];
+            if (Array.isArray(images) && images.length > 0) {
+                safeImages = images.map(i => extractUrl(i)).filter(i => i && i.length > 5);
+            }
+            if (safeImages.length === 0) safeImages = [mainImage || 'https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'];
+            
+            // Remove duplicates
+            safeImages = [...new Set(safeImages)];
+            
+            currentGalleryImages = safeImages;
+            currentGalleryIndex = 0;
+        }
+
+        function renderGallery() {
+            if (!currentGalleryImages || currentGalleryImages.length === 0) return '';
+            
+            const total = currentGalleryImages.length;
+            const currentImg = currentGalleryImages[currentGalleryIndex];
+
+            let html = `<div class="product-gallery">
+                <div class="gallery-main" id="gallery-main">
+                    <img src="${currentImg}" alt="Product Image" class="gallery-main-img" id="gallery-main-img" onclick="openImageModal('${currentImg}')" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">`;
+            
+            // Navigation arrows (only if >1 image)
+            if (total > 1) {
+                html += `<button type="button" class="gallery-nav-btn prev" onclick="event.stopPropagation(); galleryPrev()" ${currentGalleryIndex === 0 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>`;
+                html += `<button type="button" class="gallery-nav-btn next" onclick="event.stopPropagation(); galleryNext()" ${currentGalleryIndex === total - 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>`;
+                html += `<div class="gallery-counter"><i class="fas fa-images"></i> ${currentGalleryIndex + 1} / ${total}</div>`;
+            }
+            
+            html += `</div>`;
+
+            // Thumbnails (only if >1 image)
+            if (total > 1) {
+                html += `<div class="gallery-thumbnails" id="gallery-thumbnails">`;
+                currentGalleryImages.forEach((img, idx) => {
+                    html += `<div class="gallery-thumb ${idx === currentGalleryIndex ? 'active' : ''}" onclick="event.stopPropagation(); goToGalleryImage(${idx})">
+                        <img src="${img}" alt="Thumb ${idx + 1}" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `<div class="gallery-hint"><i class="fas fa-hand-pointer"></i> ছবিতে ক্লিক করে বড় করুন • ডানে-বামে স্লাইড করুন</div>`;
+            }
+
+            html += `</div>`;
+            return html;
+        }
+
+        function galleryPrev() {
+            if (currentGalleryIndex > 0) {
+                currentGalleryIndex--;
+                updateGalleryDisplay();
+            }
+        }
+        function galleryNext() {
+            if (currentGalleryIndex < currentGalleryImages.length - 1) {
+                currentGalleryIndex++;
+                updateGalleryDisplay();
+            }
+        }
+        function goToGalleryImage(idx) {
+            if (idx >= 0 && idx < currentGalleryImages.length) {
+                currentGalleryIndex = idx;
+                updateGalleryDisplay();
+            }
+        }
+
+        function updateGalleryDisplay() {
+            const mainImg = document.getElementById('gallery-main-img');
+            if (mainImg) {
+                mainImg.style.opacity = '0';
+                setTimeout(() => {
+                    mainImg.src = currentGalleryImages[currentGalleryIndex];
+                    mainImg.onclick = function() { openImageModal(currentGalleryImages[currentGalleryIndex]); };
+                    mainImg.style.opacity = '1';
+                }, 100);
+            }
+            // Update arrows
+            const prevBtn = document.querySelector('.gallery-nav-btn.prev');
+            const nextBtn = document.querySelector('.gallery-nav-btn.next');
+            if (prevBtn) prevBtn.disabled = currentGalleryIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentGalleryIndex === currentGalleryImages.length - 1;
+            // Update counter
+            const counter = document.querySelector('.gallery-counter');
+            if (counter) {
+                counter.innerHTML = `<i class="fas fa-images"></i> ${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+            }
+            // Update thumbs
+            document.querySelectorAll('.gallery-thumb').forEach((thumb, idx) => {
+                thumb.classList.toggle('active', idx === currentGalleryIndex);
+            });
+            // Scroll active thumb into view
+            const activeThumb = document.querySelector('.gallery-thumb.active');
+            if (activeThumb) {
+                activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        // ⚡ SWIPE HANDLERS (Attached after rendering)
+        function attachGallerySwipeHandlers() {
+            const galleryMain = document.getElementById('gallery-main');
+            if (!galleryMain || currentGalleryImages.length <= 1) return;
+
+            galleryMain.addEventListener('touchstart', (e) => {
+                gallerySwipeStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            galleryMain.addEventListener('touchend', (e) => {
+                gallerySwipeEndX = e.changedTouches[0].screenX;
+                handleGallerySwipe();
+            }, { passive: true });
+        }
+
+        function handleGallerySwipe() {
+            const diff = gallerySwipeStartX - gallerySwipeEndX;
+            const minSwipe = 50;
+            if (diff > minSwipe) {
+                // Swiped left → next image
+                galleryNext();
+            } else if (diff < -minSwipe) {
+                // Swiped right → prev image
+                galleryPrev();
+            }
+        }
+
+        // ============================================
+        // FAQ FUNCTIONS
+        // ============================================
+        function renderFAQ() {
+            const container = document.getElementById('faq-list');
+            if (!container) return;
+            const counts = { all: FAQ_DATA.length, order: 0, payment: 0, delivery: 0, return: 0, product: 0 };
+            FAQ_DATA.forEach(item => counts[item.category]++);
+            const el = (id) => document.getElementById(id);
+            if (el('faq-count-all')) el('faq-count-all').textContent = counts.all;
+            if (el('faq-count-order')) el('faq-count-order').textContent = counts.order;
+            if (el('faq-count-payment')) el('faq-count-payment').textContent = counts.payment;
+            if (el('faq-count-delivery')) el('faq-count-delivery').textContent = counts.delivery;
+            if (el('faq-count-return')) el('faq-count-return').textContent = counts.return;
+            if (el('faq-count-product')) el('faq-count-product').textContent = counts.product;
+
+            let items = FAQ_DATA;
+            if (faqFilterCategory !== 'all') items = FAQ_DATA.filter(f => f.category === faqFilterCategory);
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><i class="fas fa-question-circle" style="font-size:40px; color:var(--gold-color); opacity:0.5; display:block; margin-bottom:12px;"></i><p>এই ক্যাটাগরিতে কোনো প্রশ্ন নেই।</p></div>';
+                return;
+            }
+            let html = '';
+            items.forEach((item, idx) => {
+                const globalIdx = FAQ_DATA.indexOf(item);
+                const isOpen = openFAQIndex === globalIdx;
+                html += `<div class="faq-item ${isOpen ? 'open' : ''}" data-faq-idx="${globalIdx}">
+                    <button class="faq-question" onclick="toggleFAQ(${globalIdx})">
+                        <div class="faq-question-left">
+                            <span class="faq-q-icon">Q</span>
+                            <span class="faq-q-text">${item.q}</span>
+                        </div>
+                        <span class="faq-toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-content">${item.a}</div></div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+        function toggleFAQ(idx) {
+            openFAQIndex = (openFAQIndex === idx) ? null : idx;
+            renderFAQ();
+        }
+        function filterFAQ(cat) {
+            faqFilterCategory = cat;
+            openFAQIndex = null;
+            document.querySelectorAll('.faq-cat-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-faq-cat') === cat) btn.classList.add('active');
+            });
+            renderFAQ();
+        }
+
+        // ============================================
         // UPDATE PRODUCTS DATA
         // ============================================
         window.updateProductsData = function(firebaseProducts) {
@@ -1718,11 +1708,13 @@
                 } else {
                     safeColors = [{ name: 'Default', image: mainImage }];
                 }
+                // ⚡ Ensure images array properly parsed
                 let safeImages = [];
                 if (Array.isArray(p.images) && p.images.length > 0) {
                     safeImages = p.images.map(i => extractUrl(i)).filter(i => i && i.length > 5);
                 }
                 if (safeImages.length === 0) safeImages = [mainImage];
+                
                 let safePrice = p.price;
                 if (typeof safePrice === 'string' && !safePrice.toLowerCase().includes('coming')) {
                     const parsed = parseInt(safePrice.replace(/[^0-9]/g, ''));
@@ -1950,7 +1942,6 @@
                 return d.getDate() + ' ' + months[d.getMonth()];
             } catch(e) { return ''; }
         }
-
         window.renderHomeCoupons = function() {
             const section = document.getElementById('home-coupons-section');
             const grid = document.getElementById('home-coupons-grid');
@@ -1977,7 +1968,6 @@
             });
             grid.innerHTML = html;
         };
-
         function copyHomeCoupon(code, btn) {
             navigator.clipboard.writeText(code).then(() => {
                 btn.classList.add('copied');
@@ -1989,7 +1979,6 @@
                 }, 2000);
             }).catch(() => showToast('❌ কপি করা যায়নি: ' + code));
         }
-
         function getAvailableCouponsHtml() {
             const coupons = window.couponsCache || [];
             const usedLocal = getUsedCouponsLocal();
@@ -2014,7 +2003,6 @@
             html += '</div>';
             return html;
         }
-
         function calculateCartSubtotal() {
             let subtotal = 0;
             let hasPriceComingSoon = false;
@@ -2024,7 +2012,6 @@
             });
             return { subtotal, hasPriceComingSoon };
         }
-
         function calculateDiscount(subtotal) {
             if (!appliedCoupon) return 0;
             let disc = 0;
@@ -2033,7 +2020,6 @@
             if (disc > subtotal) disc = subtotal;
             return disc;
         }
-
         async function applyCoupon() {
             if (isApplyingCoupon) return;
             const input = document.getElementById('coupon-input');
@@ -2142,7 +2128,6 @@
             btn.disabled = false;
             btn.innerHTML = origText;
         }
-
         function socialPlaceholder(event, platform) { event.preventDefault(); showToast('⏳ ' + platform + ' link শীঘ্রই আসছে!'); }
 
         document.body.classList.add('content-ready');
@@ -2203,7 +2188,6 @@
         // REVIEWS
         // ============================================
         function getProductReviews(productId) { if (!window.reviewsCache) return []; return window.reviewsCache[productId] || []; }
-
         async function saveProductReviewToFirestore(productId, review) {
             if (!window.db || !window.fbAddDoc || !window.fbCollection) throw new Error('Firebase not ready');
             const docRef = await window.fbAddDoc(window.fbCollection(window.db, "reviews"), {
@@ -2215,7 +2199,6 @@
             window.reviewsCache[productId].unshift({ id: docRef.id, productId: productId, name: review.name, rating: review.rating, text: review.text, date: new Date().toISOString() });
             return docRef;
         }
-
         function calculateRatingStats(productId) {
             const reviews = getProductReviews(productId);
             if (reviews.length === 0) return { average: 0, total: 0, distribution: {5:0,4:0,3:0,2:0,1:0} };
@@ -2228,7 +2211,6 @@
             });
             return { average: (sum / reviews.length).toFixed(1), total: reviews.length, distribution: distribution };
         }
-
         function renderStars(rating) {
             let html = '';
             const full = Math.floor(rating);
@@ -2240,7 +2222,6 @@
             }
             return html;
         }
-
         function setRating(rating) {
             currentRating = rating;
             document.querySelectorAll('#star-picker .star').forEach((star, idx) => {
@@ -2248,7 +2229,6 @@
                 else star.classList.remove('active');
             });
         }
-
         async function submitReview() {
             if (!currentProductId || isSubmittingReview) return;
             const nameInput = document.getElementById('reviewer-name');
@@ -2272,13 +2252,11 @@
                 if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review'; }
             }
         }
-
         function formatReviewDate(isoDate) {
             const d = new Date(isoDate);
             const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
             return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
         }
-
         function renderRatingSection(productId) {
             const stats = calculateRatingStats(productId);
             const reviews = getProductReviews(productId);
@@ -2298,7 +2276,6 @@
             }
             return `<div class="rating-summary"><div class="rating-average-box"><div class="rating-average">${stats.average || '0.0'}</div><div class="rating-average-stars">${renderStars(parseFloat(stats.average) || 0)}</div><div class="rating-total">${stats.total} review${stats.total !== 1 ? 's' : ''}</div></div><div class="rating-bars">${barsHtml}</div></div><div class="review-section"><h3>✍️ Write a Review</h3><div class="star-picker" id="star-picker"><i class="fas fa-star star" onclick="setRating(1)"></i><i class="fas fa-star star" onclick="setRating(2)"></i><i class="fas fa-star star" onclick="setRating(3)"></i><i class="fas fa-star star" onclick="setRating(4)"></i><i class="fas fa-star star" onclick="setRating(5)"></i></div><input type="text" class="review-input" id="reviewer-name" placeholder="Your name *" maxlength="40"><textarea class="review-textarea" id="reviewer-text" placeholder="Your review (optional)" rows="2" maxlength="300"></textarea><button class="submit-review-btn" id="submit-review-btn" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Submit Review</button></div><div class="review-list">${reviewsHtml}</div>`;
         }
-
         function renderRelatedProducts(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return '';
@@ -2329,7 +2306,6 @@
             else if (tabName === 'product-details' && productId) window.history.replaceState({}, '', url + '?product=' + productId);
             else window.history.replaceState({}, '', url + '#' + tabName);
         }
-
         function handleInitialURL() {
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('product');
@@ -2435,7 +2411,7 @@
         }
 
         // ============================================
-        // PRODUCT DETAILS
+        // PRODUCT DETAILS (with Multi-Image Gallery)
         // ============================================
         function openProductDetails(productId) {
             const product = productsData.find(p => p.id === productId);
@@ -2445,11 +2421,20 @@
             selectedColor = null;
             currentRating = 0;
             isSubmittingReview = false;
+
             const isOOS = (product.stock === 0);
             const hasSizes = product.sizes && product.sizes.length > 0;
             const hasColors = product.colors && product.colors.length > 0;
-            const mainImageUrl = product.colors && product.colors.length > 0 ? product.colors[0].image : product.image;
-            let mainImageHtml = `<img src="${mainImageUrl}" alt="${product.name}" class="main-image-preview" id="main-product-image" onclick="openImageModal(this.src)" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">`;
+
+            // ⚡ Set gallery images
+            const mainImageUrl = (product.colors && product.colors.length > 0 && product.colors[0].image) 
+                ? product.colors[0].image 
+                : product.image;
+            setGalleryImages(product.images, mainImageUrl);
+
+            // ⚡ Render gallery
+            const galleryHtml = renderGallery();
+
             let sizeHtml = '';
             if (hasSizes) {
                 sizeHtml = `<div class="option-label">📏 Select Size <span class="selected-info" id="size-info"></span></div><div class="size-options-box" id="size-options-box">`;
@@ -2477,10 +2462,14 @@
             const ratingSectionHtml = renderRatingSection(product.id);
             const relatedHtml = renderRelatedProducts(product.id);
             const detailsContainer = document.getElementById('product-details-content');
-            detailsContainer.innerHTML = `<button onclick="switchTab('shop')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back to Shop</button>${mainImageHtml}<span class="product-category-tag">${product.category}</span><div class="details-title">${product.name} ${badgeHtml}</div>${ratingLineHtml}<div class="details-price" style="margin-top: 10px;">${priceDisplay}</div>${stockLineHtml}${sizeHtml}${colorHtml}<div class="selection-warning" id="selection-warning">⚠️ অনুগ্রহ করে Size এবং Color নির্বাচন করুন</div><div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;">${isOOS ? `<button disabled style="flex: 1; min-width: 180px; background: #666; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: not-allowed;"><i class="fas fa-ban"></i> Out of Stock</button>` : `<button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>`}<button onclick="toggleWishlist(${product.id}, event)" class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" style="position: static; width: 50px; height: 50px; background: ${isWishlisted ? '#ff007f' : 'var(--bg-color)'}; border: 1.5px solid ${isWishlisted ? '#ff007f' : 'var(--border-color)'}; color: ${isWishlisted ? '#fff' : 'var(--text-color)'}; border-radius: 8px; font-size: 18px;"><i class="fas fa-heart"></i></button><button onclick="openShareModal(${product.id}, event)" class="share-btn" style="width: 50px; height: 50px; justify-content: center; padding: 0;"><i class="fas fa-share-alt"></i></button></div><div class="details-desc-box">${product.fullDescription}</div>${ratingSectionHtml}${relatedHtml}`;
+            detailsContainer.innerHTML = `<button onclick="switchTab('shop')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back to Shop</button>${galleryHtml}<span class="product-category-tag">${product.category}</span><div class="details-title">${product.name} ${badgeHtml}</div>${ratingLineHtml}<div class="details-price" style="margin-top: 10px;">${priceDisplay}</div>${stockLineHtml}${sizeHtml}${colorHtml}<div class="selection-warning" id="selection-warning">⚠️ অনুগ্রহ করে Size এবং Color নির্বাচন করুন</div><div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;">${isOOS ? `<button disabled style="flex: 1; min-width: 180px; background: #666; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: not-allowed;"><i class="fas fa-ban"></i> Out of Stock</button>` : `<button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>`}<button onclick="toggleWishlist(${product.id}, event)" class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" style="position: static; width: 50px; height: 50px; background: ${isWishlisted ? '#ff007f' : 'var(--bg-color)'}; border: 1.5px solid ${isWishlisted ? '#ff007f' : 'var(--border-color)'}; color: ${isWishlisted ? '#fff' : 'var(--text-color)'}; border-radius: 8px; font-size: 18px;"><i class="fas fa-heart"></i></button><button onclick="openShareModal(${product.id}, event)" class="share-btn" style="width: 50px; height: 50px; justify-content: center; padding: 0;"><i class="fas fa-share-alt"></i></button></div><div class="details-desc-box">${product.fullDescription}</div>${ratingSectionHtml}${relatedHtml}`;
+            
             updateURL('product-details', productId);
             switchTab('product-details');
             window.scrollTo(0, 0);
+
+            // ⚡ Attach swipe handlers after render
+            setTimeout(attachGallerySwipeHandlers, 50);
         }
 
         function selectSize(size) {
@@ -2493,7 +2482,6 @@
             if (info) info.textContent = '✓ ' + size;
             hideWarning();
         }
-
         function selectColor(colorName, imageUrl) {
             selectedColor = colorName;
             document.querySelectorAll('#color-options-box .color-btn').forEach(btn => {
@@ -2502,11 +2490,17 @@
             });
             const info = document.getElementById('color-info');
             if (info) info.textContent = '✓ ' + colorName;
-            const mainImg = document.getElementById('main-product-image');
-            if (mainImg) mainImg.src = imageUrl;
+            
+            // ⚡ Update gallery main image with color image (as first)
+            if (imageUrl) {
+                const newImages = [imageUrl, ...currentGalleryImages.filter(i => i !== imageUrl)];
+                currentGalleryImages = newImages;
+                currentGalleryIndex = 0;
+                updateGalleryDisplay();
+            }
+            
             hideWarning();
         }
-
         function hideWarning() { const w = document.getElementById('selection-warning'); if (w) w.classList.remove('show'); }
         function showWarning() { const w = document.getElementById('selection-warning'); if (w) w.classList.add('show'); }
 
@@ -2558,11 +2552,9 @@
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => toast.classList.remove('toast-visible'), 2500);
         }
-
         function copyNumber(num, typeName) {
             navigator.clipboard.writeText(num).then(() => { showToast(typeName + ' number copied: ' + num); }).catch(() => showToast('Failed to copy number!'));
         }
-
         function increaseQty(index) { cart[index].quantity += 1; localStorage.setItem('burqa_cart', JSON.stringify(cart)); updateCartUI(); renderMiniCart(); }
         function decreaseQty(index) { if (cart[index].quantity > 1) cart[index].quantity -= 1; else cart.splice(index, 1); localStorage.setItem('burqa_cart', JSON.stringify(cart)); updateCartUI(); renderMiniCart(); }
         function removeFromCart(index) {
@@ -2809,7 +2801,7 @@
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             updateWishlistBadge();
-            renderFAQ();  // ⚡ FAQ render করি
+            renderFAQ();
             setTimeout(handleInitialURL, 2500);
         });
     </script>
