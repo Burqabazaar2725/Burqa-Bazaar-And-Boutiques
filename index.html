@@ -116,6 +116,7 @@
                         name: data.name || 'Unnamed Product',
                         category: data.category || 'Uncategorized',
                         price: safePrice, stock: safeStock, image: mainImage,
+                        video: data.video || null,
                         badge: data.badge || null, badgeText: data.badgeText || null,
                         sizes: Array.isArray(data.sizes) ? data.sizes : [],
                         colors: safeColors,
@@ -273,82 +274,58 @@
         .faq-contact-btn.phone { background: var(--gold-color); color: #0b0b0d; }
         .faq-contact-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* ⚡ PAGINATION (NEW) */
-        .pagination-info {
-            text-align: center;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin: 20px 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .pagination-info strong {
-            color: var(--gold-color);
-            font-weight: 700;
-        }
+        /* PAGINATION */
+        .pagination-info { text-align: center; font-size: 13px; color: var(--text-muted); margin: 20px 0 15px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .pagination-info strong { color: var(--gold-color); font-weight: 700; }
+        .pagination-wrap { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 20px 0 30px; flex-wrap: wrap; }
+        .pagination-btn { min-width: 40px; height: 40px; padding: 0 12px; border-radius: 10px; background: var(--card-bg); border: 1.5px solid var(--border-color); color: var(--text-color); font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s ease; }
+        .pagination-btn:hover:not(:disabled):not(.active) { border-color: var(--gold-color); color: var(--gold-color); transform: translateY(-2px); }
+        .pagination-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); box-shadow: 0 4px 15px rgba(223,177,91,.35); cursor: default; }
+        .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pagination-ellipsis { color: var(--text-muted); font-weight: 700; font-size: 14px; padding: 0 4px; user-select: none; }
+        @media (max-width: 500px) { .pagination-btn { min-width: 36px; height: 36px; padding: 0 8px; font-size: 12px; border-radius: 8px; } }
 
-        .pagination-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            margin: 20px 0 30px;
-            flex-wrap: wrap;
-        }
-        .pagination-btn {
-            min-width: 40px;
-            height: 40px;
-            padding: 0 12px;
-            border-radius: 10px;
-            background: var(--card-bg);
-            border: 1.5px solid var(--border-color);
-            color: var(--text-color);
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            transition: all 0.2s ease;
-        }
-        .pagination-btn:hover:not(:disabled):not(.active) {
-            border-color: var(--gold-color);
-            color: var(--gold-color);
-            transform: translateY(-2px);
-        }
-        .pagination-btn.active {
-            background: var(--gold-color);
-            color: #0b0b0d;
-            border-color: var(--gold-color);
-            box-shadow: 0 4px 15px rgba(223,177,91,.35);
-            cursor: default;
-        }
-        .pagination-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .pagination-ellipsis {
-            color: var(--text-muted);
-            font-weight: 700;
-            font-size: 14px;
-            padding: 0 4px;
-            user-select: none;
-        }
-
+        /* PRODUCT GALLERY */
+        .product-gallery { position: relative; margin-bottom: 15px; }
+        .gallery-main { position: relative; width: 100%; height: 400px; background: #000; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; touch-action: pan-y; }
+        .gallery-main-img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; display: block; transition: opacity 0.2s ease; }
+        .gallery-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); border: 1.5px solid var(--gold-color); color: var(--gold-color); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; z-index: 5; transition: all 0.2s ease; -webkit-tap-highlight-color: transparent; }
+        .gallery-nav-btn:hover { background: var(--gold-color); color: #0b0b0d; transform: translateY(-50%) scale(1.1); }
+        .gallery-nav-btn.prev { left: 10px; }
+        .gallery-nav-btn.next { right: 10px; }
+        .gallery-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .gallery-counter { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); border: 1px solid var(--gold-color); color: var(--gold-color); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; z-index: 5; display: inline-flex; align-items: center; gap: 5px; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+        .gallery-thumbnails { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 6px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .gallery-thumbnails::-webkit-scrollbar { height: 5px; }
+        .gallery-thumbnails::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .gallery-thumb { width: 68px; height: 68px; flex-shrink: 0; border-radius: 10px; overflow: hidden; border: 2px solid var(--border-color); background: #000; cursor: pointer; position: relative; transition: all 0.2s ease; }
+        .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-thumb:hover { border-color: var(--gold-color); transform: translateY(-2px); }
+        .gallery-thumb.active { border-color: var(--gold-color); box-shadow: 0 0 12px rgba(223, 177, 91, 0.5); }
+        .gallery-hint { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .gallery-hint i { color: var(--gold-color); }
         @media (max-width: 500px) {
-            .pagination-btn {
-                min-width: 36px;
-                height: 36px;
-                padding: 0 8px;
-                font-size: 12px;
-                border-radius: 8px;
-            }
+            .gallery-main { height: 340px; }
+            .gallery-nav-btn { width: 34px; height: 34px; font-size: 13px; }
+            .gallery-nav-btn.prev { left: 6px; }
+            .gallery-nav-btn.next { right: 6px; }
+            .gallery-thumb { width: 58px; height: 58px; }
         }
+
+        /* ⚡ VIDEO MODAL (NEW) */
+        #video-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9500; display: none; justify-content: center; align-items: center; padding: 15px; }
+        #video-modal.active { display: flex; }
+        .video-modal-content { position: relative; width: 100%; max-width: 900px; aspect-ratio: 16 / 9; background: #000; border: 2px solid var(--gold-color); border-radius: 12px; overflow: hidden; box-shadow: 0 25px 70px rgba(0,0,0,0.9); }
+        .video-modal-content iframe { width: 100%; height: 100%; border: none; display: block; }
+        .video-modal-close { position: absolute; top: -55px; right: 0; background: var(--card-bg); color: var(--gold-color); border: 1.5px solid var(--gold-color); width: 42px; height: 42px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 9600; }
+        .video-modal-close:hover { background: var(--gold-color); color: #0b0b0d; }
+        @media (max-width: 500px) { .video-modal-close { top: -45px; width: 36px; height: 36px; font-size: 16px; } }
+
+        /* ⚡ VIDEO WATCH BUTTON (Product Details) */
+        .video-watch-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none; color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; margin: 12px 0 8px; box-shadow: 0 6px 20px rgba(239,68,68,.4); transition: all 0.2s ease; width: 100%; justify-content: center; }
+        .video-watch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239,68,68,.5); }
+        .video-watch-btn i { font-size: 18px; animation: videoPulse 2s infinite; }
+        @keyframes videoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
         /* PRODUCT BADGES */
         .product-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; z-index: 6; color: #fff; }
@@ -659,6 +636,16 @@
     </div>
 </div>
 
+<!-- ⚡ VIDEO MODAL (NEW) -->
+<div id="video-modal" onclick="closeVideoModal(event)">
+    <div class="video-modal-content" onclick="event.stopPropagation()">
+        <button class="video-modal-close" onclick="closeVideoModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <iframe id="video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+</div>
+
 <div id="mini-cart-overlay" onclick="closeMiniCart()"></div>
 <div id="mini-cart-sidebar">
     <div class="mini-cart-header">
@@ -842,13 +829,11 @@
             </button>
         </div>
 
-        <!-- ⚡ PAGINATION INFO (TOP) -->
         <div class="pagination-info" id="pagination-info-top" style="display:none;"></div>
 
         <div class="product-grid" id="product-grid-container">
         </div>
 
-        <!-- ⚡ PAGINATION CONTROLS (BOTTOM) -->
         <div class="pagination-wrap" id="pagination-wrap" style="display:none;"></div>
     </div>
 
@@ -1310,10 +1295,10 @@
         let gallerySwipeStartX = 0;
         let gallerySwipeEndX = 0;
 
-        // ⚡ PAGINATION STATE
+        // PAGINATION
         const PRODUCTS_PER_PAGE = 12;
         let currentPage = 1;
-        let currentShopFilteredProducts = [];  // Shop page-এ যা দেখানো হচ্ছে
+        let currentShopFilteredProducts = [];
 
         // ============================================
         // FAQ DATA
@@ -1379,7 +1364,61 @@
         }
 
         // ============================================
-        // ⚡ PAGINATION FUNCTIONS (NEW)
+        // ⚡ VIDEO MODAL FUNCTIONS (NEW)
+        // ============================================
+        function openVideoModal(videoUrl) {
+            const embedUrl = convertToEmbedUrl(videoUrl);
+            if (!embedUrl) {
+                showToast('❌ ভিডিও লিংক সাপোর্টেড নয়');
+                return;
+            }
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('video-iframe');
+            iframe.src = embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1&rel=0';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideoModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('video-iframe');
+            if (iframe) iframe.src = '';
+            if (modal) modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function convertToEmbedUrl(url) {
+            if (!url) return '';
+            url = url.trim();
+
+            // YouTube
+            let ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            if (ytMatch && ytMatch[1]) {
+                return 'https://www.youtube.com/embed/' + ytMatch[1];
+            }
+
+            // Facebook Video
+            if (url.includes('facebook.com') && (url.includes('/videos/') || url.includes('video.php'))) {
+                return 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(url) + '&show_text=0';
+            }
+
+            // Vimeo
+            let vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+            if (vimeoMatch && vimeoMatch[1]) {
+                return 'https://player.vimeo.com/video/' + vimeoMatch[1];
+            }
+
+            // Already embed
+            if (url.includes('/embed/') || url.includes('player.vimeo.com') || url.includes('plugins/video.php')) {
+                return url;
+            }
+
+            return '';
+        }
+
+        // ============================================
+        // PAGINATION
         // ============================================
         function paginateProducts(products, page) {
             const start = (page - 1) * PRODUCTS_PER_PAGE;
@@ -1399,7 +1438,6 @@
                 return;
             }
 
-            // Show info
             const startItem = (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
             const endItem = Math.min(currentPage * PRODUCTS_PER_PAGE, totalItems);
 
@@ -1408,15 +1446,9 @@
                 infoTop.innerHTML = `<i class="fas fa-box-open" style="color: var(--gold-color);"></i> দেখানো হচ্ছে <strong>${startItem}–${endItem}</strong> এর মধ্যে <strong>${totalItems}</strong>টি প্রোডাক্ট`;
             }
 
-            // Build buttons
             let html = '';
+            html += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
 
-            // Prev button
-            html += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                <i class="fas fa-chevron-left"></i> <span style="display:none;">Prev</span>
-            </button>`;
-
-            // Page numbers with ellipsis
             const pages = [];
             if (totalPages <= 7) {
                 for (let i = 1; i <= totalPages; i++) pages.push(i);
@@ -1438,10 +1470,7 @@
                 }
             });
 
-            // Next button
-            html += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-                <i class="fas fa-chevron-right"></i> <span style="display:none;">Next</span>
-            </button>`;
+            html += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
 
             if (wrap) {
                 wrap.style.display = 'flex';
@@ -1453,33 +1482,25 @@
             const totalItems = currentShopFilteredProducts.length;
             const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
             if (page < 1 || page > totalPages || page === currentPage) return;
-
             currentPage = page;
-
-            // Render the paginated products
             const pageProducts = paginateProducts(currentShopFilteredProducts, currentPage);
             renderProductsGrid(pageProducts);
             renderPaginationControls();
-
-            // Scroll to top of shop section
             const shopSection = document.getElementById('shop-section');
             if (shopSection) {
-                const yOffset = -100; // account for sticky header
+                const yOffset = -100;
                 const y = shopSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
                 window.scrollTo({ top: y, behavior: 'smooth' });
             }
         };
 
-        // ⚡ Render ONLY the grid (no pagination)
         function renderProductsGrid(itemsToRender) {
             const gridContainer = document.getElementById('product-grid-container');
             if (!gridContainer) return;
-
             if (!itemsToRender || itemsToRender.length === 0) {
                 gridContainer.innerHTML = `<p style="grid-column: span 2; text-align: center; color: var(--text-muted); padding: 30px;">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>`;
                 return;
             }
-
             let html = '';
             itemsToRender.forEach(prod => {
                 let priceDisplay = (typeof prod.price === 'number') ? ('৳ ' + prod.price) : prod.price;
@@ -1487,48 +1508,18 @@
                 const stats = calculateRatingStats(prod.id);
                 const isOOS = (prod.stock === 0);
                 const isLow = (!isOOS && prod.stock !== undefined && prod.stock > 0 && prod.stock <= 5);
-
                 let badgeHtml = '';
                 if (isOOS) badgeHtml = `<span class="product-badge soldout">SOLD OUT</span>`;
                 else if (prod.badge) badgeHtml = `<span class="product-badge ${prod.badge}">${prod.badgeText || prod.badge.toUpperCase()}</span>`;
-
                 let ratingHtml = '';
-                if (stats.total > 0) {
-                    ratingHtml = `<div class="product-rating"><span class="stars">${renderStars(parseFloat(stats.average))}</span><span class="review-count">(${stats.total})</span></div>`;
-                }
-
+                if (stats.total > 0) ratingHtml = `<div class="product-rating"><span class="stars">${renderStars(parseFloat(stats.average))}</span><span class="review-count">(${stats.total})</span></div>`;
                 let lowStockHtml = '';
                 if (isLow) lowStockHtml = `<div class="low-stock-hint"><i class="fas fa-fire"></i> মাত্র ${prod.stock}টি বাকি!</div>`;
-
-                html += `
-                    <div class="product-card ${isOOS ? 'out-of-stock' : ''}" onclick="openProductDetails(${prod.id})">
-                        <div class="product-img-box">
-                            ${badgeHtml}
-                            ${isOOS ? '<div class="out-of-stock-overlay"><span>Out of Stock</span></div>' : ''}
-                            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${prod.id}" onclick="toggleWishlist(${prod.id}, event)" title="Add to Wishlist">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                            <img src="${prod.image}" alt="${prod.name}" loading="lazy" decoding="async" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
-                        </div>
-                        <div class="product-info">
-                            <span class="product-category-tag">${prod.category}</span>
-                            <div class="product-title">${prod.name}</div>
-                            ${ratingHtml}
-                            ${lowStockHtml}
-                            <div class="product-price-row">
-                                <span class="product-price">${priceDisplay}</span>
-                                <button class="add-to-cart-grid-btn" onclick="event.stopPropagation(); quickAddToCart(${prod.id})" ${isOOS ? 'disabled' : ''}>
-                                    ${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                html += `<div class="product-card ${isOOS ? 'out-of-stock' : ''}" onclick="openProductDetails(${prod.id})"><div class="product-img-box">${badgeHtml}${isOOS ? '<div class="out-of-stock-overlay"><span>Out of Stock</span></div>' : ''}<button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${prod.id}" onclick="toggleWishlist(${prod.id}, event)" title="Add to Wishlist"><i class="fas fa-heart"></i></button><img src="${prod.image}" alt="${prod.name}" loading="lazy" decoding="async" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'"></div><div class="product-info"><span class="product-category-tag">${prod.category}</span><div class="product-title">${prod.name}</div>${ratingHtml}${lowStockHtml}<div class="product-price-row"><span class="product-price">${priceDisplay}</span><button class="add-to-cart-grid-btn" onclick="event.stopPropagation(); quickAddToCart(${prod.id})" ${isOOS ? 'disabled' : ''}>${isOOS ? '<i class="fas fa-ban"></i> Out' : '<i class="fas fa-shopping-bag"></i> Add'}</button></div></div></div>`;
             });
             gridContainer.innerHTML = html;
         }
 
-        // ⚡ SHOP PAGE RENDER — with pagination
         function renderProducts(itemsToRender) {
             currentShopFilteredProducts = itemsToRender || [];
             currentPage = 1;
@@ -1538,7 +1529,7 @@
         }
 
         // ============================================
-        // GALLERY FUNCTIONS
+        // GALLERY
         // ============================================
         function setGalleryImages(images, mainImage) {
             let safeImages = [];
@@ -1555,19 +1546,15 @@
             if (!currentGalleryImages || currentGalleryImages.length === 0) return '';
             const total = currentGalleryImages.length;
             const currentImg = currentGalleryImages[currentGalleryIndex];
-
             let html = `<div class="product-gallery">
                 <div class="gallery-main" id="gallery-main">
                     <img src="${currentImg}" alt="Product Image" class="gallery-main-img" id="gallery-main-img" onclick="openImageModal('${currentImg}')" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">`;
-            
             if (total > 1) {
                 html += `<button type="button" class="gallery-nav-btn prev" onclick="event.stopPropagation(); galleryPrev()" ${currentGalleryIndex === 0 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
                 html += `<button type="button" class="gallery-nav-btn next" onclick="event.stopPropagation(); galleryNext()" ${currentGalleryIndex === total - 1 ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
                 html += `<div class="gallery-counter"><i class="fas fa-images"></i> ${currentGalleryIndex + 1} / ${total}</div>`;
             }
-            
             html += `</div>`;
-
             if (total > 1) {
                 html += `<div class="gallery-thumbnails" id="gallery-thumbnails">`;
                 currentGalleryImages.forEach((img, idx) => {
@@ -1578,7 +1565,6 @@
                 html += `</div>`;
                 html += `<div class="gallery-hint"><i class="fas fa-hand-pointer"></i> ছবিতে ক্লিক করে বড় করুন • ডানে-বামে স্লাইড করুন</div>`;
             }
-
             html += `</div>`;
             return html;
         }
@@ -1623,7 +1609,7 @@
         }
 
         // ============================================
-        // FAQ FUNCTIONS
+        // FAQ
         // ============================================
         function renderFAQ() {
             const container = document.getElementById('faq-list');
@@ -1637,7 +1623,6 @@
             if (el('faq-count-delivery')) el('faq-count-delivery').textContent = counts.delivery;
             if (el('faq-count-return')) el('faq-count-return').textContent = counts.return;
             if (el('faq-count-product')) el('faq-count-product').textContent = counts.product;
-
             let items = FAQ_DATA;
             if (faqFilterCategory !== 'all') items = FAQ_DATA.filter(f => f.category === faqFilterCategory);
             if (items.length === 0) {
@@ -1712,6 +1697,7 @@
                     price: safePrice,
                     stock: safeStock,
                     image: mainImage,
+                    video: p.video || null,
                     badge: p.badge || null,
                     badgeText: p.badgeText || null,
                     sizes: Array.isArray(p.sizes) ? p.sizes : [],
@@ -2353,6 +2339,14 @@
             setGalleryImages(product.images, mainImageUrl);
             const galleryHtml = renderGallery();
 
+            // ⚡ Video Button
+            let videoBtnHtml = '';
+            if (product.video && product.video.length > 5) {
+                videoBtnHtml = `<button type="button" class="video-watch-btn" onclick="openVideoModal('${product.video.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-play-circle"></i> 🎥 ভিডিও দেখুন
+                </button>`;
+            }
+
             let sizeHtml = '';
             if (hasSizes) {
                 sizeHtml = `<div class="option-label">📏 Select Size <span class="selected-info" id="size-info"></span></div><div class="size-options-box" id="size-options-box">`;
@@ -2380,7 +2374,7 @@
             const ratingSectionHtml = renderRatingSection(product.id);
             const relatedHtml = renderRelatedProducts(product.id);
             const detailsContainer = document.getElementById('product-details-content');
-            detailsContainer.innerHTML = `<button onclick="switchTab('shop')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back to Shop</button>${galleryHtml}<span class="product-category-tag">${product.category}</span><div class="details-title">${product.name} ${badgeHtml}</div>${ratingLineHtml}<div class="details-price" style="margin-top: 10px;">${priceDisplay}</div>${stockLineHtml}${sizeHtml}${colorHtml}<div class="selection-warning" id="selection-warning">⚠️ অনুগ্রহ করে Size এবং Color নির্বাচন করুন</div><div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;">${isOOS ? `<button disabled style="flex: 1; min-width: 180px; background: #666; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: not-allowed;"><i class="fas fa-ban"></i> Out of Stock</button>` : `<button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>`}<button onclick="toggleWishlist(${product.id}, event)" class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" style="position: static; width: 50px; height: 50px; background: ${isWishlisted ? '#ff007f' : 'var(--bg-color)'}; border: 1.5px solid ${isWishlisted ? '#ff007f' : 'var(--border-color)'}; color: ${isWishlisted ? '#fff' : 'var(--text-color)'}; border-radius: 8px; font-size: 18px;"><i class="fas fa-heart"></i></button><button onclick="openShareModal(${product.id}, event)" class="share-btn" style="width: 50px; height: 50px; justify-content: center; padding: 0;"><i class="fas fa-share-alt"></i></button></div><div class="details-desc-box">${product.fullDescription}</div>${ratingSectionHtml}${relatedHtml}`;
+            detailsContainer.innerHTML = `<button onclick="switchTab('shop')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back to Shop</button>${galleryHtml}<span class="product-category-tag">${product.category}</span><div class="details-title">${product.name} ${badgeHtml}</div>${ratingLineHtml}<div class="details-price" style="margin-top: 10px;">${priceDisplay}</div>${stockLineHtml}${videoBtnHtml}${sizeHtml}${colorHtml}<div class="selection-warning" id="selection-warning">⚠️ অনুগ্রহ করে Size এবং Color নির্বাচন করুন</div><div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;">${isOOS ? `<button disabled style="flex: 1; min-width: 180px; background: #666; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: not-allowed;"><i class="fas fa-ban"></i> Out of Stock</button>` : `<button onclick="addToCartFromDetails()" style="flex: 1; min-width: 180px; background: var(--gold-color); color: #0b0b0d; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;"><i class="fas fa-shopping-bag"></i> Add to Cart</button>`}<button onclick="toggleWishlist(${product.id}, event)" class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" style="position: static; width: 50px; height: 50px; background: ${isWishlisted ? '#ff007f' : 'var(--bg-color)'}; border: 1.5px solid ${isWishlisted ? '#ff007f' : 'var(--border-color)'}; color: ${isWishlisted ? '#fff' : 'var(--text-color)'}; border-radius: 8px; font-size: 18px;"><i class="fas fa-heart"></i></button><button onclick="openShareModal(${product.id}, event)" class="share-btn" style="width: 50px; height: 50px; justify-content: center; padding: 0;"><i class="fas fa-share-alt"></i></button></div><div class="details-desc-box">${product.fullDescription}</div>${ratingSectionHtml}${relatedHtml}`;
             updateURL('product-details', productId);
             switchTab('product-details');
             window.scrollTo(0, 0);
@@ -2749,6 +2743,7 @@
                 closeShareModal();
                 closeImageModal();
                 closeSizeChart();
+                closeVideoModal();
             }
         });
 
