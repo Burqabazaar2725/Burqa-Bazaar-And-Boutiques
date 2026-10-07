@@ -238,6 +238,248 @@
         .wishlist-cart-btn { background: var(--gold-color); color: #0b0b0d; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
         .wishlist-cart-btn:disabled { background: #666; cursor: not-allowed; }
 
+        /* ⚡ FAQ STYLES (NEW) */
+        .faq-hero {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .faq-hero-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dfb15b, #9c7526);
+            color: #0b0b0d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 15px;
+            box-shadow: 0 8px 25px rgba(223,177,91,.4);
+        }
+        .faq-hero h2 {
+            font-family: var(--font-heading);
+            color: var(--gold-color);
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+        .faq-hero p {
+            color: var(--text-muted);
+            font-size: 14px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .faq-category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            justify-content: flex-start;
+        }
+        .faq-category-tabs::-webkit-scrollbar { height: 4px; }
+        .faq-category-tabs::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .faq-cat-btn {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .faq-cat-btn.active {
+            background: var(--gold-color);
+            color: #0b0b0d;
+            border-color: var(--gold-color);
+            box-shadow: 0 4px 12px rgba(223,177,91,.3);
+        }
+        .faq-cat-btn .count {
+            background: rgba(0,0,0,.15);
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .faq-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .faq-item:hover {
+            border-color: var(--gold-color);
+        }
+        .faq-item.open {
+            border-color: var(--gold-color);
+            box-shadow: 0 6px 25px rgba(223,177,91,.15);
+        }
+
+        .faq-question {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+            color: var(--text-color);
+        }
+        .faq-question-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+        .faq-q-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(223,177,91,.25), rgba(223,177,91,.1));
+            border: 1.5px solid var(--gold-color);
+            color: var(--gold-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            flex-shrink: 0;
+            font-family: var(--font-heading);
+        }
+        .faq-q-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.5;
+            padding-top: 3px;
+        }
+        .faq-item.open .faq-q-text {
+            color: var(--gold-color);
+        }
+        .faq-toggle-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .faq-item.open .faq-toggle-icon {
+            background: var(--gold-color);
+            color: #0b0b0d;
+            border-color: var(--gold-color);
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 18px;
+            background: linear-gradient(180deg, rgba(223,177,91,.03), transparent);
+        }
+        .faq-item.open .faq-answer {
+            max-height: 600px;
+            padding: 0 18px 18px 18px;
+        }
+        .faq-answer-content {
+            padding-top: 4px;
+            padding-left: 40px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            border-left: 2px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+        .faq-answer-content strong {
+            color: var(--gold-color);
+            font-weight: 700;
+        }
+        .faq-answer-content ul {
+            padding-left: 20px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
+        .faq-answer-content li {
+            margin-bottom: 4px;
+        }
+
+        .faq-contact-cta {
+            margin-top: 30px;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, rgba(223,177,91,.12), rgba(223,177,91,.03));
+            border: 1.5px solid var(--gold-color);
+            border-radius: 16px;
+            text-align: center;
+        }
+        .faq-contact-cta-icon {
+            font-size: 36px;
+            color: var(--gold-color);
+            margin-bottom: 12px;
+        }
+        .faq-contact-cta h3 {
+            font-family: var(--font-heading);
+            color: var(--gold-color);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .faq-contact-cta p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+        .faq-contact-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .faq-contact-btn {
+            padding: 11px 22px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            text-decoration: none;
+        }
+        .faq-contact-btn.whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: #fff;
+        }
+        .faq-contact-btn.phone {
+            background: var(--gold-color);
+            color: #0b0b0d;
+        }
+        .faq-contact-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
         /* PRODUCT BADGES */
         .product-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; z-index: 6; color: #fff; }
         .product-badge.new { background: linear-gradient(135deg, #00dfd8, #00a99d); }
@@ -255,197 +497,36 @@
         .review-count { font-size: 10px; opacity: 0.7; }
         .product-category-tag { font-size: 10px; text-transform: uppercase; color: var(--gold-color); font-weight: 700; letter-spacing: 0.5px; }
 
-        /* ⚡ SIZE CHART MODAL STYLES (NEW) */
-        .size-guide-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(59,130,246,.12);
-            border: 1.5px solid #3b82f6;
-            color: #60a5fa;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            margin-top: 8px;
-            transition: all 0.2s ease;
-        }
-        .size-guide-btn:hover {
-            background: #3b82f6;
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59,130,246,.3);
-        }
+        /* SIZE CHART MODAL */
+        .size-guide-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(59,130,246,.12); border: 1.5px solid #3b82f6; color: #60a5fa; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; transition: all 0.2s ease; }
+        .size-guide-btn:hover { background: #3b82f6; color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,.3); }
         .size-guide-btn i { font-size: 14px; }
-
-        .size-chart-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            z-index: 8500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            overflow-y: auto;
-        }
+        .size-chart-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); z-index: 8500; display: none; align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
         .size-chart-modal.active { display: flex; }
-
-        .size-chart-box {
-            background: var(--card-bg);
-            border: 1.5px solid var(--gold-color);
-            border-radius: 18px;
-            padding: 25px 20px;
-            max-width: 620px;
-            width: 100%;
-            max-height: 92vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.8);
-            position: relative;
-        }
-        .size-chart-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed var(--border-color);
-            position: relative;
-        }
-        .size-chart-header h2 {
-            font-family: var(--font-heading);
-            color: var(--gold-color);
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .size-chart-header p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-        .size-chart-close {
-            position: absolute;
-            top: -8px;
-            right: -5px;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: transparent;
-            border: 1.5px solid var(--bad-color);
-            color: var(--bad-color);
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .size-chart-box { background: var(--card-bg); border: 1.5px solid var(--gold-color); border-radius: 18px; padding: 25px 20px; max-width: 620px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 25px 70px rgba(0,0,0,0.8); position: relative; }
+        .size-chart-header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color); position: relative; }
+        .size-chart-header h2 { font-family: var(--font-heading); color: var(--gold-color); font-size: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .size-chart-header p { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+        .size-chart-close { position: absolute; top: -8px; right: -5px; width: 34px; height: 34px; border-radius: 50%; background: transparent; border: 1.5px solid var(--bad-color); color: var(--bad-color); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .size-chart-close:hover { background: var(--bad-color); color: #fff; }
-
-        .size-unit-toggle {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-        .size-unit-btn {
-            padding: 6px 20px;
-            border-radius: 20px;
-            background: var(--bg-color);
-            border: 1.5px solid var(--border-color);
-            color: var(--text-color);
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .size-unit-btn.active {
-            background: var(--gold-color);
-            color: #0b0b0d;
-            border-color: var(--gold-color);
-        }
-
-        .size-chart-table-wrap {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-bottom: 18px;
-        }
-        .size-chart-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .size-chart-table thead {
-            background: linear-gradient(135deg, rgba(223,177,91,.15), rgba(223,177,91,.05));
-        }
-        .size-chart-table th {
-            padding: 12px 8px;
-            text-align: center;
-            color: var(--gold-color);
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--border-color);
-        }
-        .size-chart-table td {
-            padding: 11px 8px;
-            text-align: center;
-            color: var(--text-color);
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-        }
+        .size-unit-toggle { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+        .size-unit-btn { padding: 6px 20px; border-radius: 20px; background: var(--bg-color); border: 1.5px solid var(--border-color); color: var(--text-color); font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .size-unit-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); }
+        .size-chart-table-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 18px; }
+        .size-chart-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .size-chart-table thead { background: linear-gradient(135deg, rgba(223,177,91,.15), rgba(223,177,91,.05)); }
+        .size-chart-table th { padding: 12px 8px; text-align: center; color: var(--gold-color); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color); }
+        .size-chart-table td { padding: 11px 8px; text-align: center; color: var(--text-color); font-weight: 600; border-bottom: 1px solid var(--border-color); }
         .size-chart-table tr:last-child td { border-bottom: none; }
-        .size-chart-table tr:nth-child(even) {
-            background: rgba(223,177,91,.03);
-        }
-        .size-chart-table tr:hover {
-            background: rgba(223,177,91,.08);
-        }
-        .size-chart-table td:first-child {
-            font-weight: 800;
-            color: var(--gold-color);
-            font-size: 14px;
-        }
+        .size-chart-table tr:nth-child(even) { background: rgba(223,177,91,.03); }
+        .size-chart-table td:first-child { font-weight: 800; color: var(--gold-color); font-size: 14px; }
+        .size-tips { background: linear-gradient(135deg, rgba(59,130,246,.1), rgba(59,130,246,.03)); border: 1px solid rgba(59,130,246,.35); border-radius: 10px; padding: 14px 16px; }
+        .size-tips-title { font-size: 13px; font-weight: 800; color: #60a5fa; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .size-tips ul { list-style: none; padding: 0; }
+        .size-tips li { font-size: 12px; color: var(--text-muted); line-height: 1.7; padding-left: 20px; position: relative; }
+        .size-tips li::before { content: '✓'; position: absolute; left: 0; color: var(--ok-color); font-weight: 900; }
 
-        .size-tips {
-            background: linear-gradient(135deg, rgba(59,130,246,.1), rgba(59,130,246,.03));
-            border: 1px solid rgba(59,130,246,.35);
-            border-radius: 10px;
-            padding: 14px 16px;
-        }
-        .size-tips-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: #60a5fa;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .size-tips ul {
-            list-style: none;
-            padding: 0;
-        }
-        .size-tips li {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.7;
-            padding-left: 20px;
-            position: relative;
-        }
-        .size-tips li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--ok-color);
-            font-weight: 900;
-        }
-
-        /* Rest of product/rating/review styles */
+        /* Ratings & Reviews */
         .rating-summary { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; margin: 15px 0; }
         .rating-average-box { text-align: center; min-width: 70px; padding-right: 15px; border-right: 1px solid var(--border-color); }
         .rating-average { font-size: 32px; font-weight: 800; color: var(--gold-color); line-height: 1; font-family: var(--font-heading); }
@@ -659,6 +740,10 @@
             .size-chart-box { padding: 20px 15px; }
             .size-chart-table th, .size-chart-table td { padding: 9px 5px; font-size: 12px; }
             .size-chart-table td:first-child { font-size: 13px; }
+            .faq-hero h2 { font-size: 22px; }
+            .faq-question { padding: 14px 15px; }
+            .faq-q-text { font-size: 13px; }
+            .faq-answer-content { padding-left: 32px; }
         }
     </style>
 </head>
@@ -670,7 +755,7 @@
     <i class="fas fa-arrow-up"></i>
 </button>
 
-<!-- ⚡ SIZE CHART MODAL (NEW) -->
+<!-- SIZE CHART MODAL -->
 <div class="size-chart-modal" id="size-chart-modal" onclick="closeSizeChart(event)">
     <div class="size-chart-box" onclick="event.stopPropagation()">
         <div class="size-chart-header">
@@ -688,7 +773,6 @@
 
         <div class="size-chart-table-wrap">
             <table class="size-chart-table" id="size-chart-table">
-                <!-- Dynamic Content -->
             </table>
         </div>
 
@@ -769,6 +853,7 @@
         <li><a href="#" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="#" onclick="switchTab('shop')"><i class="fas fa-shopping-bag"></i> Shop</a></li>
         <li><a href="#" onclick="switchTab('wishlist')"><i class="fas fa-heart" style="color:#ff007f;"></i> Wishlist</a></li>
+        <li><a href="#" onclick="switchTab('faq')"><i class="fas fa-question-circle"></i> FAQ</a></li>
         <li><a href="#" onclick="switchTab('about')"><i class="fas fa-info-circle"></i> About Us</a></li>
         <li><a href="#" onclick="switchTab('privacy')"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
         <li><a href="#" onclick="switchTab('terms')"><i class="fas fa-file-contract"></i> Terms & Conditions</a></li>
@@ -920,6 +1005,54 @@
         </div>
 
         <div id="wishlist-container">
+        </div>
+    </div>
+
+    <!-- ⚡ FAQ PAGE SECTION (NEW) -->
+    <div id="faq-section" class="page-section">
+        <div class="faq-hero">
+            <div class="faq-hero-icon"><i class="fas fa-question"></i></div>
+            <h2>সাধারণ প্রশ্ন-উত্তর</h2>
+            <p>আপনার প্রশ্নের উত্তর এখানে পাবেন। না পেলে সরাসরি WhatsApp-এ যোগাযোগ করুন।</p>
+        </div>
+
+        <div class="faq-category-tabs" id="faq-category-tabs">
+            <button class="faq-cat-btn active" data-faq-cat="all" onclick="filterFAQ('all')">
+                <i class="fas fa-th-large"></i> সব প্রশ্ন <span class="count" id="faq-count-all">0</span>
+            </button>
+            <button class="faq-cat-btn" data-faq-cat="order" onclick="filterFAQ('order')">
+                🛍️ অর্ডার <span class="count" id="faq-count-order">0</span>
+            </button>
+            <button class="faq-cat-btn" data-faq-cat="payment" onclick="filterFAQ('payment')">
+                💳 পেমেন্ট <span class="count" id="faq-count-payment">0</span>
+            </button>
+            <button class="faq-cat-btn" data-faq-cat="delivery" onclick="filterFAQ('delivery')">
+                🚚 ডেলিভারি <span class="count" id="faq-count-delivery">0</span>
+            </button>
+            <button class="faq-cat-btn" data-faq-cat="return" onclick="filterFAQ('return')">
+                🔄 রিটার্ন <span class="count" id="faq-count-return">0</span>
+            </button>
+            <button class="faq-cat-btn" data-faq-cat="product" onclick="filterFAQ('product')">
+                👗 প্রোডাক্ট <span class="count" id="faq-count-product">0</span>
+            </button>
+        </div>
+
+        <div class="faq-list" id="faq-list">
+            <!-- Dynamic FAQ Items -->
+        </div>
+
+        <div class="faq-contact-cta">
+            <div class="faq-contact-cta-icon"><i class="fas fa-headset"></i></div>
+            <h3>আরো প্রশ্ন আছে?</h3>
+            <p>আমাদের সরাসরি জিজ্ঞাসা করুন — আমরা সাহায্য করতে প্রস্তুত!</p>
+            <div class="faq-contact-buttons">
+                <a href="https://wa.me/8801832140613?text=Hello,%20I%20have%20a%20question" target="_blank" class="faq-contact-btn whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="tel:+8801832140613" class="faq-contact-btn phone">
+                    <i class="fas fa-phone"></i> Call Now
+                </a>
+            </div>
         </div>
     </div>
     <div id="product-details-section" class="page-section">
@@ -1150,6 +1283,23 @@
                 </div>
             </div>
 
+            <div class="premium-contact-grid">
+                <div class="premium-contact-card">
+                    <img src="https://i.ibb.co/vWtCxwz/images-3.png" alt="Phone" class="premium-contact-icon-img" loading="lazy">
+                    <div class="premium-contact-info">
+                        <span class="premium-contact-label">PHONE</span>
+                        <a href="tel:+8801832140613" class="premium-contact-value">+880 1832-140613</a>
+                    </div>
+                </div>
+                <div class="premium-contact-card">
+                    <img src="https://i.ibb.co/twXQ8zyW/images-4.png" alt="WhatsApp" class="premium-contact-icon-img" loading="lazy">
+                    <div class="premium-contact-info">
+                        <span class="premium-contact-label">WHATSAPP</span>
+                        <a href="https://wa.me/8801832140613" target="_blank" class="premium-contact-value">+880 1832-140613</a>
+                    </div>
+                </div>
+            </div>
+
             <div class="policy-footer">
                 <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px; text-align: center; padding-left: 0;">🛍️ Burqa Bazaar and Boutiques</h3>
                 <p style="font-weight: 600; font-size: 14px; line-height: 1.6;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
@@ -1181,6 +1331,7 @@
             <h4>Support</h4>
             <ul class="footer-links">
                 <li><a href="#" onclick="switchTab('contact')">Contact Us</a></li>
+                <li><a href="#" onclick="switchTab('faq')">FAQ</a></li>
             </ul>
         </div>
 
@@ -1292,10 +1443,159 @@
         let appliedCoupon = null;
         let discountAmount = 0;
         let wishlistSortMode = 'added';
-
-        // ⚡ SIZE CHART STATE
-        let sizeChartUnit = 'cm'; // cm | inch
+        let sizeChartUnit = 'cm';
         let currentSizeChartCategory = 'default';
+
+        // ⚡ FAQ STATE
+        let faqFilterCategory = 'all';
+        let openFAQIndex = null;
+
+        // ============================================
+        // ⚡ FAQ DATA (NEW)
+        // ============================================
+        const FAQ_DATA = [
+            {
+                category: 'order',
+                q: 'কীভাবে অর্ডার করবো?',
+                a: 'অর্ডার করা খুবই সহজ —<ul><li>১. পছন্দের প্রোডাক্টে ক্লিক করুন</li><li>২. Size ও Color সিলেক্ট করুন</li><li>৩. <strong>"Add to Cart"</strong> বাটনে ক্লিক করুন</li><li>৪. কার্টে গিয়ে <strong>"Checkout"</strong> করুন</li><li>৫. নাম, ফোন, ঠিকানা দিয়ে <strong>"Place Order"</strong> ক্লিক করুন</li></ul>অর্ডার সম্পন্ন হলে WhatsApp-এ কনফার্মেশন পাবেন।'
+            },
+            {
+                category: 'order',
+                q: 'অর্ডার কনফার্মেশন কখন পাবো?',
+                a: 'অর্ডার করার সাথে সাথেই আপনার WhatsApp-এ <strong>Order ID সহ কনফার্মেশন</strong> পাবেন। আমাদের টিম ২৪ ঘণ্টার মধ্যে অর্ডার যাচাই করে কনফার্ম করবে।'
+            },
+            {
+                category: 'order',
+                q: 'অর্ডার ক্যান্সেল করা যাবে?',
+                a: 'হ্যাঁ, অর্ডার <strong>শিপিং হওয়ার আগে</strong> পর্যন্ত ক্যান্সেল করা যাবে। WhatsApp-এ (<strong>01832140613</strong>) আপনার Order ID সহ মেসেজ দিন। শিপিং হয়ে গেলে আর ক্যান্সেল করা যাবে না।'
+            },
+            {
+                category: 'payment',
+                q: 'কী কী পেমেন্ট মেথড আছে?',
+                a: 'আমরা তিনটি পেমেন্ট মেথড গ্রহণ করি —<ul><li>✅ <strong>Cash on Delivery (COD)</strong> — পণ্য হাতে পেয়ে টাকা দিন</li><li>✅ <strong>bKash</strong> — সম্পূর্ণ পেমেন্ট আগে</li><li>✅ <strong>Nagad</strong> — সম্পূর্ণ পেমেন্ট আগে</li></ul>'
+            },
+            {
+                category: 'payment',
+                q: 'Cash on Delivery-তে কী কী দিতে হয়?',
+                a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয় (ফেনীর ভিতরে ৳৬০, বাইরে ৳১৩০)। পণ্য হাতে পেয়ে ডেলিভারি ম্যানের সামনে চেক করে <strong>বাকি টাকা</strong> পরিশোধ করবেন।'
+            },
+            {
+                category: 'payment',
+                q: 'bKash/Nagad পেমেন্ট কীভাবে করবো?',
+                a: 'আমাদের বিকাশ/নগদ নম্বরে (<strong>01832140613 — Personal</strong>) <strong>Send Money</strong> করুন। তারপর চেকআউট ফর্মে প্রেরকের নম্বর ও TrxID লিখুন। পেমেন্ট যাচাই করে অর্ডার কনফার্ম করা হবে।'
+            },
+            {
+                category: 'delivery',
+                q: 'ডেলিভারি চার্জ কত?',
+                a: '<ul><li>🏠 <strong>ফেনীর ভিতরে:</strong> ৳৬০</li><li>🚚 <strong>ফেনীর বাইরে (সারা বাংলাদেশ):</strong> ৳১৩০</li></ul>'
+            },
+            {
+                category: 'delivery',
+                q: 'ডেলিভারি কত দিনে পাবো?',
+                a: '<ul><li>📍 <strong>ফেনীর ভিতরে:</strong> ১-২ কার্যদিবস</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ২-৪ কার্যদিবস</li></ul>কুরিয়ার সার্ভিস ও আবহাওয়ার উপর নির্ভর করে সময় কিছুটা বাড়তে পারে।'
+            },
+            {
+                category: 'delivery',
+                q: 'কীভাবে অর্ডার ট্র্যাক করবো?',
+                a: 'শিপিং হওয়ার পর আমরা আপনাকে WhatsApp-এ <strong>Tracking Number / CN Number</strong> পাঠাবো। সেটি দিয়ে আমাদের <strong>"Track Order"</strong> পেজ থেকে সহজেই ট্র্যাক করতে পারবেন।'
+            },
+            {
+                category: 'return',
+                q: 'পণ্য রিটার্ন করা যাবে?',
+                a: 'হ্যাঁ, পণ্য হাতে পাওয়ার <strong>৪৮ ঘণ্টার মধ্যে</strong> রিটার্ন/এক্সচেঞ্জের জন্য যোগাযোগ করতে হবে। তবে পণ্য অব্যবহৃত ও আসল প্যাকেজিং-এ থাকতে হবে। <strong>৪৮ ঘণ্টা পর</strong> রিটার্ন গ্রহণ করা হয় না।'
+            },
+            {
+                category: 'return',
+                q: 'কোন কোন ক্ষেত্রে এক্সচেঞ্জ করা যাবে?',
+                a: 'নিম্নলিখিত ক্ষেত্রে এক্সচেঞ্জ করা যাবে —<ul><li>• ভুল পণ্য পাঠানো হলে</li><li>• ভুল Size পাঠানো হলে</li><li>• ডেলিভারিতে পণ্য ক্ষতিগ্রস্ত হলে</li><li>• Manufacturing Defect থাকলে</li></ul>'
+            },
+            {
+                category: 'product',
+                q: 'সাইজ কীভাবে বেছে নেবো?',
+                a: 'প্রতিটি প্রোডাক্টে <strong>"📏 Size Guide"</strong> বাটন আছে — সেটা ক্লিক করে সঠিক সাইজ দেখে নিন। এছাড়া আমাদের সাইজ চার্টে <strong>বুক, কোমর, লম্বা, কাঁধ, হাতা</strong> — সব মাপ দেওয়া আছে। দ্বিধা থাকলে WhatsApp-এ যোগাযোগ করুন।'
+            },
+            {
+                category: 'product',
+                q: 'প্রোডাক্টের ছবি ও আসল রঙে পার্থক্য হবে?',
+                a: 'ছবি সাধারণত আসল রঙের কাছাকাছি হয়, তবে আপনার মোবাইল বা কম্পিউটারের <strong>Display Settings</strong>-এর কারণে ৫-১০% রঙের পার্থক্য হতে পারে।'
+            },
+            {
+                category: 'product',
+                q: 'প্রোডাক্টের কাপড় কী মানের?',
+                a: 'আমরা <strong>উন্নত মানের কাপড়</strong> ব্যবহার করি — আরামদায়ক, টেকসই ও শালীনতার সাথে সামঞ্জস্যপূর্ণ। প্রতিটি প্রোডাক্টের বিস্তারিত বিবরণ প্রোডাক্ট পেজে দেওয়া আছে।'
+            }
+        ];
+
+        // ============================================
+        // ⚡ FAQ FUNCTIONS
+        // ============================================
+        function renderFAQ() {
+            const container = document.getElementById('faq-list');
+            if (!container) return;
+
+            // Update counts
+            const counts = { all: FAQ_DATA.length, order: 0, payment: 0, delivery: 0, return: 0, product: 0 };
+            FAQ_DATA.forEach(item => counts[item.category]++);
+
+            const el = (id) => document.getElementById(id);
+            if (el('faq-count-all')) el('faq-count-all').textContent = counts.all;
+            if (el('faq-count-order')) el('faq-count-order').textContent = counts.order;
+            if (el('faq-count-payment')) el('faq-count-payment').textContent = counts.payment;
+            if (el('faq-count-delivery')) el('faq-count-delivery').textContent = counts.delivery;
+            if (el('faq-count-return')) el('faq-count-return').textContent = counts.return;
+            if (el('faq-count-product')) el('faq-count-product').textContent = counts.product;
+
+            // Filter items
+            let items = FAQ_DATA;
+            if (faqFilterCategory !== 'all') {
+                items = FAQ_DATA.filter(f => f.category === faqFilterCategory);
+            }
+
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-muted);"><i class="fas fa-question-circle" style="font-size:40px; color:var(--gold-color); opacity:0.5; display:block; margin-bottom:12px;"></i><p>এই ক্যাটাগরিতে কোনো প্রশ্ন নেই।</p></div>';
+                return;
+            }
+
+            let html = '';
+            items.forEach((item, idx) => {
+                const globalIdx = FAQ_DATA.indexOf(item);
+                const isOpen = openFAQIndex === globalIdx;
+                html += `
+                    <div class="faq-item ${isOpen ? 'open' : ''}" data-faq-idx="${globalIdx}">
+                        <button class="faq-question" onclick="toggleFAQ(${globalIdx})">
+                            <div class="faq-question-left">
+                                <span class="faq-q-icon">Q</span>
+                                <span class="faq-q-text">${item.q}</span>
+                            </div>
+                            <span class="faq-toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">${item.a}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleFAQ(idx) {
+            if (openFAQIndex === idx) {
+                openFAQIndex = null;
+            } else {
+                openFAQIndex = idx;
+            }
+            renderFAQ();
+        }
+
+        function filterFAQ(cat) {
+            faqFilterCategory = cat;
+            openFAQIndex = null;
+            document.querySelectorAll('.faq-cat-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-faq-cat') === cat) btn.classList.add('active');
+            });
+            renderFAQ();
+        }
 
         // ============================================
         // ⚡ SIZE CHART DATA
@@ -1336,27 +1636,17 @@
             }
         };
 
-        // ⚡ INCH CONVERTER
-        function cmToInch(cm) {
-            return (cm / 2.54).toFixed(1);
-        }
+        function cmToInch(cm) { return (cm / 2.54).toFixed(1); }
         function formatMeasure(cm) {
-            if (sizeChartUnit === 'inch') {
-                return cmToInch(cm) + '"';
-            }
+            if (sizeChartUnit === 'inch') return cmToInch(cm) + '"';
             return cm + ' cm';
         }
 
-        // ============================================
-        // ⚡ SIZE CHART FUNCTIONS
-        // ============================================
         function openSizeChart(category) {
             currentSizeChartCategory = category || 'default';
             const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
-            
             document.getElementById('size-chart-title').textContent = data.title;
             document.getElementById('size-chart-subtitle').textContent = 'সঠিক সাইজ বেছে নিন — আরামে থাকুন';
-            
             renderSizeChartTable();
             document.getElementById('size-chart-modal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1381,9 +1671,7 @@
             const data = SIZE_CHART_DATA[currentSizeChartCategory] || SIZE_CHART_DATA['default'];
             const table = document.getElementById('size-chart-table');
             if (!table) return;
-
             const isHijab = currentSizeChartCategory === 'Hijab Collection';
-            
             let html = '<thead><tr>';
             html += '<th>সাইজ</th>';
             if (!isHijab) {
@@ -1396,7 +1684,6 @@
                 html += '<th>হাতা<br><span style="font-size:9px; opacity:0.7;">Sleeve</span></th>';
             }
             html += '</tr></thead><tbody>';
-
             data.rows.forEach(row => {
                 html += '<tr>';
                 html += `<td>${row.size}</td>`;
@@ -1411,7 +1698,6 @@
                 }
                 html += '</tr>';
             });
-
             html += '</tbody>';
             table.innerHTML = html;
         }
@@ -2052,7 +2338,7 @@
                 const pid = parseInt(productId);
                 if (productsData.find(p => p.id === pid)) { setTimeout(() => openProductDetails(pid), 300); return; }
             }
-            if (hash && ['shop', 'wishlist', 'about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order', 'cart'].includes(hash)) {
+            if (hash && ['shop', 'wishlist', 'faq', 'about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order', 'cart'].includes(hash)) {
                 setTimeout(() => switchTab(hash), 300);
             }
         }
@@ -2086,7 +2372,7 @@
         if (sidebarThemeToggleBtn) sidebarThemeToggleBtn.addEventListener('click', toggleTheme);
 
         function switchTab(tabName) {
-            const sections = ['home', 'shop', 'wishlist', 'product-details', 'about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order', 'cart'];
+            const sections = ['home', 'shop', 'wishlist', 'faq', 'product-details', 'about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order', 'cart'];
             sections.forEach(sec => {
                 let el = document.getElementById(sec + '-section');
                 if (el) el.classList.remove('active-page');
@@ -2106,6 +2392,7 @@
             window.scrollTo(0, 0);
             if (tabName !== 'product-details') updateURL(tabName);
             if (tabName === 'wishlist') renderWishlist();
+            if (tabName === 'faq') renderFAQ();
             const progress = document.getElementById('reading-progress');
             if (progress) progress.style.width = '0%';
         }
@@ -2168,10 +2455,7 @@
                 sizeHtml = `<div class="option-label">📏 Select Size <span class="selected-info" id="size-info"></span></div><div class="size-options-box" id="size-options-box">`;
                 product.sizes.forEach(size => { sizeHtml += `<button type="button" class="size-btn" data-size="${size}" onclick="selectSize('${size}')">${size}</button>`; });
                 sizeHtml += `</div>`;
-                // ⚡ SIZE GUIDE BUTTON
-                sizeHtml += `<button type="button" class="size-guide-btn" onclick="event.stopPropagation(); openSizeChart('${product.category}')">
-                    <i class="fas fa-ruler-combined"></i> 📏 Size Guide — সাইজ মাপ দেখুন
-                </button>`;
+                sizeHtml += `<button type="button" class="size-guide-btn" onclick="event.stopPropagation(); openSizeChart('${product.category}')"><i class="fas fa-ruler-combined"></i> 📏 Size Guide — সাইজ মাপ দেখুন</button>`;
             }
             let colorHtml = '';
             if (hasColors) {
@@ -2401,9 +2685,6 @@
             handlePaymentChange();
         }
 
-        // ============================================
-        // SUBMIT ORDER
-        // ============================================
         async function submitOrder(event) {
             event.preventDefault();
             const name = document.getElementById('cus-name').value.trim();
@@ -2442,10 +2723,7 @@
             if (appliedCoupon) {
                 try {
                     const alreadyUsed = await window.checkCouponUsed(appliedCoupon.code, phone);
-                    if (alreadyUsed) {
-                        alert('❌ দুঃখিত!\n\nএই ফোন নম্বর (' + phone + ') থেকে ইতিমধ্যে "' + appliedCoupon.code + '" কুপনটি ব্যবহার করা হয়েছে।');
-                        return;
-                    }
+                    if (alreadyUsed) { alert('❌ দুঃখিত!\n\nএই ফোন নম্বর (' + phone + ') থেকে ইতিমধ্যে "' + appliedCoupon.code + '" কুপনটি ব্যবহার করা হয়েছে।'); return; }
                 } catch (checkErr) { alert('⚠️ কুপন যাচাই করা যায়নি। আবার চেষ্টা করুন।'); return; }
             }
 
@@ -2531,6 +2809,7 @@
         window.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             updateWishlistBadge();
+            renderFAQ();  // ⚡ FAQ render করি
             setTimeout(handleInitialURL, 2500);
         });
     </script>
