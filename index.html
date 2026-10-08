@@ -42,6 +42,7 @@
         window.reviewsCache = {};
         window.couponsCache = [];
         window.bannersCache = [];
+        window.pagesCache = {};
 
         window.loadReviewsFromFirebase = async function() {
             try {
@@ -64,11 +65,8 @@
                 const snap = await getDocs(collection(db, "coupons"));
                 window.couponsCache = [];
                 snap.forEach(doc => window.couponsCache.push({ id: doc.id, ...doc.data() }));
-
-                // ✅ Section দেখাও তারপর render
                 const section = document.getElementById('home-coupons-section');
                 if (section) section.style.display = 'block';
-
                 if (typeof window.renderHomeCoupons === 'function') window.renderHomeCoupons();
                 console.log('🎟️ Coupons loaded:', window.couponsCache.length);
                 return window.couponsCache;
@@ -143,12 +141,41 @@
             } catch (error) { console.error("Products:", error); return null; }
         };
 
-        // 🚀 Parallel Loading — দ্রুত সব load হবে
+        // 📄 Pages Load (About, Privacy, Terms, Return Policy, Contact, Track Order)
+        window.loadPagesFromFirebase = async function() {
+            try {
+                const snap = await getDocs(collection(db, 'pages'));
+                window.pagesCache = {};
+                snap.forEach(d => {
+                    const data = d.data();
+                    window.pagesCache[d.id] = data.html || '';
+                });
+                console.log('📄 Pages loaded:', Object.keys(window.pagesCache).length);
+                // If a page is currently open, refresh it
+                const pageIds = ['about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order'];
+                pageIds.forEach(pageId => {
+                    const sec = document.getElementById(pageId + '-section');
+                    if (sec && sec.classList.contains('active-page')) {
+                        applyPageContent(pageId);
+                    }
+                });
+            } catch (err) { console.error('Pages load error:', err); }
+        };
+
+        window.applyPageContent = function(pageId) {
+            const container = document.querySelector('#' + pageId + '-section .page-content-box');
+            if (!container) return;
+            const html = window.pagesCache[pageId];
+            if (html) container.innerHTML = html;
+        };
+
+        // 🚀 Parallel Loading
         document.addEventListener('DOMContentLoaded', function() {
             window.loadCouponsFromFirebase();
             window.loadReviewsFromFirebase();
             window.loadProductsFromFirebase();
             window.loadBannersFromFirebase();
+            window.loadPagesFromFirebase();
         });
     </script>
     
@@ -353,7 +380,6 @@
         .pagination-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); box-shadow: 0 4px 15px rgba(223,177,91,.35); cursor: default; }
         .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .pagination-ellipsis { color: var(--text-muted); font-weight: 700; font-size: 14px; padding: 0 4px; user-select: none; }
-        @media (max-width: 500px) { .pagination-btn { min-width: 36px; height: 36px; padding: 0 8px; font-size: 12px; border-radius: 8px; } }
 
         /* GALLERY */
         .product-gallery { position: relative; margin-bottom: 15px; }
@@ -862,7 +888,6 @@
                 <span class="badge-count" id="coupons-count-badge">0</span>
             </div>
             <div class="home-coupons-grid" id="home-coupons-grid">
-                <!-- Loading skeleton -->
                 <div class="coupon-skeleton">
                     <div class="coupon-skeleton-line"></div>
                     <div class="coupon-skeleton-line short"></div>
@@ -991,8 +1016,7 @@
     </div>
     <!-- PRODUCT DETAILS SECTION -->
     <div id="product-details-section" class="page-section">
-        <div class="product-details-container" id="product-details-content">
-        </div>
+        <div class="product-details-container" id="product-details-content"></div>
     </div>
 
     <!-- ABOUT SECTION -->
@@ -1211,8 +1235,7 @@
     <!-- CART SECTION -->
     <div id="cart-section" class="page-section">
         <h2 style="margin-bottom: 15px;"><i class="fas fa-shopping-cart"></i> Your Shopping Cart & Checkout</h2>
-        <div id="cart-items-container" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px 20px; border-radius: 12px; margin-top: 20px; text-align: left;">
-        </div>
+        <div id="cart-items-container" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px 20px; border-radius: 12px; margin-top: 20px; text-align: left;"></div>
     </div>
 
 </div>
@@ -2486,6 +2509,10 @@
             if (tabName !== 'product-details') updateURL(tabName);
             if (tabName === 'wishlist') renderWishlist();
             if (tabName === 'faq') renderFAQ();
+            // 📄 Pages apply — Firebase থেকে content বসাও
+            if (['about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order'].includes(tabName)) {
+                if (typeof window.applyPageContent === 'function') window.applyPageContent(tabName);
+            }
             const progress = document.getElementById('reading-progress');
             if (progress) progress.style.width = '0%';
         }
