@@ -41,6 +41,7 @@
         window.fbWhere = where;
         window.reviewsCache = {};
         window.couponsCache = [];
+        window.bannersCache = [];
 
         window.loadReviewsFromFirebase = async function() {
             try {
@@ -135,6 +136,7 @@
                 await window.loadReviewsFromFirebase();
                 await window.loadCouponsFromFirebase();
                 window.loadProductsFromFirebase();
+                window.loadBannersFromFirebase();
             }, 300);
         });
     </script>
@@ -174,6 +176,54 @@
         #back-to-top.visible { opacity: 1; visibility: visible; }
         #back-to-top:hover { transform: translateY(-3px) scale(1.1); background: var(--gold-color); color: #0b0b0d; }
 
+        /* ═══════════ DYNAMIC BANNER SLIDER ═══════════ */
+        .promo-banner-slider {
+            position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px;
+            overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 25px;
+            background: #000; touch-action: pan-y; user-select: none;
+        }
+        .banner-track {
+            display: flex; width: 100%; height: 100%;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+        .banner-slide { flex: 0 0 100%; width: 100%; height: 100%; position: relative; cursor: pointer; }
+        .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; -webkit-user-drag: none; }
+        .banner-slide.no-link { cursor: default; }
+        .banner-nav {
+            position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px;
+            border-radius: 50%; background: rgba(0, 0, 0, 0.55); border: 1.5px solid var(--gold-color);
+            color: var(--gold-color); display: flex; align-items: center; justify-content: center;
+            font-size: 15px; cursor: pointer; z-index: 5;
+            -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+            transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;
+        }
+        .banner-nav:hover { background: var(--gold-color); color: #0b0b0d; transform: translateY(-50%) scale(1.08); }
+        .banner-prev { left: 12px; }
+        .banner-next { right: 12px; }
+        .banner-dots {
+            position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 5; padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.4); border-radius: 20px;
+            -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+        }
+        .banner-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.5);
+            border: none; cursor: pointer; padding: 0; transition: all 0.25s ease;
+        }
+        .banner-dot.active {
+            background: var(--gold-color); width: 24px; border-radius: 4px;
+            box-shadow: 0 0 8px rgba(223, 177, 91, 0.6);
+        }
+        @media (max-width: 500px) {
+            .banner-nav { width: 34px; height: 34px; font-size: 12px; }
+            .banner-prev { left: 6px; }
+            .banner-next { right: 6px; }
+            .banner-dots { bottom: 8px; gap: 6px; padding: 4px 10px; }
+            .banner-dot { width: 6px; height: 6px; }
+            .banner-dot.active { width: 18px; }
+        }
+
         /* COUPONS */
         .home-coupons-section { margin-bottom: 30px; margin-top: 10px; }
         .home-coupons-header { font-family: var(--font-heading); font-size: 17px; color: var(--gold-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
@@ -188,7 +238,6 @@
         .home-coupon-info i { color: var(--gold-color); }
         .home-coupon-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
         .home-coupon-btn.copied { background: linear-gradient(135deg, #22c55e, #16a34a); }
-
         .available-coupons-list { margin-top: 12px; padding: 12px 14px; background: rgba(255,0,127,.05); border: 1px solid rgba(255,0,127,.25); border-radius: 8px; }
         .available-coupons-title { font-size: 12px; font-weight: 700; color: #ff6bb5; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .available-coupon-item { font-size: 12px; color: var(--text-muted); padding: 5px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px dashed rgba(255,0,127,.15); }
@@ -312,7 +361,7 @@
             .gallery-thumb { width: 58px; height: 58px; }
         }
 
-        /* ⚡ VIDEO MODAL (NEW) */
+        /* VIDEO MODAL */
         #video-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9500; display: none; justify-content: center; align-items: center; padding: 15px; }
         #video-modal.active { display: flex; }
         .video-modal-content { position: relative; width: 100%; max-width: 900px; aspect-ratio: 16 / 9; background: #000; border: 2px solid var(--gold-color); border-radius: 12px; overflow: hidden; box-shadow: 0 25px 70px rgba(0,0,0,0.9); }
@@ -320,8 +369,6 @@
         .video-modal-close { position: absolute; top: -55px; right: 0; background: var(--card-bg); color: var(--gold-color); border: 1.5px solid var(--gold-color); width: 42px; height: 42px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 9600; }
         .video-modal-close:hover { background: var(--gold-color); color: #0b0b0d; }
         @media (max-width: 500px) { .video-modal-close { top: -45px; width: 36px; height: 36px; font-size: 16px; } }
-
-        /* ⚡ VIDEO WATCH BUTTON (Product Details) */
         .video-watch-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none; color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; margin: 12px 0 8px; box-shadow: 0 6px 20px rgba(239,68,68,.4); transition: all 0.2s ease; width: 100%; justify-content: center; }
         .video-watch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239,68,68,.5); }
         .video-watch-btn i { font-size: 18px; animation: videoPulse 2s infinite; }
@@ -636,7 +683,7 @@
     </div>
 </div>
 
-<!-- ⚡ VIDEO MODAL (NEW) -->
+<!-- ⚡ VIDEO MODAL -->
 <div id="video-modal" onclick="closeVideoModal(event)">
     <div class="video-modal-content" onclick="event.stopPropagation()">
         <button class="video-modal-close" onclick="closeVideoModal()">
@@ -766,6 +813,7 @@
 
 <div class="container">
     
+    <!-- HOME SECTION -->
     <div id="home-section" class="page-section active-page">
         <div class="welcome-section">
             <h1 class="welcome-title">WELCOME TO BURQA BAZAR AND BOUTIQUES ✨</h1>
@@ -776,8 +824,21 @@
             </div>
         </div>
 
-        <div class="promo-banner">
-            <img src="https://i.ibb.co/V8xTN72/file-000000004028820a835dbfabe40a11d2.png" alt="Promo Banner" loading="lazy" decoding="async">
+        <!-- 🎨 DYNAMIC BANNER SLIDER -->
+        <div class="promo-banner-slider" id="promo-banner-slider">
+            <div class="banner-track" id="banner-track">
+                <!-- Static banner always first (never deletable) -->
+                <div class="banner-slide no-link">
+                    <img src="https://i.ibb.co/V8xTN72/file-000000004028820a835dbfabe40a11d2.png" alt="Promo Banner" loading="eager" decoding="async">
+                </div>
+            </div>
+            <button class="banner-nav banner-prev" onclick="bannerPrev()" aria-label="Previous">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="banner-nav banner-next" onclick="bannerNext()" aria-label="Next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="banner-dots" id="banner-dots"></div>
         </div>
 
         <div class="home-coupons-section" id="home-coupons-section" style="display:none;">
@@ -915,11 +976,13 @@
             </div>
         </div>
     </div>
+    <!-- PRODUCT DETAILS SECTION -->
     <div id="product-details-section" class="page-section">
         <div class="product-details-container" id="product-details-content">
         </div>
     </div>
 
+    <!-- ABOUT SECTION -->
     <div id="about-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🌸 আমাদের সম্পর্কে | About Us</h2>
@@ -949,6 +1012,7 @@
         </div>
     </div>
 
+    <!-- PRIVACY SECTION -->
     <div id="privacy-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🔒 Privacy Policy | গোপনীয়তা নীতি</h2>
@@ -1014,6 +1078,7 @@
         </div>
     </div>
 
+    <!-- TERMS SECTION -->
     <div id="terms-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📜 Terms & Conditions | শর্তাবলি</h2>
@@ -1041,6 +1106,7 @@
         </div>
     </div>
 
+    <!-- RETURN POLICY SECTION -->
     <div id="return-policy-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🔄 Return & Exchange Policy</h2>
@@ -1068,6 +1134,7 @@
         </div>
     </div>
 
+    <!-- CONTACT SECTION -->
     <div id="contact-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📞 Contact Us | যোগাযোগ করুন</h2>
@@ -1112,6 +1179,7 @@
         </div>
     </div>
 
+    <!-- TRACK ORDER SECTION -->
     <div id="track-order-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📦 Tracking Order | অর্ডার ট্র্যাক করুন</h2>
@@ -1150,6 +1218,7 @@
         </div>
     </div>
 
+    <!-- CART SECTION -->
     <div id="cart-section" class="page-section">
         <h2 style="margin-bottom: 15px;"><i class="fas fa-shopping-cart"></i> Your Shopping Cart & Checkout</h2>
         <div id="cart-items-container" style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px 20px; border-radius: 12px; margin-top: 20px; text-align: left;">
@@ -1364,7 +1433,7 @@
         }
 
         // ============================================
-        // ⚡ VIDEO MODAL FUNCTIONS (NEW)
+        // ⚡ VIDEO MODAL
         // ============================================
         function openVideoModal(videoUrl) {
             const embedUrl = convertToEmbedUrl(videoUrl);
@@ -1391,31 +1460,211 @@
         function convertToEmbedUrl(url) {
             if (!url) return '';
             url = url.trim();
-
-            // YouTube
             let ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-            if (ytMatch && ytMatch[1]) {
-                return 'https://www.youtube.com/embed/' + ytMatch[1];
-            }
-
-            // Facebook Video
+            if (ytMatch && ytMatch[1]) return 'https://www.youtube.com/embed/' + ytMatch[1];
             if (url.includes('facebook.com') && (url.includes('/videos/') || url.includes('video.php'))) {
                 return 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(url) + '&show_text=0';
             }
-
-            // Vimeo
             let vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-            if (vimeoMatch && vimeoMatch[1]) {
-                return 'https://player.vimeo.com/video/' + vimeoMatch[1];
-            }
-
-            // Already embed
-            if (url.includes('/embed/') || url.includes('player.vimeo.com') || url.includes('plugins/video.php')) {
-                return url;
-            }
-
+            if (vimeoMatch && vimeoMatch[1]) return 'https://player.vimeo.com/video/' + vimeoMatch[1];
+            if (url.includes('/embed/') || url.includes('player.vimeo.com') || url.includes('plugins/video.php')) return url;
             return '';
         }
+
+        // ============================================
+        // 🎨 DYNAMIC BANNER SLIDER (Static + Dynamic)
+        // ============================================
+        const STATIC_BANNER = {
+            id: '__static__',
+            image: 'https://i.ibb.co/V8xTN72/file-000000004028820a835dbfabe40a11d2.png',
+            title: 'Promo Banner',
+            link: '',
+            linkType: 'none',
+            order: 0
+        };
+
+        window.bannersCache = [STATIC_BANNER];
+        window.currentBannerIndex = 0;
+        let bannerAutoSlideTimer = null;
+        const BANNER_AUTO_SLIDE_MS = 5000;
+        let bannerSwipeStartX = 0;
+        let bannerSwipeEndX = 0;
+        let bannerSwipeAttached = false;
+
+        window.loadBannersFromFirebase = async function() {
+            try {
+                const snap = await getDocs(collection(window.db, "banners"));
+                const dynamicBanners = [];
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    if (data.active === false) return;
+                    const imgUrl = extractBannerUrl(data.image);
+                    if (!imgUrl) return;
+                    dynamicBanners.push({
+                        id: doc.id,
+                        image: imgUrl,
+                        title: data.title || '',
+                        link: data.link || '',
+                        linkType: data.linkType || 'none',
+                        order: parseInt(data.order) || 99
+                    });
+                });
+                dynamicBanners.sort((a, b) => a.order - b.order);
+                window.bannersCache = [STATIC_BANNER, ...dynamicBanners];
+                renderBannerSlider();
+            } catch (err) {
+                console.error('Banners load error:', err);
+                window.bannersCache = [STATIC_BANNER];
+                renderBannerSlider();
+            }
+        };
+
+        function extractBannerUrl(str) {
+            if (!str || typeof str !== 'string') return '';
+            const trimmed = str.trim();
+            const match = trimmed.match(/src=["']([^"']+)["']/);
+            if (match && match[1]) return match[1];
+            if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+                return trimmed.split(/[\s<"']/)[0];
+            }
+            return '';
+        }
+
+        function renderBannerSlider() {
+            const slider = document.getElementById('promo-banner-slider');
+            const track = document.getElementById('banner-track');
+            const dots = document.getElementById('banner-dots');
+
+            if (!slider || !track) return;
+            slider.style.display = 'block';
+
+            let slidesHtml = '';
+            window.bannersCache.forEach((b, idx) => {
+                const hasLink = b.linkType && b.linkType !== 'none' && b.link;
+                slidesHtml += `<div class="banner-slide ${hasLink ? '' : 'no-link'}" data-banner-idx="${idx}" ${hasLink ? `onclick="handleBannerClick(${idx})"` : ''}>
+                    <img src="${b.image}" alt="${b.title || 'Banner ' + (idx + 1)}" loading="${idx === 0 ? 'eager' : 'lazy'}" decoding="async" onerror="this.parentElement.style.display='none'">
+                </div>`;
+            });
+            track.innerHTML = slidesHtml;
+
+            if (window.bannersCache.length > 1) {
+                let dotsHtml = '';
+                window.bannersCache.forEach((_, idx) => {
+                    dotsHtml += `<button class="banner-dot ${idx === window.currentBannerIndex ? 'active' : ''}" onclick="goToBanner(${idx})" aria-label="Banner ${idx + 1}"></button>`;
+                });
+                dots.innerHTML = dotsHtml;
+                dots.style.display = 'flex';
+            } else {
+                dots.innerHTML = '';
+                dots.style.display = 'none';
+            }
+
+            const prevBtn = slider.querySelector('.banner-prev');
+            const nextBtn = slider.querySelector('.banner-next');
+            if (window.bannersCache.length <= 1) {
+                if (prevBtn) prevBtn.style.display = 'none';
+                if (nextBtn) nextBtn.style.display = 'none';
+            } else {
+                if (prevBtn) prevBtn.style.display = 'flex';
+                if (nextBtn) nextBtn.style.display = 'flex';
+            }
+
+            if (window.currentBannerIndex >= window.bannersCache.length) {
+                window.currentBannerIndex = 0;
+            }
+
+            updateBannerPosition();
+            attachBannerSwipeOnce();
+
+            if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
+            if (window.bannersCache.length > 1) startBannerAutoSlide();
+        }
+
+        function updateBannerPosition() {
+            const track = document.getElementById('banner-track');
+            if (!track) return;
+            track.style.transform = `translateX(-${window.currentBannerIndex * 100}%)`;
+            document.querySelectorAll('.banner-dot').forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === window.currentBannerIndex);
+            });
+        }
+
+        window.goToBanner = function(idx) {
+            if (idx < 0 || idx >= window.bannersCache.length) return;
+            window.currentBannerIndex = idx;
+            updateBannerPosition();
+            resetBannerAutoSlide();
+        };
+
+        window.bannerNext = function() {
+            if (window.bannersCache.length <= 1) return;
+            window.currentBannerIndex = (window.currentBannerIndex + 1) % window.bannersCache.length;
+            updateBannerPosition();
+            resetBannerAutoSlide();
+        };
+
+        window.bannerPrev = function() {
+            if (window.bannersCache.length <= 1) return;
+            window.currentBannerIndex = (window.currentBannerIndex - 1 + window.bannersCache.length) % window.bannersCache.length;
+            updateBannerPosition();
+            resetBannerAutoSlide();
+        };
+
+        function startBannerAutoSlide() {
+            if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
+            if (window.bannersCache.length <= 1) return;
+            bannerAutoSlideTimer = setInterval(() => {
+                window.currentBannerIndex = (window.currentBannerIndex + 1) % window.bannersCache.length;
+                updateBannerPosition();
+            }, BANNER_AUTO_SLIDE_MS);
+        }
+
+        function resetBannerAutoSlide() {
+            if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
+            if (window.bannersCache.length > 1) startBannerAutoSlide();
+        }
+
+        function attachBannerSwipeOnce() {
+            if (bannerSwipeAttached) return;
+            const slider = document.getElementById('promo-banner-slider');
+            if (!slider) return;
+            slider.addEventListener('touchstart', (e) => {
+                bannerSwipeStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            slider.addEventListener('touchend', (e) => {
+                bannerSwipeEndX = e.changedTouches[0].screenX;
+                const diff = bannerSwipeStartX - bannerSwipeEndX;
+                const minSwipe = 50;
+                if (diff > minSwipe) window.bannerNext();
+                else if (diff < -minSwipe) window.bannerPrev();
+            }, { passive: true });
+            slider.addEventListener('mouseenter', () => {
+                if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
+            });
+            slider.addEventListener('mouseleave', () => {
+                if (window.bannersCache.length > 1) startBannerAutoSlide();
+            });
+            bannerSwipeAttached = true;
+        }
+
+        window.handleBannerClick = function(idx) {
+            const banner = window.bannersCache[idx];
+            if (!banner || !banner.link) return;
+            if (banner.id === '__static__') return;
+            const type = banner.linkType;
+            const link = banner.link;
+            if (type === 'external') { window.open(link, '_blank'); return; }
+            if (type === 'category') {
+                const category = link.replace('category:', '').trim();
+                if (category) filterCategory(category);
+                return;
+            }
+            if (type === 'tab') {
+                const tab = link.replace('tab:', '').trim();
+                if (tab) switchTab(tab);
+                return;
+            }
+        };
 
         // ============================================
         // PAGINATION
@@ -1453,21 +1702,14 @@
             if (totalPages <= 7) {
                 for (let i = 1; i <= totalPages; i++) pages.push(i);
             } else {
-                if (currentPage <= 3) {
-                    pages.push(1, 2, 3, 4, '...', totalPages);
-                } else if (currentPage >= totalPages - 2) {
-                    pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
-                } else {
-                    pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
-                }
+                if (currentPage <= 3) pages.push(1, 2, 3, 4, '...', totalPages);
+                else if (currentPage >= totalPages - 2) pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                else pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
             }
 
             pages.forEach(p => {
-                if (p === '...') {
-                    html += `<span class="pagination-ellipsis">…</span>`;
-                } else {
-                    html += `<button class="pagination-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
-                }
+                if (p === '...') html += `<span class="pagination-ellipsis">…</span>`;
+                else html += `<button class="pagination-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
             });
 
             html += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
@@ -1558,9 +1800,7 @@
             if (total > 1) {
                 html += `<div class="gallery-thumbnails" id="gallery-thumbnails">`;
                 currentGalleryImages.forEach((img, idx) => {
-                    html += `<div class="gallery-thumb ${idx === currentGalleryIndex ? 'active' : ''}" onclick="event.stopPropagation(); goToGalleryImage(${idx})">
-                        <img src="${img}" alt="Thumb ${idx + 1}" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'">
-                    </div>`;
+                    html += `<div class="gallery-thumb ${idx === currentGalleryIndex ? 'active' : ''}" onclick="event.stopPropagation(); goToGalleryImage(${idx})"><img src="${img}" alt="Thumb ${idx + 1}" loading="lazy" onerror="this.src='https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png'"></div>`;
                 });
                 html += `</div>`;
                 html += `<div class="gallery-hint"><i class="fas fa-hand-pointer"></i> ছবিতে ক্লিক করে বড় করুন • ডানে-বামে স্লাইড করুন</div>`;
@@ -1598,14 +1838,13 @@
             const galleryMain = document.getElementById('gallery-main');
             if (!galleryMain || currentGalleryImages.length <= 1) return;
             galleryMain.addEventListener('touchstart', (e) => { gallerySwipeStartX = e.changedTouches[0].screenX; }, { passive: true });
-            galleryMain.addEventListener('touchend', (e) => { gallerySwipeEndX = e.changedTouches[0].screenX; handleGallerySwipe(); }, { passive: true });
-        }
-
-        function handleGallerySwipe() {
-            const diff = gallerySwipeStartX - gallerySwipeEndX;
-            const minSwipe = 50;
-            if (diff > minSwipe) galleryNext();
-            else if (diff < -minSwipe) galleryPrev();
+            galleryMain.addEventListener('touchend', (e) => {
+                gallerySwipeEndX = e.changedTouches[0].screenX;
+                const diff = gallerySwipeStartX - gallerySwipeEndX;
+                const minSwipe = 50;
+                if (diff > minSwipe) galleryNext();
+                else if (diff < -minSwipe) galleryPrev();
+            }, { passive: true });
         }
 
         // ============================================
@@ -1633,16 +1872,7 @@
             items.forEach((item) => {
                 const globalIdx = FAQ_DATA.indexOf(item);
                 const isOpen = openFAQIndex === globalIdx;
-                html += `<div class="faq-item ${isOpen ? 'open' : ''}" data-faq-idx="${globalIdx}">
-                    <button class="faq-question" onclick="toggleFAQ(${globalIdx})">
-                        <div class="faq-question-left">
-                            <span class="faq-q-icon">Q</span>
-                            <span class="faq-q-text">${item.q}</span>
-                        </div>
-                        <span class="faq-toggle-icon"><i class="fas fa-chevron-down"></i></span>
-                    </button>
-                    <div class="faq-answer"><div class="faq-answer-content">${item.a}</div></div>
-                </div>`;
+                html += `<div class="faq-item ${isOpen ? 'open' : ''}" data-faq-idx="${globalIdx}"><button class="faq-question" onclick="toggleFAQ(${globalIdx})"><div class="faq-question-left"><span class="faq-q-icon">Q</span><span class="faq-q-text">${item.q}</span></div><span class="faq-toggle-icon"><i class="fas fa-chevron-down"></i></span></button><div class="faq-answer"><div class="faq-answer-content">${item.a}</div></div></div>`;
             });
             container.innerHTML = html;
         }
@@ -1694,12 +1924,9 @@
                     id: parseInt(p.id) || Math.floor(Math.random() * 100000),
                     name: p.name || 'Unnamed Product',
                     category: p.category || 'Uncategorized',
-                    price: safePrice,
-                    stock: safeStock,
-                    image: mainImage,
+                    price: safePrice, stock: safeStock, image: mainImage,
                     video: p.video || null,
-                    badge: p.badge || null,
-                    badgeText: p.badgeText || null,
+                    badge: p.badge || null, badgeText: p.badgeText || null,
                     sizes: Array.isArray(p.sizes) ? p.sizes : [],
                     colors: safeColors,
                     images: safeImages,
@@ -1947,7 +2174,7 @@
                 const opacity = meetsMin ? '1' : '0.5';
                 html += `<div class="available-coupon-item" style="opacity:${opacity};"><span><code>${c.code}</code> — <span class="discount-text">${discountText}</span>${minText}</span>${!meetsMin ? '<span style="font-size:10px; color:#ff6bb5;">বেশি অর্ডার করুন</span>' : ''}</div>`;
             });
-            html += '</div>';
+            html += '</ul></div>';
             return html;
         }
         function calculateCartSubtotal() {
@@ -2339,12 +2566,9 @@
             setGalleryImages(product.images, mainImageUrl);
             const galleryHtml = renderGallery();
 
-            // ⚡ Video Button
             let videoBtnHtml = '';
             if (product.video && product.video.length > 5) {
-                videoBtnHtml = `<button type="button" class="video-watch-btn" onclick="openVideoModal('${product.video.replace(/'/g, "\\'")}')">
-                    <i class="fas fa-play-circle"></i> 🎥 ভিডিও দেখুন
-                </button>`;
+                videoBtnHtml = `<button type="button" class="video-watch-btn" onclick="openVideoModal('${product.video.replace(/'/g, "\\'")}')"><i class="fas fa-play-circle"></i> 🎥 ভিডিও দেখুন</button>`;
             }
 
             let sizeHtml = '';
