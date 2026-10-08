@@ -55,6 +55,7 @@
                     if (!window.reviewsCache[pid]) window.reviewsCache[pid] = [];
                     window.reviewsCache[pid].push({ id: doc.id, ...data });
                 });
+                console.log('✅ Reviews loaded');
             } catch (err) { console.error('Reviews:', err); }
         };
 
@@ -63,9 +64,18 @@
                 const snap = await getDocs(collection(db, "coupons"));
                 window.couponsCache = [];
                 snap.forEach(doc => window.couponsCache.push({ id: doc.id, ...doc.data() }));
+
+                // ✅ Section দেখাও তারপর render
+                const section = document.getElementById('home-coupons-section');
+                if (section) section.style.display = 'block';
+
                 if (typeof window.renderHomeCoupons === 'function') window.renderHomeCoupons();
+                console.log('🎟️ Coupons loaded:', window.couponsCache.length);
                 return window.couponsCache;
-            } catch (err) { console.error('Coupons:', err); return []; }
+            } catch (err) { 
+                console.error('Coupons:', err); 
+                return []; 
+            }
         };
 
         window.checkCouponUsed = async function(couponCode, phone) {
@@ -127,26 +137,18 @@
                     });
                 });
                 products.sort((a, b) => a.id - b.id);
+                console.log('✅ Products loaded');
                 if (typeof window.updateProductsData === 'function') window.updateProductsData(products);
                 return products;
             } catch (error) { console.error("Products:", error); return null; }
         };
 
+        // 🚀 Parallel Loading — দ্রুত সব load হবে
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(async function() {
-                try {
-                    await window.loadReviewsFromFirebase();
-                    console.log('✅ Reviews loaded');
-                    const coupons = await window.loadCouponsFromFirebase();
-                    console.log('✅ Coupons loaded:', coupons.length);
-                    await window.loadProductsFromFirebase();
-                    console.log('✅ Products loaded');
-                    await window.loadBannersFromFirebase();
-                    console.log('✅ Banners loaded:', window.bannersCache.length);
-                } catch (err) {
-                    console.error('❌ Init error:', err);
-                }
-            }, 500);
+            window.loadCouponsFromFirebase();
+            window.loadReviewsFromFirebase();
+            window.loadProductsFromFirebase();
+            window.loadBannersFromFirebase();
         });
     </script>
     
@@ -221,6 +223,42 @@
         .home-coupon-info i { color: var(--gold-color); }
         .home-coupon-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
         .home-coupon-btn.copied { background: linear-gradient(135deg, #22c55e, #16a34a); }
+
+        /* COUPON SKELETON LOADER */
+        .coupon-skeleton {
+            background: linear-gradient(135deg, rgba(255,0,127,.08), rgba(121,40,202,.05));
+            border: 1.5px dashed rgba(255,0,127,.3);
+            border-radius: 14px;
+            padding: 20px 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .coupon-skeleton::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(223,177,91,.15), transparent);
+            animation: couponShimmer 1.5s infinite;
+        }
+        @keyframes couponShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .coupon-skeleton-line {
+            height: 20px;
+            background: rgba(223,177,91,.15);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            width: 80%;
+        }
+        .coupon-skeleton-line.short {
+            width: 50%;
+            height: 14px;
+        }
+
         .available-coupons-list { margin-top: 12px; padding: 12px 14px; background: rgba(255,0,127,.05); border: 1px solid rgba(255,0,127,.25); border-radius: 8px; }
         .available-coupons-title { font-size: 12px; font-weight: 700; color: #ff6bb5; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .available-coupon-item { font-size: 12px; color: var(--text-muted); padding: 5px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px dashed rgba(255,0,127,.15); }
@@ -315,30 +353,47 @@
         .pagination-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); box-shadow: 0 4px 15px rgba(223,177,91,.35); cursor: default; }
         .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .pagination-ellipsis { color: var(--text-muted); font-weight: 700; font-size: 14px; padding: 0 4px; user-select: none; }
+        @media (max-width: 500px) { .pagination-btn { min-width: 36px; height: 36px; padding: 0 8px; font-size: 12px; border-radius: 8px; } }
 
         /* GALLERY */
         .product-gallery { position: relative; margin-bottom: 15px; }
         .gallery-main { position: relative; width: 100%; height: 400px; background: #000; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; touch-action: pan-y; }
         .gallery-main-img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; display: block; transition: opacity 0.2s ease; }
-        .gallery-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); border: 1.5px solid var(--gold-color); color: var(--gold-color); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; z-index: 5; }
+        .gallery-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); border: 1.5px solid var(--gold-color); color: var(--gold-color); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; z-index: 5; transition: all 0.2s ease; -webkit-tap-highlight-color: transparent; }
+        .gallery-nav-btn:hover { background: var(--gold-color); color: #0b0b0d; transform: translateY(-50%) scale(1.1); }
         .gallery-nav-btn.prev { left: 10px; }
         .gallery-nav-btn.next { right: 10px; }
         .gallery-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .gallery-counter { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); border: 1px solid var(--gold-color); color: var(--gold-color); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; z-index: 5; }
-        .gallery-thumbnails { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 6px; }
-        .gallery-thumb { width: 68px; height: 68px; flex-shrink: 0; border-radius: 10px; overflow: hidden; border: 2px solid var(--border-color); background: #000; cursor: pointer; }
+        .gallery-counter { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); border: 1px solid var(--gold-color); color: var(--gold-color); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; z-index: 5; display: inline-flex; align-items: center; gap: 5px; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+        .gallery-thumbnails { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 6px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .gallery-thumbnails::-webkit-scrollbar { height: 5px; }
+        .gallery-thumbnails::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .gallery-thumb { width: 68px; height: 68px; flex-shrink: 0; border-radius: 10px; overflow: hidden; border: 2px solid var(--border-color); background: #000; cursor: pointer; position: relative; transition: all 0.2s ease; }
         .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-thumb:hover { border-color: var(--gold-color); transform: translateY(-2px); }
         .gallery-thumb.active { border-color: var(--gold-color); box-shadow: 0 0 12px rgba(223, 177, 91, 0.5); }
-        .gallery-hint { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 8px; }
-        @media (max-width: 500px) { .gallery-main { height: 340px; } .gallery-thumb { width: 58px; height: 58px; } }
+        .gallery-hint { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .gallery-hint i { color: var(--gold-color); }
+        @media (max-width: 500px) {
+            .gallery-main { height: 340px; }
+            .gallery-nav-btn { width: 34px; height: 34px; font-size: 13px; }
+            .gallery-nav-btn.prev { left: 6px; }
+            .gallery-nav-btn.next { right: 6px; }
+            .gallery-thumb { width: 58px; height: 58px; }
+        }
 
         /* VIDEO MODAL */
         #video-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9500; display: none; justify-content: center; align-items: center; padding: 15px; }
         #video-modal.active { display: flex; }
-        .video-modal-content { position: relative; width: 100%; max-width: 900px; aspect-ratio: 16 / 9; background: #000; border: 2px solid var(--gold-color); border-radius: 12px; overflow: hidden; }
+        .video-modal-content { position: relative; width: 100%; max-width: 900px; aspect-ratio: 16 / 9; background: #000; border: 2px solid var(--gold-color); border-radius: 12px; overflow: hidden; box-shadow: 0 25px 70px rgba(0,0,0,0.9); }
         .video-modal-content iframe { width: 100%; height: 100%; border: none; display: block; }
-        .video-modal-close { position: absolute; top: -55px; right: 0; background: var(--card-bg); color: var(--gold-color); border: 1.5px solid var(--gold-color); width: 42px; height: 42px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .video-watch-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none; color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; margin: 12px 0 8px; width: 100%; justify-content: center; }
+        .video-modal-close { position: absolute; top: -55px; right: 0; background: var(--card-bg); color: var(--gold-color); border: 1.5px solid var(--gold-color); width: 42px; height: 42px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 9600; }
+        .video-modal-close:hover { background: var(--gold-color); color: #0b0b0d; }
+        @media (max-width: 500px) { .video-modal-close { top: -45px; width: 36px; height: 36px; font-size: 16px; } }
+        .video-watch-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none; color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; margin: 12px 0 8px; box-shadow: 0 6px 20px rgba(239,68,68,.4); transition: all 0.2s ease; width: 100%; justify-content: center; }
+        .video-watch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239,68,68,.5); }
+        .video-watch-btn i { font-size: 18px; animation: videoPulse 2s infinite; }
+        @keyframes videoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
         /* BADGES */
         .product-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; z-index: 6; color: #fff; }
@@ -358,22 +413,27 @@
         .product-category-tag { font-size: 10px; text-transform: uppercase; color: var(--gold-color); font-weight: 700; letter-spacing: 0.5px; }
 
         /* SIZE CHART */
-        .size-guide-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(59,130,246,.12); border: 1.5px solid #3b82f6; color: #60a5fa; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; }
+        .size-guide-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(59,130,246,.12); border: 1.5px solid #3b82f6; color: #60a5fa; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; transition: all 0.2s ease; }
+        .size-guide-btn:hover { background: #3b82f6; color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,.3); }
+        .size-guide-btn i { font-size: 14px; }
         .size-chart-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); z-index: 8500; display: none; align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
         .size-chart-modal.active { display: flex; }
-        .size-chart-box { background: var(--card-bg); border: 1.5px solid var(--gold-color); border-radius: 18px; padding: 25px 20px; max-width: 620px; width: 100%; max-height: 92vh; overflow-y: auto; position: relative; }
+        .size-chart-box { background: var(--card-bg); border: 1.5px solid var(--gold-color); border-radius: 18px; padding: 25px 20px; max-width: 620px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 25px 70px rgba(0,0,0,0.8); position: relative; }
         .size-chart-header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color); position: relative; }
         .size-chart-header h2 { font-family: var(--font-heading); color: var(--gold-color); font-size: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .size-chart-header p { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
         .size-chart-close { position: absolute; top: -8px; right: -5px; width: 34px; height: 34px; border-radius: 50%; background: transparent; border: 1.5px solid var(--bad-color); color: var(--bad-color); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .size-chart-close:hover { background: var(--bad-color); color: #fff; }
         .size-unit-toggle { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
         .size-unit-btn { padding: 6px 20px; border-radius: 20px; background: var(--bg-color); border: 1.5px solid var(--border-color); color: var(--text-color); font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
         .size-unit-btn.active { background: var(--gold-color); color: #0b0b0d; border-color: var(--gold-color); }
         .size-chart-table-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 18px; }
         .size-chart-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .size-chart-table thead { background: linear-gradient(135deg, rgba(223,177,91,.15), rgba(223,177,91,.05)); }
-        .size-chart-table th { padding: 12px 8px; text-align: center; color: var(--gold-color); font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
+        .size-chart-table th { padding: 12px 8px; text-align: center; color: var(--gold-color); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color); }
         .size-chart-table td { padding: 11px 8px; text-align: center; color: var(--text-color); font-weight: 600; border-bottom: 1px solid var(--border-color); }
+        .size-chart-table tr:last-child td { border-bottom: none; }
+        .size-chart-table tr:nth-child(even) { background: rgba(223,177,91,.03); }
         .size-chart-table td:first-child { font-weight: 800; color: var(--gold-color); font-size: 14px; }
         .size-tips { background: linear-gradient(135deg, rgba(59,130,246,.1), rgba(59,130,246,.03)); border: 1px solid rgba(59,130,246,.35); border-radius: 10px; padding: 14px 16px; }
         .size-tips-title { font-size: 13px; font-weight: 800; color: #60a5fa; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
@@ -594,6 +654,7 @@
         @media (max-width: 500px) {
             .size-chart-box { padding: 20px 15px; }
             .size-chart-table th, .size-chart-table td { padding: 9px 5px; font-size: 12px; }
+            .size-chart-table td:first-child { font-size: 13px; }
             .faq-hero h2 { font-size: 22px; }
             .faq-question { padding: 14px 15px; }
             .faq-q-text { font-size: 13px; }
@@ -800,7 +861,13 @@
                 🎟️ বিশেষ ছাড় / Special Coupons
                 <span class="badge-count" id="coupons-count-badge">0</span>
             </div>
-            <div class="home-coupons-grid" id="home-coupons-grid"></div>
+            <div class="home-coupons-grid" id="home-coupons-grid">
+                <!-- Loading skeleton -->
+                <div class="coupon-skeleton">
+                    <div class="coupon-skeleton-line"></div>
+                    <div class="coupon-skeleton-line short"></div>
+                </div>
+            </div>
         </div>
 
         <div class="collections-header">
@@ -1283,7 +1350,6 @@
         let gallerySwipeStartX = 0;
         let gallerySwipeEndX = 0;
 
-        // PAGINATION
         const PRODUCTS_PER_PAGE = 12;
         let currentPage = 1;
         let currentShopFilteredProducts = [];
@@ -1356,10 +1422,7 @@
         // ============================================
         function openVideoModal(videoUrl) {
             const embedUrl = convertToEmbedUrl(videoUrl);
-            if (!embedUrl) {
-                showToast('❌ ভিডিও লিংক সাপোর্টেড নয়');
-                return;
-            }
+            if (!embedUrl) { showToast('❌ ভিডিও লিংক সাপোর্টেড নয়'); return; }
             const modal = document.getElementById('video-modal');
             const iframe = document.getElementById('video-iframe');
             iframe.src = embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1&rel=0';
@@ -1391,15 +1454,13 @@
         }
 
         // ============================================
-        // BANNER SLIDER (Static + Dynamic)
+        // BANNER SLIDER
         // ============================================
         const STATIC_BANNER = {
             id: '__static__',
             image: 'https://i.ibb.co/V8xTN72/file-000000004028820a835dbfabe40a11d2.png',
             title: 'Promo Banner',
-            link: '',
-            linkType: 'none',
-            order: 0
+            link: '', linkType: 'none', order: 0
         };
 
         window.bannersCache = [STATIC_BANNER];
@@ -1420,11 +1481,8 @@
                     const imgUrl = extractBannerUrl(data.image);
                     if (!imgUrl) return;
                     dynamicBanners.push({
-                        id: doc.id,
-                        image: imgUrl,
-                        title: data.title || '',
-                        link: data.link || '',
-                        linkType: data.linkType || 'none',
+                        id: doc.id, image: imgUrl, title: data.title || '',
+                        link: data.link || '', linkType: data.linkType || 'none',
                         order: parseInt(data.order) || 99
                     });
                 });
@@ -1454,7 +1512,6 @@
             const slider = document.getElementById('promo-banner-slider');
             const track = document.getElementById('banner-track');
             const dots = document.getElementById('banner-dots');
-
             if (!slider || !track) return;
             slider.style.display = 'block';
 
@@ -1489,13 +1546,9 @@
                 if (nextBtn) nextBtn.style.display = 'flex';
             }
 
-            if (window.currentBannerIndex >= window.bannersCache.length) {
-                window.currentBannerIndex = 0;
-            }
-
+            if (window.currentBannerIndex >= window.bannersCache.length) window.currentBannerIndex = 0;
             updateBannerPosition();
             attachBannerSwipeOnce();
-
             if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
             if (window.bannersCache.length > 1) startBannerAutoSlide();
         }
@@ -1548,9 +1601,7 @@
             if (bannerSwipeAttached) return;
             const slider = document.getElementById('promo-banner-slider');
             if (!slider) return;
-            slider.addEventListener('touchstart', (e) => {
-                bannerSwipeStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
+            slider.addEventListener('touchstart', (e) => { bannerSwipeStartX = e.changedTouches[0].screenX; }, { passive: true });
             slider.addEventListener('touchend', (e) => {
                 bannerSwipeEndX = e.changedTouches[0].screenX;
                 const diff = bannerSwipeStartX - bannerSwipeEndX;
@@ -1558,12 +1609,8 @@
                 if (diff > minSwipe) window.bannerNext();
                 else if (diff < -minSwipe) window.bannerPrev();
             }, { passive: true });
-            slider.addEventListener('mouseenter', () => {
-                if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
-            });
-            slider.addEventListener('mouseleave', () => {
-                if (window.bannersCache.length > 1) startBannerAutoSlide();
-            });
+            slider.addEventListener('mouseenter', () => { if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer); });
+            slider.addEventListener('mouseleave', () => { if (window.bannersCache.length > 1) startBannerAutoSlide(); });
             bannerSwipeAttached = true;
         }
 
@@ -1600,24 +1647,19 @@
             const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
             const infoTop = document.getElementById('pagination-info-top');
             const wrap = document.getElementById('pagination-wrap');
-
             if (totalPages <= 1) {
                 if (infoTop) infoTop.style.display = 'none';
                 if (wrap) wrap.style.display = 'none';
                 return;
             }
-
             const startItem = (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
             const endItem = Math.min(currentPage * PRODUCTS_PER_PAGE, totalItems);
-
             if (infoTop) {
                 infoTop.style.display = 'flex';
                 infoTop.innerHTML = `<i class="fas fa-box-open" style="color: var(--gold-color);"></i> দেখানো হচ্ছে <strong>${startItem}–${endItem}</strong> এর মধ্যে <strong>${totalItems}</strong>টি প্রোডাক্ট`;
             }
-
             let html = '';
             html += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
-
             const pages = [];
             if (totalPages <= 7) {
                 for (let i = 1; i <= totalPages; i++) pages.push(i);
@@ -1626,18 +1668,12 @@
                 else if (currentPage >= totalPages - 2) pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
                 else pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
             }
-
             pages.forEach(p => {
                 if (p === '...') html += `<span class="pagination-ellipsis">…</span>`;
                 else html += `<button class="pagination-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
             });
-
             html += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
-
-            if (wrap) {
-                wrap.style.display = 'flex';
-                wrap.innerHTML = html;
-            }
+            if (wrap) { wrap.style.display = 'flex'; wrap.innerHTML = html; }
         }
 
         window.goToPage = function(page) {
@@ -1820,9 +1856,7 @@
                         const colorImg = extractUrl(c.image) || mainImage;
                         return { name: c.name || 'Default', image: colorImg };
                     });
-                } else {
-                    safeColors = [{ name: 'Default', image: mainImage }];
-                }
+                } else { safeColors = [{ name: 'Default', image: mainImage }]; }
                 let safeImages = [];
                 if (Array.isArray(p.images) && p.images.length > 0) {
                     safeImages = p.images.map(i => extractUrl(i)).filter(i => i && i.length > 5);
@@ -1832,9 +1866,7 @@
                 if (typeof safePrice === 'string' && !safePrice.toLowerCase().includes('coming')) {
                     const parsed = parseInt(safePrice.replace(/[^0-9]/g, ''));
                     safePrice = isNaN(parsed) ? 'Coming Soon' : parsed;
-                } else if (typeof safePrice !== 'number' && typeof safePrice !== 'string') {
-                    safePrice = 'Coming Soon';
-                }
+                } else if (typeof safePrice !== 'number' && typeof safePrice !== 'string') { safePrice = 'Coming Soon'; }
                 let safeStock = 1;
                 if (p.stock !== undefined && p.stock !== null) {
                     safeStock = parseInt(p.stock);
@@ -1848,8 +1880,7 @@
                     video: p.video || null,
                     badge: p.badge || null, badgeText: p.badgeText || null,
                     sizes: Array.isArray(p.sizes) ? p.sizes : [],
-                    colors: safeColors,
-                    images: safeImages,
+                    colors: safeColors, images: safeImages,
                     fullDescription: p.fullDescription || ('<h3>' + (p.name || '') + '</h3>')
                 };
             });
