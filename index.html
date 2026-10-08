@@ -19,7 +19,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, doc, getDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBz6nILSzcvSofF9iyPt-h3ffseEXTwgnA",
@@ -36,6 +36,8 @@
         window.fbAddDoc = addDoc;
         window.fbCollection = collection;
         window.fbGetDocs = getDocs;
+        window.fbDoc = doc;
+        window.fbGetDoc = getDoc;
         window.fbQuery = query;
         window.fbOrderBy = orderBy;
         window.fbWhere = where;
@@ -43,7 +45,137 @@
         window.couponsCache = [];
         window.bannersCache = [];
         window.pagesCache = {};
+        window.settingsCache = {};
 
+        // ============================================
+        // DEFAULT SETTINGS (fallback)
+        // ============================================
+        window.DEFAULT_SETTINGS = {
+            storeName: 'Burqa Bazar and Boutiques',
+            welcomeText: 'WELCOME TO BURQA BAZAR AND BOUTIQUES ✨',
+            pageTitle: 'Burqa Bazar & Boutiques | Premium Hijab, Burqa & Abaya Collection',
+            phone: '+880 1832-140613',
+            whatsapp: '8801832140613',
+            email: 'burqabazaarandboutiques@gmail.com',
+            address: 'ফেনী সওদাগর পট্টি, সওদাগর টাওয়ার, ২য় তলা, দোকান নং ০৩',
+            bkash: '01832140613',
+            nagad: '01832140613',
+            deliveryInside: 60,
+            deliveryOutside: 130,
+            facebook: '',
+            instagram: '',
+            youtube: '',
+            tiktok: ''
+        };
+
+        // ============================================
+        // SETTINGS LOAD (NEW!)
+        // ============================================
+        window.loadSettingsFromFirebase = async function() {
+            try {
+                const snap = await getDoc(doc(db, 'settings', 'store'));
+                if (snap.exists()) {
+                    window.settingsCache = { ...window.DEFAULT_SETTINGS, ...snap.data() };
+                    console.log('⚙️ Settings loaded from Firebase');
+                } else {
+                    window.settingsCache = { ...window.DEFAULT_SETTINGS };
+                    console.log('⚙️ Using default settings (Firebase empty)');
+                }
+                applySettingsToWebsite();
+                return window.settingsCache;
+            } catch (err) {
+                console.error('⚙️ Settings load error:', err);
+                window.settingsCache = { ...window.DEFAULT_SETTINGS };
+                applySettingsToWebsite();
+                return window.settingsCache;
+            }
+        };
+
+        // ============================================
+        // APPLY SETTINGS TO WEBSITE
+        // ============================================
+        window.applySettingsToWebsite = function() {
+            const s = window.settingsCache || window.DEFAULT_SETTINGS;
+            console.log('🎨 Applying settings:', s.storeName);
+
+            // Page Title
+            if (s.pageTitle) document.title = s.pageTitle;
+
+            // Store Name (সব জায়গায়)
+            document.querySelectorAll('.dynamic-store-name').forEach(el => {
+                el.textContent = s.storeName || 'Burqa Bazar and Boutiques';
+            });
+
+            // Welcome Text
+            document.querySelectorAll('.dynamic-welcome-text').forEach(el => {
+                el.textContent = s.welcomeText || '';
+            });
+
+            // Phone
+            document.querySelectorAll('.dynamic-phone').forEach(el => {
+                el.textContent = s.phone || '';
+                if (el.tagName === 'A') el.href = 'tel:' + (s.phone || '').replace(/[^0-9+]/g, '');
+            });
+
+            // WhatsApp
+            document.querySelectorAll('.dynamic-whatsapp').forEach(el => {
+                el.textContent = s.phone || '';
+                if (el.tagName === 'A') el.href = 'https://wa.me/' + (s.whatsapp || '');
+            });
+
+            // WhatsApp Chat Button (floating)
+            const waBtn = document.getElementById('whatsapp-chat-btn');
+            if (waBtn) {
+                waBtn.href = 'https://wa.me/' + (s.whatsapp || '') + '?text=' + encodeURIComponent('Hello, I want to know more about your products.');
+            }
+
+            // Email
+            document.querySelectorAll('.dynamic-email').forEach(el => {
+                el.textContent = s.email || '';
+                if (el.tagName === 'A') el.href = 'mailto:' + (s.email || '');
+            });
+
+            // Address
+            document.querySelectorAll('.dynamic-address').forEach(el => {
+                el.textContent = s.address || '';
+            });
+
+            // bKash
+            document.querySelectorAll('.dynamic-bkash').forEach(el => {
+                el.textContent = s.bkash || '';
+            });
+
+            // Nagad
+            document.querySelectorAll('.dynamic-nagad').forEach(el => {
+                el.textContent = s.nagad || '';
+            });
+
+            // Delivery charges
+            const insideOpt = document.getElementById('shipping-option-inside');
+            if (insideOpt) insideOpt.textContent = `Inside Feni (৳${s.deliveryInside || 60})`;
+            if (insideOpt) insideOpt.value = s.deliveryInside || 60;
+            
+            const outsideOpt = document.getElementById('shipping-option-outside');
+            if (outsideOpt) outsideOpt.textContent = `Outside Feni (৳${s.deliveryOutside || 130})`;
+            if (outsideOpt) outsideOpt.value = s.deliveryOutside || 130;
+
+            // Social links
+            const fb = document.querySelector('.social-icon.facebook');
+            if (fb && s.facebook) { fb.href = s.facebook; fb.onclick = null; fb.target = '_blank'; }
+            
+            const ig = document.querySelector('.social-icon.instagram');
+            if (ig && s.instagram) { ig.href = s.instagram; ig.onclick = null; ig.target = '_blank'; }
+            
+            const yt = document.querySelector('.social-icon.youtube');
+            if (yt && s.youtube) { yt.href = s.youtube; yt.onclick = null; yt.target = '_blank'; }
+            
+            const tt = document.querySelector('.social-icon.tiktok');
+            if (tt && s.tiktok) { tt.href = s.tiktok; tt.onclick = null; tt.target = '_blank'; }
+        };
+
+        // ============================================
+        // REVIEWS LOAD
+        // ============================================
         window.loadReviewsFromFirebase = async function() {
             try {
                 const q = query(collection(db, "reviews"), orderBy("date", "desc"));
@@ -60,6 +192,9 @@
             } catch (err) { console.error('Reviews:', err); }
         };
 
+        // ============================================
+        // COUPONS LOAD
+        // ============================================
         window.loadCouponsFromFirebase = async function() {
             try {
                 const snap = await getDocs(collection(db, "coupons"));
@@ -76,6 +211,9 @@
             }
         };
 
+        // ============================================
+        // COUPON USAGE CHECK
+        // ============================================
         window.checkCouponUsed = async function(couponCode, phone) {
             try {
                 const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
@@ -97,6 +235,9 @@
             } catch (err) { return false; }
         };
 
+        // ============================================
+        // PRODUCTS LOAD
+        // ============================================
         window.loadProductsFromFirebase = async function() {
             try {
                 const querySnapshot = await getDocs(collection(db, "products"));
@@ -135,13 +276,15 @@
                     });
                 });
                 products.sort((a, b) => a.id - b.id);
-                console.log('✅ Products loaded');
+                console.log('✅ Products loaded:', products.length);
                 if (typeof window.updateProductsData === 'function') window.updateProductsData(products);
                 return products;
             } catch (error) { console.error("Products:", error); return null; }
         };
 
-        // 📄 Pages Load (About, Privacy, Terms, Return Policy, Contact, Track Order)
+        // ============================================
+        // PAGES LOAD
+        // ============================================
         window.loadPagesFromFirebase = async function() {
             try {
                 const snap = await getDocs(collection(db, 'pages'));
@@ -151,7 +294,6 @@
                     window.pagesCache[d.id] = data.html || '';
                 });
                 console.log('📄 Pages loaded:', Object.keys(window.pagesCache).length);
-                // If a page is currently open, refresh it
                 const pageIds = ['about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order'];
                 pageIds.forEach(pageId => {
                     const sec = document.getElementById(pageId + '-section');
@@ -169,8 +311,11 @@
             if (html) container.innerHTML = html;
         };
 
-        // 🚀 Parallel Loading
+        // ============================================
+        // PARALLEL LOADING ON DOM READY
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
+            window.loadSettingsFromFirebase();   // NEW - Settings load
             window.loadCouponsFromFirebase();
             window.loadReviewsFromFirebase();
             window.loadProductsFromFirebase();
@@ -178,8 +323,7 @@
             window.loadPagesFromFirebase();
         });
     </script>
-    
-    <style>
+        <style>
         :root {
             --primary-color: #dfb15b; --gold-color: #dfb15b; --secondary-color: #121214;
             --bg-color: #0b0b0d; --card-bg: rgba(22, 22, 26, 0.85); --text-color: #f3f3f6;
@@ -251,40 +395,11 @@
         .home-coupon-btn { background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
         .home-coupon-btn.copied { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
-        /* COUPON SKELETON LOADER */
-        .coupon-skeleton {
-            background: linear-gradient(135deg, rgba(255,0,127,.08), rgba(121,40,202,.05));
-            border: 1.5px dashed rgba(255,0,127,.3);
-            border-radius: 14px;
-            padding: 20px 18px;
-            position: relative;
-            overflow: hidden;
-        }
-        .coupon-skeleton::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(223,177,91,.15), transparent);
-            animation: couponShimmer 1.5s infinite;
-        }
-        @keyframes couponShimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        .coupon-skeleton-line {
-            height: 20px;
-            background: rgba(223,177,91,.15);
-            border-radius: 6px;
-            margin-bottom: 10px;
-            width: 80%;
-        }
-        .coupon-skeleton-line.short {
-            width: 50%;
-            height: 14px;
-        }
+        .coupon-skeleton { background: linear-gradient(135deg, rgba(255,0,127,.08), rgba(121,40,202,.05)); border: 1.5px dashed rgba(255,0,127,.3); border-radius: 14px; padding: 20px 18px; position: relative; overflow: hidden; }
+        .coupon-skeleton::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(223,177,91,.15), transparent); animation: couponShimmer 1.5s infinite; }
+        @keyframes couponShimmer { 0% { left: -100%; } 100% { left: 100%; } }
+        .coupon-skeleton-line { height: 20px; background: rgba(223,177,91,.15); border-radius: 6px; margin-bottom: 10px; width: 80%; }
+        .coupon-skeleton-line.short { width: 50%; height: 14px; }
 
         .available-coupons-list { margin-top: 12px; padding: 12px 14px; background: rgba(255,0,127,.05); border: 1px solid rgba(255,0,127,.25); border-radius: 8px; }
         .available-coupons-title { font-size: 12px; font-weight: 700; color: #ff6bb5; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
@@ -689,7 +804,6 @@
     </style>
 </head>
 <body>
-    
 <div id="reading-progress"></div>
 
 <button id="back-to-top" onclick="scrollToTop()" title="Back to Top">
@@ -793,7 +907,7 @@
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3 class="brand-title">Burqa Bazaar & Boutiques</h3>
+        <h3 class="brand-title dynamic-store-name">Burqa Bazaar & Boutiques</h3>
         <i class="fas fa-times close-sidebar" id="closeSidebar"></i>
     </div>
     <ul class="sidebar-menu">
@@ -825,7 +939,7 @@
                 <div class="header-logo-circle">
                     <img src="https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png" alt="Logo" fetchpriority="high" decoding="async">
                 </div>
-                <span class="brand-title">Burqa Bazar and Boutiques</span>
+                <span class="brand-title dynamic-store-name">Burqa Bazar and Boutiques</span>
             </div>
         </div>
         <div class="header-right-icons">
@@ -857,7 +971,7 @@
     <!-- HOME SECTION -->
     <div id="home-section" class="page-section active-page">
         <div class="welcome-section">
-            <h1 class="welcome-title">WELCOME TO BURQA BAZAR AND BOUTIQUES ✨</h1>
+            <h1 class="welcome-title dynamic-welcome-text">WELCOME TO BURQA BAZAR AND BOUTIQUES ✨</h1>
             <div class="center-logo-container">
                 <div class="center-logo-circle">
                     <img src="https://i.ibb.co/zW2qGsmk/file-00000000e71881f4ada02fa6792ea317.png" alt="Center Logo" fetchpriority="high" decoding="async">
@@ -1005,10 +1119,10 @@
             <h3>আরো প্রশ্ন আছে?</h3>
             <p>আমাদের সরাসরি জিজ্ঞাসা করুন — আমরা সাহায্য করতে প্রস্তুত!</p>
             <div class="faq-contact-buttons">
-                <a href="https://wa.me/8801832140613?text=Hello,%20I%20have%20a%20question" target="_blank" class="faq-contact-btn whatsapp">
+                <a href="https://wa.me/8801832140613?text=Hello,%20I%20have%20a%20question" target="_blank" class="faq-contact-btn whatsapp dynamic-whatsapp-link">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </a>
-                <a href="tel:+8801832140613" class="faq-contact-btn phone">
+                <a href="tel:+8801832140613" class="faq-contact-btn phone dynamic-phone-link">
                     <i class="fas fa-phone"></i> Call Now
                 </a>
             </div>
@@ -1023,8 +1137,8 @@
     <div id="about-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🌸 আমাদের সম্পর্কে | About Us</h2>
-            <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px;">স্বাগতম Burqa Bazaar and Boutiques-এ</h3>
-            <p style="margin-bottom: 15px;"><strong>Burqa Bazaar and Boutiques</strong> হলো শালীনতা, সৌন্দর্য ও আধুনিক রুচির সমন্বয়ে গড়ে ওঠা একটি ফ্যাশন ব্র্যান্ড। নারীদের জন্য মানসম্মত ও আকর্ষণীয় <strong>হিজাব, বোরকা ও আবায়া</strong> সংগ্রহ সহজলভ্য করাই আমাদের প্রধান লক্ষ্য।</p>
+            <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px;">স্বাগতম <span class="dynamic-store-name">Burqa Bazaar and Boutiques</span>-এ</h3>
+            <p style="margin-bottom: 15px;"><strong class="dynamic-store-name">Burqa Bazaar and Boutiques</strong> হলো শালীনতা, সৌন্দর্য ও আধুনিক রুচির সমন্বয়ে গড়ে ওঠা একটি ফ্যাশন ব্র্যান্ড। নারীদের জন্য মানসম্মত ও আকর্ষণীয় <strong>হিজাব, বোরকা ও আবায়া</strong> সংগ্রহ সহজলভ্য করাই আমাদের প্রধান লক্ষ্য।</p>
             <p style="margin-bottom: 20px;">আমরা বিশ্বাস করি, শালীন পোশাক শুধু একটি পোশাক নয়—এটি ব্যক্তিত্ব, রুচি ও আত্মবিশ্বাস প্রকাশের একটি সুন্দর মাধ্যম।</p>
             <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px;">✨ আমাদের কালেকশন</h3>
             <ul style="padding-left: 20px; margin-bottom: 20px; line-height: 1.8;">
@@ -1032,7 +1146,7 @@
                 <li>🖤 Burqa Collection</li>
                 <li>🤍 Abaya Collection</li>
             </ul>
-            <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px;">🤝 কেন Burqa Bazaar and Boutiques?</h3>
+            <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px;">🤝 কেন <span class="dynamic-store-name">Burqa Bazaar and Boutiques</span>?</h3>
             <ul style="padding-left: 20px; margin-bottom: 20px; line-height: 1.8;">
                 <li>✔️ আকর্ষণীয় ও মার্জিত ডিজাইন</li>
                 <li>✔️ বিভিন্ন রঙ ও স্টাইলের কালেকশন</li>
@@ -1040,7 +1154,7 @@
                 <li>✔️ সহজ ও আন্তরিক যোগাযোগ ব্যবস্থা</li>
             </ul>
             <div class="policy-footer">
-                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;">Burqa Bazaar and Boutiques</p>
+                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;"><span class="dynamic-store-name">Burqa Bazaar and Boutiques</span></p>
                 <p style="font-weight: 600; font-size: 14px;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
             </div>
         </div>
@@ -1050,7 +1164,7 @@
     <div id="privacy-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">🔒 Privacy Policy | গোপনীয়তা নীতি</h2>
-            <p style="margin-bottom: 15px;"><strong>Burqa Bazaar and Boutiques</strong>-এ আপনার গোপনীয়তা ও ব্যক্তিগত তথ্যের নিরাপত্তাকে আমরা গুরুত্ব দিই।</p>
+            <p style="margin-bottom: 15px;"><strong class="dynamic-store-name">Burqa Bazaar and Boutiques</strong>-এ আপনার গোপনীয়তা ও ব্যক্তিগত তথ্যের নিরাপত্তাকে আমরা গুরুত্ব দিই।</p>
             <h3 style="color: var(--gold-color); font-size: 18px; margin-top: 20px; margin-bottom: 10px;">১. আমরা যে তথ্য সংগ্রহ করতে পারি</h3>
             <ul style="padding-left: 20px; margin-bottom: 15px; line-height: 1.8;">
                 <li>• নাম</li>
@@ -1075,33 +1189,33 @@
                     <img src="https://i.ibb.co/vWtCxwz/images-3.png" alt="Phone" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">PHONE</span>
-                        <a href="tel:+8801832140613" class="premium-contact-value">+880 1832-140613</a>
+                        <a href="tel:+8801832140613" class="premium-contact-value dynamic-phone-link dynamic-phone">+880 1832-140613</a>
                     </div>
                 </div>
                 <div class="premium-contact-card">
                     <img src="https://i.ibb.co/twXQ8zyW/images-4.png" alt="WhatsApp" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">WHATSAPP</span>
-                        <a href="https://wa.me/8801832140613" target="_blank" class="premium-contact-value">+880 1832-140613</a>
+                        <a href="https://wa.me/8801832140613" target="_blank" class="premium-contact-value dynamic-whatsapp-link dynamic-whatsapp">+880 1832-140613</a>
                     </div>
                 </div>
                 <div class="premium-contact-card">
                     <img src="https://i.ibb.co/tPxNN9j2/images-5.png" alt="Email" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">EMAIL</span>
-                        <a href="mailto:burqabazaarandboutiques@gmail.com" class="premium-contact-value" style="word-break: break-all; font-size: 12px;">burqabazaarabdboutiques@gmail.com</a>
+                        <a href="mailto:burqabazaarandboutiques@gmail.com" class="premium-contact-value dynamic-email" style="word-break: break-all; font-size: 12px;">burqabazaarandboutiques@gmail.com</a>
                     </div>
                 </div>
                 <div class="premium-contact-card">
                     <img src="https://i.ibb.co/HDZcK1v1/8210.png" alt="Address" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">ADDRESS</span>
-                        <span class="premium-contact-value" style="font-size: 12px;">ফেনী সওদাগর পট্টি, সওদাগর টাওয়ার, ২য় তলা, দোকান নং ০৩</span>
+                        <span class="premium-contact-value dynamic-address" style="font-size: 12px;">ফেনী সওদাগর পট্টি, সওদাগর টাওয়ার, ২য় তলা, দোকান নং ০৩</span>
                     </div>
                 </div>
             </div>
             <div class="policy-footer">
-                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;">Burqa Bazaar and Boutiques</p>
+                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;"><span class="dynamic-store-name">Burqa Bazaar and Boutiques</span></p>
                 <p style="font-weight: 600; font-size: 14px;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
             </div>
         </div>
@@ -1111,7 +1225,7 @@
     <div id="terms-section" class="page-section">
         <div class="page-content-box">
             <h2 style="text-align: center; margin-bottom: 25px;">📜 Terms & Conditions | শর্তাবলি</h2>
-            <p style="margin-bottom: 15px;"><strong>Burqa Bazaar and Boutiques</strong> ওয়েবসাইটে আপনাকে স্বাগতম।</p>
+            <p style="margin-bottom: 15px;"><strong class="dynamic-store-name">Burqa Bazaar and Boutiques</strong> ওয়েবসাইটে আপনাকে স্বাগতম।</p>
             <h3 style="color: var(--gold-color); font-size: 18px; margin-top: 20px; margin-bottom: 10px;">১. সাধারণ শর্তাবলি</h3>
             <p style="margin-bottom: 15px;">ওয়েবসাইটের পণ্য, ছবি, বিবরণ, মূল্য, অফার ও অন্যান্য তথ্য পরিবর্তনের অধিকার আমাদের রয়েছে।</p>
             <h3 style="color: var(--gold-color); font-size: 18px; margin-top: 20px; margin-bottom: 10px;">২. পণ্যের তথ্য ও ছবি</h3>
@@ -1123,7 +1237,7 @@
             <h3 style="color: var(--gold-color); font-size: 18px; margin-top: 20px; margin-bottom: 10px;">৫. পেমেন্ট</h3>
             <p style="margin-bottom: 15px;">আমরা Cash on Delivery (COD), bKash ও Nagad পেমেন্ট গ্রহণ করি।</p>
             <div class="policy-footer">
-                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;">Burqa Bazaar and Boutiques</p>
+                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;"><span class="dynamic-store-name">Burqa Bazaar and Boutiques</span></p>
                 <p style="font-weight: 600; font-size: 14px;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
             </div>
         </div>
@@ -1148,7 +1262,7 @@
                 <li>❌ ৪৮ ঘণ্টার পর যোগাযোগ করলে</li>
             </ul>
             <div class="policy-footer">
-                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;">Burqa Bazaar and Boutiques</p>
+                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 10px;"><span class="dynamic-store-name">Burqa Bazaar and Boutiques</span></p>
                 <p style="font-weight: 600; font-size: 14px;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
             </div>
         </div>
@@ -1164,34 +1278,34 @@
                     <img src="https://i.ibb.co/vWtCxwz/images-3.png" alt="Phone" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">PHONE</span>
-                        <a href="tel:+8801832140613" class="premium-contact-value">+880 1832-140613</a>
+                        <a href="tel:+8801832140613" class="premium-contact-value dynamic-phone-link dynamic-phone">+880 1832-140613</a>
                     </div>
                 </div>
                 <div class="premium-contact-card">
                     <img src="https://i.ibb.co/twXQ8zyW/images-4.png" alt="WhatsApp" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">WHATSAPP</span>
-                        <a href="https://wa.me/8801832140613" target="_blank" class="premium-contact-value">+880 1832-140613</a>
+                        <a href="https://wa.me/8801832140613" target="_blank" class="premium-contact-value dynamic-whatsapp-link dynamic-whatsapp">+880 1832-140613</a>
                     </div>
                 </div>
                 <div class="premium-contact-card">
                     <img src="https://i.ibb.co/tPxNN9j2/images-5.png" alt="Email" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">EMAIL</span>
-                        <a href="mailto:burqabazaarandboutiques@gmail.com" class="premium-contact-value" style="word-break: break-all; font-size: 12px;">burqabazaarabdboutiques@gmail.com</a>
+                        <a href="mailto:burqabazaarandboutiques@gmail.com" class="premium-contact-value dynamic-email" style="word-break: break-all; font-size: 12px;">burqabazaarandboutiques@gmail.com</a>
                     </div>
                 </div>
                 <div class="premium-contact-card">
                     <img src="https://i.ibb.co/HDZcK1v1/8210.png" alt="Address" class="premium-contact-icon-img" loading="lazy">
                     <div class="premium-contact-info">
                         <span class="premium-contact-label">ADDRESS</span>
-                        <span class="premium-contact-value" style="font-size: 12px;">ফেনী সওদাগর পট্টি, সওদাগর টাওয়ার, ২য় তলা, দোকান নং ০৩</span>
+                        <span class="premium-contact-value dynamic-address" style="font-size: 12px;">ফেনী সওদাগর পট্টি, সওদাগর টাওয়ার, ২য় তলা, দোকান নং ০৩</span>
                     </div>
                 </div>
             </div>
             <div class="policy-footer">
                 <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px; text-align: center; padding-left: 0;">🌸 আপনার সন্তুষ্টিই আমাদের অগ্রাধিকার</h3>
-                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 8px;">Burqa Bazaar and Boutiques</p>
+                <p style="font-weight: bold; color: var(--gold-color); font-size: 16px; margin-bottom: 8px;"><span class="dynamic-store-name">Burqa Bazaar and Boutiques</span></p>
                 <p style="font-weight: 600; font-size: 14px; line-height: 1.6;">প্রতিটি লুকে শালীনতা,<br>প্রতিটি ডিজাইনে সৌন্দর্য।</p>
             </div>
         </div>
@@ -1226,7 +1340,7 @@
                 </div>
             </div>
             <div class="policy-footer">
-                <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px; text-align: center; padding-left: 0;">🛍️ Burqa Bazaar and Boutiques</h3>
+                <h3 style="color: var(--gold-color); font-size: 18px; margin-bottom: 10px; text-align: center; padding-left: 0;">🛍️ <span class="dynamic-store-name">Burqa Bazaar and Boutiques</span></h3>
                 <p style="font-weight: 600; font-size: 14px; line-height: 1.6;">Modesty in Every Look.<br>Elegance in Every Detail.</p>
             </div>
         </div>
@@ -1285,7 +1399,7 @@
                 <a href="#" class="social-icon instagram" title="Instagram" onclick="socialPlaceholder(event, 'Instagram')">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://wa.me/8801832140613" target="_blank" class="social-icon whatsapp" title="WhatsApp">
+                <a href="https://wa.me/8801832140613" target="_blank" class="social-icon whatsapp dynamic-whatsapp-link" title="WhatsApp">
                     <i class="fab fa-whatsapp"></i>
                 </a>
                 <a href="#" class="social-icon youtube" title="YouTube" onclick="socialPlaceholder(event, 'YouTube')">
@@ -1298,11 +1412,11 @@
         </div>
     </div>
     <div class="footer-bottom-text" style="margin-top: 30px;">
-        &copy; 2026 Burqa Bazar and Boutiques. All rights reserved.
+        &copy; 2026 <span class="dynamic-store-name">Burqa Bazar and Boutiques</span>. All rights reserved.
     </div>
 </footer>
 
-<a href="https://wa.me/8801832140613?text=Hello,%20I%20want%20to%20know%20more%20about%20your%20products." target="_blank" class="whatsapp-chat-btn" title="Chat on WhatsApp">
+<a href="https://wa.me/8801832140613?text=Hello,%20I%20want%20to%20know%20more%20about%20your%20products." target="_blank" class="whatsapp-chat-btn dynamic-whatsapp-link" id="whatsapp-chat-btn" title="Chat on WhatsApp">
     <i class="fab fa-whatsapp"></i>
 </a>
 
@@ -1385,9 +1499,9 @@
             { category: 'order', q: 'অর্ডার কনফার্মেশন কখন পাবো?', a: 'অর্ডার করার সাথে সাথেই আপনার WhatsApp-এ <strong>Order ID সহ কনফার্মেশন</strong> পাবেন।' },
             { category: 'order', q: 'অর্ডার ক্যান্সেল করা যাবে?', a: 'হ্যাঁ, অর্ডার <strong>শিপিং হওয়ার আগে</strong> পর্যন্ত ক্যান্সেল করা যাবে। WhatsApp-এ (<strong>01832140613</strong>) আপনার Order ID সহ মেসেজ দিন।' },
             { category: 'payment', q: 'কী কী পেমেন্ট মেথড আছে?', a: 'আমরা তিনটি পেমেন্ট মেথড গ্রহণ করি —<ul><li>✅ <strong>Cash on Delivery (COD)</strong></li><li>✅ <strong>bKash</strong></li><li>✅ <strong>Nagad</strong></li></ul>' },
-            { category: 'payment', q: 'Cash on Delivery-তে কী কী দিতে হয়?', a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয় (ফেনীর ভিতরে ৳৬০, বাইরে ৳১৩০)।' },
-            { category: 'payment', q: 'bKash/Nagad পেমেন্ট কীভাবে করবো?', a: 'আমাদের বিকাশ/নগদ নম্বরে (<strong>01832140613 — Personal</strong>) <strong>Send Money</strong> করুন। তারপর চেকআউট ফর্মে প্রেরকের নম্বর ও TrxID লিখুন।' },
-            { category: 'delivery', q: 'ডেলিভারি চার্জ কত?', a: '<ul><li>🏠 <strong>ফেনীর ভিতরে:</strong> ৳৬০</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ৳১৩০</li></ul>' },
+            { category: 'payment', q: 'Cash on Delivery-তে কী কী দিতে হয়?', a: 'COD-তে শুধু <strong>ডেলিভারি চার্জ অগ্রিম</strong> দিতে হয়।' },
+            { category: 'payment', q: 'bKash/Nagad পেমেন্ট কীভাবে করবো?', a: 'আমাদের বিকাশ/নগদ নম্বরে <strong>Send Money</strong> করুন। তারপর চেকআউট ফর্মে প্রেরকের নম্বর ও TrxID লিখুন।' },
+            { category: 'delivery', q: 'ডেলিভারি চার্জ কত?', a: 'ডেলিভারি চার্জ চেকআউট পেজে আপনার এলাকা অনুযায়ী দেখানো হবে।' },
             { category: 'delivery', q: 'ডেলিভারি কত দিনে পাবো?', a: '<ul><li>📍 <strong>ফেনীর ভিতরে:</strong> ১-২ কার্যদিবস</li><li>🚚 <strong>ফেনীর বাইরে:</strong> ২-৪ কার্যদিবস</li></ul>' },
             { category: 'delivery', q: 'কীভাবে অর্ডার ট্র্যাক করবো?', a: 'শিপিং হওয়ার পর আমরা আপনাকে WhatsApp-এ <strong>Tracking Number / CN Number</strong> পাঠাবো।' },
             { category: 'return', q: 'পণ্য রিটার্ন করা যাবে?', a: 'হ্যাঁ, পণ্য হাতে পাওয়ার <strong>৪৮ ঘণ্টার মধ্যে</strong> রিটার্ন/এক্সচেঞ্জের জন্য যোগাযোগ করতে হবে।' },
@@ -2309,7 +2423,7 @@
             if (!product) return;
             currentShareProduct = product;
             const pageUrl = window.location.href.split('?')[0].split('#')[0];
-            const shareText = 'Check out this product from Burqa Bazaar: ' + product.name;
+            const shareText = 'Check out this product from ' + (window.settingsCache?.storeName || 'our store') + ': ' + product.name;
             const shareUrl = pageUrl + '?product=' + productId;
             document.getElementById('share-whatsapp').href = 'https://wa.me/?text=' + encodeURIComponent(shareText + ' - ' + shareUrl);
             document.getElementById('share-facebook').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
@@ -2509,7 +2623,6 @@
             if (tabName !== 'product-details') updateURL(tabName);
             if (tabName === 'wishlist') renderWishlist();
             if (tabName === 'faq') renderFAQ();
-            // 📄 Pages apply — Firebase থেকে content বসাও
             if (['about', 'privacy', 'terms', 'return-policy', 'contact', 'track-order'].includes(tabName)) {
                 if (typeof window.applyPageContent === 'function') window.applyPageContent(tabName);
             }
@@ -2679,7 +2792,7 @@
             if (nagadBox) nagadBox.style.display = 'none';
             const { subtotal } = calculateCartSubtotal();
             const shippingSelect = document.getElementById('shipping-select');
-            const deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
+            const deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : (window.settingsCache?.deliveryInside || 60);
             const disc = appliedCoupon ? calculateDiscount(subtotal) : 0;
             const finalSubtotal = Math.max(0, subtotal - disc);
             const totalAmount = finalSubtotal + deliveryCharge;
@@ -2706,8 +2819,10 @@
             }
             const { subtotal, hasPriceComingSoon } = calculateCartSubtotal();
             if (appliedCoupon) discountAmount = calculateDiscount(subtotal);
+            const s = window.settingsCache || window.DEFAULT_SETTINGS || { deliveryInside: 60, deliveryOutside: 130, bkash: '01832140613', nagad: '01832140613' };
+            const defaultDelivery = s.deliveryInside || 60;
             let shippingSelect = document.getElementById('shipping-select');
-            let deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
+            let deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : defaultDelivery;
             let finalSubtotal = subtotal - discountAmount;
             if (finalSubtotal < 0) finalSubtotal = 0;
             let totalAmount = finalSubtotal + deliveryCharge;
@@ -2734,7 +2849,7 @@
             <form id="checkout-form" onsubmit="submitOrder(event)">
                 <div class="form-group"><label>Full Name *</label><input type="text" id="cus-name" required></div>
                 <div class="form-group"><label>Phone Number *</label><input type="tel" id="cus-phone" required></div>
-                <div class="form-group"><label>Shipping Area (Delivery Charge) *</label><select id="shipping-select" required onchange="updateDeliveryCharge()"><option value="60">Inside Feni (৳60)</option><option value="130">Outside Feni (৳130)</option></select></div>
+                <div class="form-group"><label>Shipping Area (Delivery Charge) *</label><select id="shipping-select" required onchange="updateDeliveryCharge()"><option value="${s.deliveryInside || 60}" id="shipping-option-inside">Inside Feni (৳${s.deliveryInside || 60})</option><option value="${s.deliveryOutside || 130}" id="shipping-option-outside">Outside Feni (৳${s.deliveryOutside || 130})</option></select></div>
                 <div class="form-group"><label>City *</label><input type="text" id="cus-city" required></div>
                 <div class="form-group"><label>District *</label><input type="text" id="cus-district" required></div>
                 <div class="form-group"><label>Upazila / Thana *</label><input type="text" id="cus-thana" required></div>
@@ -2748,25 +2863,25 @@
                 </div>
                 <div class="instruction-box" id="cod-instruction-box">
                     <h4><i class="fas fa-info-circle"></i> ক্যাশ অন ডেলিভারি নির্দেশিকা:</h4>
-                    <p>ডেলিভারি চার্জ অগ্রিম <strong style="color: var(--gold-color);">৳ <span id="cod-amount-text">60</span></strong> প্রদান করতে হবে।</p>
+                    <p>ডেলিভারি চার্জ অগ্রিম <strong style="color: var(--gold-color);">৳ <span id="cod-amount-text">${deliveryCharge}</span></strong> প্রদান করতে হবে।</p>
                     <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 বিকাশ নম্বর (Personal):</div>
-                    <div class="number-row"><span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span><button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button></div>
+                    <div class="number-row"><span style="font-weight: bold; color: var(--gold-color); font-size: 15px;" class="dynamic-bkash">${s.bkash || '01832140613'}</span><button type="button" class="copy-btn" onclick="copyNumber('${s.bkash || '01832140613'}', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button></div>
                     <div class="form-group" style="margin-top: 15px;"><label>প্রেরকের নম্বর *</label><input type="tel" id="cod-sender-input" placeholder="017xxxxxxxx"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="cod-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
                 </div>
                 <div class="instruction-box" id="bkash-instruction-box">
                     <h4><i class="fas fa-shield-alt"></i> বিকাশ পেমেন্ট নির্দেশিকা:</h4>
-                    <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="bkash-amount-text">0</span></strong></p>
+                    <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="bkash-amount-text">${totalAmount}</span></strong></p>
                     <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 বিকাশ নম্বর (Personal):</div>
-                    <div class="number-row"><span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span><button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button></div>
+                    <div class="number-row"><span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">${s.bkash || '01832140613'}</span><button type="button" class="copy-btn" onclick="copyNumber('${s.bkash || '01832140613'}', 'bKash')"><i class="fas fa-copy"></i> কপি করুন</button></div>
                     <div class="form-group" style="margin-top: 15px;"><label>আপনার বিকাশ নম্বর *</label><input type="tel" id="bkash-sender-input" placeholder="017xxxxxxxx"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="bkash-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
                 </div>
                 <div class="instruction-box" id="nagad-instruction-box">
                     <h4><i class="fas fa-wallet"></i> নগদ পেমেন্ট নির্দেশিকা:</h4>
-                    <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="nagad-amount-text">0</span></strong></p>
+                    <p>সম্পূর্ণ পেমেন্টের জন্য নিচের নম্বরে Send Money করুন: <strong style="color: var(--gold-color); font-size: 15px;">৳ <span id="nagad-amount-text">${totalAmount}</span></strong></p>
                     <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">👉 নগদ নম্বর (Personal):</div>
-                    <div class="number-row"><span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">01832140613</span><button type="button" class="copy-btn" onclick="copyNumber('01832140613', 'Nagad')"><i class="fas fa-copy"></i> কপি করুন</button></div>
+                    <div class="number-row"><span style="font-weight: bold; color: var(--gold-color); font-size: 15px;">${s.nagad || '01832140613'}</span><button type="button" class="copy-btn" onclick="copyNumber('${s.nagad || '01832140613'}', 'Nagad')"><i class="fas fa-copy"></i> কপি করুন</button></div>
                     <div class="form-group" style="margin-top: 15px;"><label>আপনার নগদ নম্বর *</label><input type="tel" id="nagad-sender-input" placeholder="017xxxxxxxx"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label>ট্রানজেকশন আইডি (TrxID) *</label><input type="text" id="nagad-trx-input" placeholder="যেমন: 9L8A7B6C"></div>
                 </div>
@@ -2806,11 +2921,12 @@
             }
             const { subtotal, hasPriceComingSoon } = calculateCartSubtotal();
             const shippingSelect = document.getElementById('shipping-select');
-            const deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : 60;
+            const s = window.settingsCache || window.DEFAULT_SETTINGS || { deliveryInside: 60, deliveryOutside: 130, whatsapp: '8801832140613' };
+            const deliveryCharge = shippingSelect ? parseInt(shippingSelect.value) : (s.deliveryInside || 60);
             const discount = appliedCoupon ? calculateDiscount(subtotal) : 0;
             const finalSubtotal = Math.max(0, subtotal - discount);
             const totalAmount = finalSubtotal + deliveryCharge;
-            const shippingAreaText = (deliveryCharge === 60) ? 'Inside Feni (৳60)' : 'Outside Feni (৳130)';
+            const shippingAreaText = (deliveryCharge === (s.deliveryInside || 60)) ? `Inside Feni (৳${deliveryCharge})` : `Outside Feni (৳${deliveryCharge})`;
             const orderId = generateOrderId();
 
             if (appliedCoupon) {
@@ -2860,9 +2976,9 @@
             let couponText = '';
             if (appliedCoupon) couponText = `• Coupon: ${appliedCoupon.code}%0A• Discount: -৳${discount}%0A`;
 
-            let whatsappMessage = `👑 *New Order Received - Burqa Bazar* 👑%0A-----------------------------------%0A🔖 *Order ID: ${orderId}*%0A-----------------------------------%0A👤 *Customer Details:*%0A• Name: ${name}%0A• Phone: ${phone}%0A• City: ${city}%0A• District: ${district}%0A• Thana: ${thana}%0A• Address: ${address}%0A• Notes: ${notes ? notes : 'None'}%0A%0A🛍️ *Ordered Products:*${productsText}%0A%0A-----------------------------------%0A💰 *Payment Summary:*%0A• Subtotal: ${subtotalText}%0A${couponText}• Delivery Area: ${shippingAreaText}%0A• Total Amount: ${totalText}%0A• Payment Method: ${selectedPayment}%0A• Sender Number: ${senderNumber}%0A• TrxID: ${trxId}%0A-----------------------------------%0A📌 *আপনার অর্ডার ID: ${orderId}*%0A-----------------------------------`;
+            let whatsappMessage = `👑 *New Order Received - ${s.storeName || 'Burqa Bazar'}* 👑%0A-----------------------------------%0A🔖 *Order ID: ${orderId}*%0A-----------------------------------%0A👤 *Customer Details:*%0A• Name: ${name}%0A• Phone: ${phone}%0A• City: ${city}%0A• District: ${district}%0A• Thana: ${thana}%0A• Address: ${address}%0A• Notes: ${notes ? notes : 'None'}%0A%0A🛍️ *Ordered Products:*${productsText}%0A%0A-----------------------------------%0A💰 *Payment Summary:*%0A• Subtotal: ${subtotalText}%0A${couponText}• Delivery Area: ${shippingAreaText}%0A• Total Amount: ${totalText}%0A• Payment Method: ${selectedPayment}%0A• Sender Number: ${senderNumber}%0A• TrxID: ${trxId}%0A-----------------------------------%0A📌 *আপনার অর্ডার ID: ${orderId}*%0A-----------------------------------`;
 
-            const ownerWhatsAppNumber = '8801832140613';
+            const ownerWhatsAppNumber = s.whatsapp || '8801832140613';
             const whatsappURL = 'https://wa.me/' + ownerWhatsAppNumber + '?text=' + whatsappMessage;
 
             showToast('✅ Order ID: ' + orderId + ' - Redirecting...');
@@ -2962,3 +3078,4 @@
     </script>
 </body>
 </html>
+    
