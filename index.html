@@ -164,6 +164,58 @@
         ];
 
         // ============================================
+        // 🔥 LOAD BANNERS FROM FIREBASE (NEW - FIXED!)
+        // ============================================
+        window.loadBannersFromFirebase = async function() {
+            try {
+                const snap = await getDocs(collection(db, 'banners'));
+                const list = [];
+                snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+
+                // শুধু active banner
+                const activeBanners = list.filter(b => b.active !== false);
+
+                // Order অনুযায়ী sort
+                activeBanners.sort((a, b) => (parseInt(a.order) || 99) - (parseInt(b.order) || 99));
+
+                console.log('🎨 Banners loaded:', activeBanners.length);
+
+                // Main script এ পাঠাই
+                if (typeof window.updateBannersData === 'function') {
+                    window.updateBannersData(activeBanners);
+                } else {
+                    // Main script এখনো load না হলে bannersCache এ রাখি
+                    window.bannersCache = activeBanners;
+                }
+            } catch (err) {
+                console.error('❌ Banners load error:', err);
+                window.bannersCache = [];
+            }
+        };
+
+        // ============================================
+        // 🔥 UPDATE BANNERS DATA (NEW - FIXED!)
+        // ============================================
+        window.updateBannersData = function(firebaseBanners) {
+            // Static banner (fallback)
+            const STATIC_BANNER = {
+                id: '__static__',
+                image: 'https://i.ibb.co/V8xTN72/file-000000004028820a835dbfabe40a11d2.png',
+                title: 'Promo Banner',
+                link: '', linkType: 'none', order: 0
+            };
+
+            // Static + Firebase merge
+            window.bannersCache = [STATIC_BANNER, ...(firebaseBanners || [])];
+            console.log('🎨 Banners ready:', window.bannersCache.length);
+
+            // Slider render
+            if (typeof window.renderBannerSlider === 'function') {
+                window.renderBannerSlider();
+            }
+        };
+
+        // ============================================
         // LOAD SETTINGS
         // ============================================
         window.loadSettingsFromFirebase = async function() {
@@ -278,11 +330,9 @@
             if (typeof window.renderContactIconsOnWebsite === 'function') {
                 window.renderContactIconsOnWebsite();
             }
-
             if (typeof window.renderPaymentMethods === 'function') {
                 window.renderPaymentMethods();
             }
-
             if (typeof window.renderCouriersTrackPage === 'function') {
                 window.renderCouriersTrackPage();
             }
@@ -291,34 +341,28 @@
         };
 
         // ============================================
-        // CONTACT ICONS (NEW! - Website এ render)
+        // CONTACT ICONS
         // ============================================
         window.renderContactIconsOnWebsite = function() {
             const s = window.settingsCache || window.DEFAULT_SETTINGS || {};
-
             const DEFAULT_ICONS = [
                 { label: 'PHONE', iconUrl: 'https://i.ibb.co/vWtCxwz/images-3.png', linkUrl: 'tel:' + (s.phone || '').replace(/[^0-9+]/g, ''), enabled: true, value: s.phone || '' },
                 { label: 'WHATSAPP', iconUrl: 'https://i.ibb.co/twXQ8zyW/images-4.png', linkUrl: 'https://wa.me/' + (s.whatsapp || ''), enabled: true, value: s.phone || '' },
                 { label: 'EMAIL', iconUrl: 'https://i.ibb.co/tPxNN9j2/images-5.png', linkUrl: 'mailto:' + (s.email || ''), enabled: true, value: s.email || '' },
                 { label: 'ADDRESS', iconUrl: 'https://i.ibb.co/HDZcK1v1/8210.png', linkUrl: '', enabled: true, value: s.address || '' }
             ];
-
             let icons = Array.isArray(s.contactIcons) && s.contactIcons.length > 0
                 ? s.contactIcons.filter(x => x.enabled !== false)
                 : DEFAULT_ICONS;
-
             if (icons.length === 0) icons = DEFAULT_ICONS;
-
             const containers = document.querySelectorAll('.dynamic-contact-icons-container');
             if (containers.length === 0) return;
-
             let html = '';
             icons.forEach(icon => {
                 const label = icon.label || 'Contact';
                 const iconUrl = icon.iconUrl || '';
                 const linkUrl = (icon.linkUrl || '').trim();
                 let displayValue = icon.value || '';
-
                 if (!displayValue) {
                     const upperLabel = label.toUpperCase();
                     if (upperLabel.includes('PHONE')) displayValue = s.phone || '';
@@ -326,11 +370,9 @@
                     else if (upperLabel.includes('EMAIL')) displayValue = s.email || '';
                     else if (upperLabel.includes('ADDRESS')) displayValue = s.address || '';
                 }
-
                 const valueTag = linkUrl
                     ? `<a href="${linkUrl}" target="_blank" class="premium-contact-value dynamic-contact-value">${displayValue || label}</a>`
                     : `<span class="premium-contact-value dynamic-contact-value">${displayValue || label}</span>`;
-
                 html += `<div class="premium-contact-card">
                     <img class="premium-contact-icon-img dynamic-contact-icon" src="${iconUrl}" alt="${label}" loading="lazy" onerror="this.style.display='none'">
                     <div class="premium-contact-info">
@@ -339,11 +381,7 @@
                     </div>
                 </div>`;
             });
-
-            containers.forEach(container => {
-                container.innerHTML = html;
-            });
-
+            containers.forEach(container => { container.innerHTML = html; });
             console.log('📞 Contact icons rendered:', icons.length);
         };
 
@@ -481,7 +519,6 @@
             const html = window.pagesCache[pageId];
             if (html) {
                 container.innerHTML = html;
-                // Page load হওয়ার পর Contact Icons re-render
                 if (typeof window.renderContactIconsOnWebsite === 'function') {
                     window.renderContactIconsOnWebsite();
                 }
@@ -519,9 +556,7 @@
             try {
                 const snap = await getDocs(collection(db, 'sizeCharts'));
                 const charts = {};
-                snap.forEach(d => {
-                    charts[d.id] = d.data();
-                });
+                snap.forEach(d => { charts[d.id] = d.data(); });
                 if (Object.keys(charts).length > 0) {
                     window.sizeChartsCache = { ...window.DEFAULT_SIZE_CHARTS, ...charts };
                     console.log('📏 Size charts loaded:', Object.keys(charts).length);
@@ -560,7 +595,7 @@
         };
 
         // ============================================
-        // PARALLEL LOADING
+        // PARALLEL LOADING ON DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             window.loadSettingsFromFirebase();
@@ -1676,7 +1711,7 @@
     }
 
     // ============================================
-    // BANNER SLIDER
+    // BANNER SLIDER (🔥 FIXED!)
     // ============================================
     const STATIC_BANNER = {
         id: '__static__',
@@ -1685,7 +1720,18 @@
         link: '', linkType: 'none', order: 0
     };
 
-    window.bannersCache = [STATIC_BANNER];
+    // এটা Part 1 এর script থেকেও কল হয়
+    window.updateBannersData = function(firebaseBanners) {
+        window.bannersCache = [STATIC_BANNER, ...(firebaseBanners || [])];
+        console.log('🎨 Banners ready:', window.bannersCache.length);
+        renderBannerSlider();
+    };
+
+    // যদি Part 1 এর load আগে শেষ হয়ে যায় — fallback
+    if (!window.bannersCache || window.bannersCache.length === 0) {
+        window.bannersCache = [STATIC_BANNER];
+    }
+
     window.currentBannerIndex = 0;
     let bannerAutoSlideTimer = null;
     const BANNER_AUTO_SLIDE_MS = 5000;
@@ -1693,52 +1739,18 @@
     let bannerSwipeEndX = 0;
     let bannerSwipeAttached = false;
 
-    window.loadBannersFromFirebase = async function() {
-        try {
-            const snap = await getDocs(collection(window.db, "banners"));
-            const dynamicBanners = [];
-            snap.forEach(doc => {
-                const data = doc.data();
-                if (data.active === false) return;
-                const imgUrl = extractBannerUrl(data.image);
-                if (!imgUrl) return;
-                dynamicBanners.push({
-                    id: doc.id, image: imgUrl, title: data.title || '',
-                    link: data.link || '', linkType: data.linkType || 'none',
-                    order: parseInt(data.order) || 99
-                });
-            });
-            dynamicBanners.sort((a, b) => a.order - b.order);
-            window.bannersCache = [STATIC_BANNER, ...dynamicBanners];
-            console.log('🎨 Banners loaded:', window.bannersCache.length);
-            renderBannerSlider();
-        } catch (err) {
-            console.error('❌ Banners load error:', err);
-            window.bannersCache = [STATIC_BANNER];
-            renderBannerSlider();
-        }
-    };
-
-    function extractBannerUrl(str) {
-        if (!str || typeof str !== 'string') return '';
-        const trimmed = str.trim();
-        const match = trimmed.match(/src=["']([^"']+)["']/);
-        if (match && match[1]) return match[1];
-        if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-            return trimmed.split(/[\s<"']/)[0];
-        }
-        return '';
-    }
-
-    function renderBannerSlider() {
+    // এটা Part 1 এ call হয় — MAIN SCRIPT এ define
+    window.renderBannerSlider = function() {
         const slider = document.getElementById('promo-banner-slider');
         const track = document.getElementById('banner-track');
         const dots = document.getElementById('banner-dots');
         if (!slider || !track) return;
         slider.style.display = 'block';
 
+        const banners = window.bannersCache || [STATIC_BANNER];
+
         let slidesHtml = '';
-        window.bannersCache.forEach((b, idx) => {
+        banners.forEach((b, idx) => {
             const hasLink = b.linkType && b.linkType !== 'none' && b.link;
             slidesHtml += `<div class="banner-slide ${hasLink ? '' : 'no-link'}" data-banner-idx="${idx}" ${hasLink ? `onclick="handleBannerClick(${idx})"` : ''}>
                 <img src="${b.image}" alt="${b.title || 'Banner ' + (idx + 1)}" loading="${idx === 0 ? 'eager' : 'lazy'}" decoding="async" onerror="this.parentElement.style.display='none'">
@@ -1746,9 +1758,9 @@
         });
         track.innerHTML = slidesHtml;
 
-        if (window.bannersCache.length > 1) {
+        if (banners.length > 1) {
             let dotsHtml = '';
-            window.bannersCache.forEach((_, idx) => {
+            banners.forEach((_, idx) => {
                 dotsHtml += `<button class="banner-dot ${idx === window.currentBannerIndex ? 'active' : ''}" onclick="goToBanner(${idx})" aria-label="Banner ${idx + 1}"></button>`;
             });
             dots.innerHTML = dotsHtml;
@@ -1760,7 +1772,7 @@
 
         const prevBtn = slider.querySelector('.banner-prev');
         const nextBtn = slider.querySelector('.banner-next');
-        if (window.bannersCache.length <= 1) {
+        if (banners.length <= 1) {
             if (prevBtn) prevBtn.style.display = 'none';
             if (nextBtn) nextBtn.style.display = 'none';
         } else {
@@ -1768,12 +1780,12 @@
             if (nextBtn) nextBtn.style.display = 'flex';
         }
 
-        if (window.currentBannerIndex >= window.bannersCache.length) window.currentBannerIndex = 0;
+        if (window.currentBannerIndex >= banners.length) window.currentBannerIndex = 0;
         updateBannerPosition();
         attachBannerSwipeOnce();
         if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
-        if (window.bannersCache.length > 1) startBannerAutoSlide();
-    }
+        if (banners.length > 1) startBannerAutoSlide();
+    };
 
     function updateBannerPosition() {
         const track = document.getElementById('banner-track');
@@ -1785,38 +1797,43 @@
     }
 
     window.goToBanner = function(idx) {
-        if (idx < 0 || idx >= window.bannersCache.length) return;
+        const banners = window.bannersCache || [];
+        if (idx < 0 || idx >= banners.length) return;
         window.currentBannerIndex = idx;
         updateBannerPosition();
         resetBannerAutoSlide();
     };
 
     window.bannerNext = function() {
-        if (window.bannersCache.length <= 1) return;
-        window.currentBannerIndex = (window.currentBannerIndex + 1) % window.bannersCache.length;
+        const banners = window.bannersCache || [];
+        if (banners.length <= 1) return;
+        window.currentBannerIndex = (window.currentBannerIndex + 1) % banners.length;
         updateBannerPosition();
         resetBannerAutoSlide();
     };
 
     window.bannerPrev = function() {
-        if (window.bannersCache.length <= 1) return;
-        window.currentBannerIndex = (window.currentBannerIndex - 1 + window.bannersCache.length) % window.bannersCache.length;
+        const banners = window.bannersCache || [];
+        if (banners.length <= 1) return;
+        window.currentBannerIndex = (window.currentBannerIndex - 1 + banners.length) % banners.length;
         updateBannerPosition();
         resetBannerAutoSlide();
     };
 
     function startBannerAutoSlide() {
         if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
-        if (window.bannersCache.length <= 1) return;
+        const banners = window.bannersCache || [];
+        if (banners.length <= 1) return;
         bannerAutoSlideTimer = setInterval(() => {
-            window.currentBannerIndex = (window.currentBannerIndex + 1) % window.bannersCache.length;
+            window.currentBannerIndex = (window.currentBannerIndex + 1) % banners.length;
             updateBannerPosition();
         }, BANNER_AUTO_SLIDE_MS);
     }
 
     function resetBannerAutoSlide() {
         if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer);
-        if (window.bannersCache.length > 1) startBannerAutoSlide();
+        const banners = window.bannersCache || [];
+        if (banners.length > 1) startBannerAutoSlide();
     }
 
     function attachBannerSwipeOnce() {
@@ -1832,12 +1849,15 @@
             else if (diff < -minSwipe) window.bannerPrev();
         }, { passive: true });
         slider.addEventListener('mouseenter', () => { if (bannerAutoSlideTimer) clearInterval(bannerAutoSlideTimer); });
-        slider.addEventListener('mouseleave', () => { if (window.bannersCache.length > 1) startBannerAutoSlide(); });
+        slider.addEventListener('mouseleave', () => {
+            const banners = window.bannersCache || [];
+            if (banners.length > 1) startBannerAutoSlide();
+        });
         bannerSwipeAttached = true;
     }
 
     window.handleBannerClick = function(idx) {
-        const banner = window.bannersCache[idx];
+        const banner = (window.bannersCache || [])[idx];
         if (!banner || !banner.link) return;
         if (banner.id === '__static__') return;
         const type = banner.linkType;
@@ -3265,7 +3285,7 @@
         setTimeout(handleInitialURL, 2500);
     });
 
-    // Extra Safety: 3s পর payment methods re-render
+    // Extra Safety: 3s পর payment methods + contact icons re-render
     setTimeout(() => {
         if (typeof window.renderPaymentMethods === 'function') {
             const container = document.querySelector('.payment-methods-box');
