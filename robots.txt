@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /Admin.html
+
+Sitemap: https://burqabazaar2725.github.io/Burqa-Bazaar-And-Boutiques/sitemap.xml
+
+Crawl-delay: 1
